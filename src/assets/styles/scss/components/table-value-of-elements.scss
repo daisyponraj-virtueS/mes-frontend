@@ -1,0 +1,127 @@
+.table-value-of-elements {
+  width: 100%;
+  background-color: #fff;
+  border-collapse: collapse;
+  border: 1px solid #dceefa;
+  thead {
+    tr {
+      td {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 10px 16px;
+        background-color: var(--primary75);
+      }
+    }
+  }
+  tbody {
+    tr {
+      border-bottom: 1px solid #dceefa;
+      td {
+        font-size: 14px;
+        padding: 5px 16px;
+        &:first-child {
+          color: var(--primary50);
+          font-weight: 500;
+          text-align: center;
+          background-color: var(--grey20);
+        }
+        .input-field {
+          width: 75px;
+          height: 28px;
+          font-size: 14px;
+          padding: 4px 12px;
+          border-radius: 4px;
+        }
+        .input-field-text {
+          font-size: 14px;
+        }
+        &:last-child {
+          border-left: 1px solid #dceefa;
+        }
+        .disabled-input-view {
+          background: none;
+          border: none;
+          color: #041724;
+        }
+      }
+    }
+    .select-default {
+      width: 85px;
+      height: 30px;
+      color: var(--primary-text);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 5px 25px 5px 12px;
+      background: #fff url(../../../icons/chevron-down.svg) right 9px top 10px no-repeat;
+      border: 1px solid var(--grey30);
+      border-radius: 4px;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+    }
+  }
+  &--list-view {
+    tbody {
+      tr {
+        td {
+          padding: 10px 16px;
+        }
+      }
+    }
+  }
+  &--no-border {
+    tbody {
+      tr {
+        border-bottom: 0;
+      }
+    }
+  }
+  &--type3 {
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    thead {
+      tr {
+        td {
+          &:last-child {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        td {
+          &:first-child {
+            padding: 8px 10px;
+          }
+          padding: 4px 10px;
+        }
+        &:last-child {
+          td:not(:last-child) {
+            border-bottom: 1px solid #dceefa;
+          }
+        }
+      }
+    }
+  }
+  .btn-actions {
+    width: 38px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-right: 10px;
+    &--add {
+      background-color: var(--primary50);
+    }
+    &--remove {
+      background-color: var(--secondary50);
+      margin-left: 8px;
+    }
+  }
+}

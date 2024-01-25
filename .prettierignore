@@ -1,0 +1,8 @@
+__generated__
+STEP_TYPES.js
+CHOICES.js
+
+# Ignore artifacts:
+    build
+    coverage
+    node_modules

@@ -1,0 +1,38 @@
+.switch {
+  &-container {
+    width: 22px;
+    height: 13px;
+  }
+  &-label {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: var(--grey40);
+    border-radius: 12px;
+    transition: all 300ms ease-in;
+    cursor: pointer;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      // left: 8.33%;
+      left: 1px;
+      width: 11px;
+      height: 11px;
+      background-color: #fff;
+      transition: left 0.25s ease;
+      border-radius: 100%;
+    }
+  }
+  &-input {
+    display: none;
+    &:checked + .switch-label {
+      background-color: var(--success);
+      &::after {
+        left: 45.83%;
+      }
+    }
+  }
+}

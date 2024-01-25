@@ -1,0 +1,38 @@
+.auth-module {
+  &__container {
+    height: 100vh;
+    display: flex;
+  }
+  &__banner-section {
+    width: 46%;
+    min-height: 100vh;
+    padding: 50px 98px 58px 60px;
+    background: linear-gradient(180deg, #024668 0%, rgba(0, 0, 0, 0.86) 100%);
+    overflow: hidden;
+    .content-container {
+      padding-left: 82px;
+    }
+  }
+  &__main {
+    flex: 1;
+    width: 54%;
+    background-color: #fff;
+    overflow-y: auto;
+    &__container {
+      width: 70%;
+      padding: 82px 50px 50px 78px;
+    }
+  }
+  &--login {
+    .auth-module {
+      &__main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &__container {
+          padding: 0 50px 50px;
+        }
+      }
+    }
+  }
+}

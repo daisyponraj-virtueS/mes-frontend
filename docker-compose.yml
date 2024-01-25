@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: 'rms-frontend'
+    image: rms-frontend
+    build:
+      context: .
+    ports:
+      - 5173:80

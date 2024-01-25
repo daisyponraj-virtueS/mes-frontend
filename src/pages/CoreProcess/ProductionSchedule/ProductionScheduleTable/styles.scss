@@ -1,0 +1,29 @@
+.ps-table-wrapper {
+  height: 80vh;
+  .ps-table-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+}
+
+.ps-print-table {
+  thead {
+    tr {
+      td {
+        &:last-child {
+          text-align: center !important;
+        }
+      }
+    }
+  }
+  tbody {
+    tr {
+      td {
+        &:last-child {
+          text-align: center !important;
+        }
+      }
+    }
+  }
+}

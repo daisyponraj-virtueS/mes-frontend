@@ -1,0 +1,13 @@
+.reshuffle-priority {
+  width: 90%;
+  height: 90%;
+  &__header {
+    position: sticky;
+    top: 0;
+  }
+  &__footer {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+  }
+}
