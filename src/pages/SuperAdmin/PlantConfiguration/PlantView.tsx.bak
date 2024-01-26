@@ -5,10 +5,10 @@ import editIcon from 'assets/icons/edit-thick.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-// interface Workshop {
-//   'Workshop ID': number;
-//   'Workshop Name': string;
-// }
+interface Workshop {
+  'Workshop ID': number;
+  'Workshop Name': string;
+}
 
 interface InfoBlockProps {
   label: any;
@@ -57,14 +57,14 @@ const PlantView = () => {
   const navigate = useNavigate()
 
 
-//   const productsData = [
-//     { name: 'Silica Fume', enabled: true },
-//     { name: 'Metallurgical Si', enabled: false },
-//     { name: 'Si Fines/Hyperfines', enabled: true },
-//     { name: 'Si Dross', enabled: false },
-//     { name: 'FeSi', enabled: true },
-//     // Add more products as needed
-//   ];
+  const productsData = [
+    { name: 'Silica Fume', enabled: true },
+    { name: 'Metallurgical Si', enabled: false },
+    { name: 'Si Fines/Hyperfines', enabled: true },
+    { name: 'Si Dross', enabled: false },
+    { name: 'FeSi', enabled: true },
+    // Add more products as needed
+  ];
 
   // State to store the fetched data
   const [plantData, setPlantData] = useState<any>(null);
@@ -102,13 +102,13 @@ const PlantView = () => {
     Reports: ['Primary Heat Report', 'Production Schedule Analysis Report'],
   };
 
-//   const workshopDataMapping: Workshop[] = [
-//     { 'Workshop ID': 1, 'Workshop Name': 'Workshop 1' },
-//     { 'Workshop ID': 2, 'Workshop Name': 'Workshop 2' },
-//     { 'Workshop ID': 3, 'Workshop Name': 'Workshop 3' },
-//   ];
+  const workshopDataMapping: Workshop[] = [
+    { 'Workshop ID': 1, 'Workshop Name': 'Workshop 1' },
+    { 'Workshop ID': 2, 'Workshop Name': 'Workshop 2' },
+    { 'Workshop ID': 3, 'Workshop Name': 'Workshop 3' },
+  ];
 
-  const maxItems = Math.max(...functionData?.map((val) => dataMapping[val].length));
+  const maxItems = Math.max(...functionData.map((val) => dataMapping[val].length));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -175,7 +175,7 @@ const PlantView = () => {
         return list;
       });
 
-      const filteredModelList = functionResponseList[0]?.map((val: any) => {
+      const filteredModelList = functionResponseList[0].map((val: any) => {
         const models = { option: val.module_name, value: val.module_id };
 
         return models;
@@ -183,7 +183,7 @@ const PlantView = () => {
 
       setModelList(filteredModelList)
 
-      const functions = []
+      let functions = []
       
       for (let i = 0; i < functionResponseList[1].length; i++) {
           functions.push({
@@ -217,9 +217,9 @@ const shiftTimes = [
     { label: 'Shift 2', from: shift2_from, to: shift2_to },
     { label: 'Shift 3', from: shift3_from, to: shift3_to },
   ];
-  const uniqueModules = Array.from(new Set(plantData?.functions?.map(item => item.module_id)));
+  const uniqueModules = Array.from(new Set(plantData?.functions.map(item => item.module_id)));
 
-  const uniqueModulesWithFunctions = uniqueModules?.map(moduleId => {
+  const uniqueModulesWithFunctions = uniqueModules.map(moduleId => {
     return {
       moduleId: moduleId,
       functions: plantData?.functions.filter(item => item.module_id === moduleId),
@@ -320,7 +320,7 @@ const shiftTimes = [
                         </tr>
                       </thead>
                       <tbody>
-                        {plantData?.workshop?.map((workshop:any, index:any) => (
+                        {plantData?.workshop.map((workshop, index) => (
                           <tr key={index}>
                             <td style={{ fontSize: '14px', fontWeight: 600, paddingLeft: '0px' }}>
                               {workshop?.workshop_id}
@@ -353,8 +353,8 @@ const shiftTimes = [
                   alignItems: 'flex-start',
                 }}
               >
-                {plantData?.product?.map(
-                  (product:any, index:any) =>
+                {plantData?.product.map(
+                  (product, index) =>
                      (
                       <div key={index}>
                         <label
@@ -386,18 +386,18 @@ const shiftTimes = [
                         display: 'flex',
                         flexDirection: 'row',
                         flexWrap: 'wrap',
-                        gap: '15px',
+                        // gap: '10px',
                         // justifyContent: 'space-between',
                       }}
                     >
                       {functionList?.map((item: any, itemIndex: any) => (
-                        value.functions.some((val:any)=>val.function_id == item.value ) ?
+                        value.functions.some((val)=>val.function_id == item.value ) ?
                         <div
                           key={itemIndex}
                           style={{
                             flexBasis: `calc(${100 / maxItems}% - 10px)`,
                             // padding: '5px 0px 5px 20px',
-                            minWidth: '240px',
+                            minWidth: '220px',
                             fontSize: '14px',
                             fontWeight: 600,
                           }}
@@ -421,15 +421,15 @@ const shiftTimes = [
 
               <div
                 className='shift_time mb-4'
-                style={{ display: 'flex', flexDirection: 'column', gap: '25px', fontWeight: 500 }}
+                style={{ display: 'flex', flexDirection: 'column', gap: '20px', fontWeight: 500 }}
               >
-                {shiftTimes?.map((shiftTime, index) => (
-                  <div key={index} style={{ display: 'flex', flexDirection: 'row', marginLeft: '35px', gap: '15px', marginTop: '5px' }}>
-                   <span style={{ fontSize: '14px', fontWeight: 600, marginRight: '20px', color: '#212529'}}>{`Shift ${index + 1}`}</span>
+                {shiftTimes.map((shiftTime, index) => (
+                  <div key={index} style={{ display: 'flex', flexDirection: 'row', gap: '15px' }}>
+                   <span style={{ fontSize: '14px', fontWeight: 600, marginRight: '20px', color: '#212529'}}>{`Shift ${index + 1}*`}</span>
                     <TimeRange label={`From`} value={`: ${new Date(shiftTime.from).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`} />
-                    <span style={{ color: '#818182', fontWeight: 400,fontSize:'14px',  marginRight: '15px' }}>HH:MM</span>
+                    {/* <span style={{ color: '#818182', fontWeight: 400,fontSize:'14px',  marginRight: '15px' }}>HH:MM</span> */}
                     <TimeRange label={`To`} value={`: ${new Date(shiftTime.to).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })} `} />
-                    <span style={{ color: '#818182', fontWeight: 400,fontSize:'14px' }}>HH:MM</span>
+                    {/* <span style={{ color: '#818182', fontWeight: 400,fontSize:'14px' }}>HH:MM</span> */}
                   </div>
                 ))}
               </div>
