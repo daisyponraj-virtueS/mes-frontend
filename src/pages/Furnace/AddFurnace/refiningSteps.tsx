@@ -18,7 +18,7 @@ const formValidationSchema = yup.object({});
 
 const RefiningSteps = ({ setTab,addId }: any) => {
   const [enabled, setEnabled] = useState(false);
-  const [isEdit, setIsEdit] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
   const [controlParameters, setControlParameters] = useState({
     control_parameters: '',
     value: '',
@@ -35,7 +35,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
   const [showAdditiveTooltip, setShowAdditiveTooltip] = useState<any>('');
   const [cardEdit, setCardEdit] = useState([]);
   const [masterData, setMasterData] = useState([]);
-  const [editId, setEditId] = useState<any>(1);
+  const [editId, setEditId] = useState<any>(11);
 
   const { handleSubmit, values, handleBlur, handleChange, setFieldValue, touched, errors } =
     useFormik({
@@ -311,7 +311,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
   const handleEditSubmit = async (values: any) => {
     console.log('values-values', values);
 
-    const response = await axios.put('http://127.0.0.1:8000/api/plant/furnace-config-steps/1', {
+    const response = await axios.put(`http://127.0.0.1:8000/api/plant/furnace-config-steps/${editId}`, {
       step_data: values,
     });
     console.log(response);
@@ -394,7 +394,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                 backgroundColor: '#C1D3DF40',
                 cursor: 'pointer',
               }}
-              onClick={() => setTab(1)}
+              // onClick={() => setTab(1)}
             >
               <p
                 style={{
@@ -1016,6 +1016,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                                   ...item.controlParameters,
                                                   ...controlParametersList,
                                                 ]?.map((val: any, i: any) => (
+                                                  val.record_status || !val.hasOwnProperty('record_status')?
                                                   <tr className='control_parameters__table_data'>
                                                     <td>
                                                       {
@@ -1090,6 +1091,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                                       </div>
                                                     </td>
                                                   </tr>
+                                                  :""
                                                 ))}
                                               </table>
                                             )}
@@ -1190,6 +1192,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
 
                                                 {[...item.additives, ...additiveList]?.map(
                                                   (val: any, i: any) => (
+                                                    val.record_status?
                                                     <tr className='control_parameters__table_data'>
                                                       <td>
                                                         {
@@ -1252,6 +1255,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                                         </div>
                                                       </td>
                                                     </tr>
+                                                    :""
                                                   )
                                                 )}
                                               </table>
@@ -1269,7 +1273,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                         gap: '15px',
                                       }}
                                     >
-                                      {item.controlParameters.length > 0 && (
+                                      {item.controlParameters.length > 0 &&  (
                                         <div>
                                           <label
                                             htmlFor=''
@@ -1289,6 +1293,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                             }}
                                           >
                                             {item.controlParameters.map((val) => (
+                                              (val.record_status || !val.hasOwnProperty('record_status')) &&  item.step == values.step?
                                               <div>
                                                 <p
                                                   style={{
@@ -1297,6 +1302,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                                     fontWeight: 600,
                                                   }}
                                                 >
+                                                  {console.log("gokul", item.step == values.step)}
                                                   {
                                                     control_parameters[0].option.filter(
                                                       (item: any) =>
@@ -1326,6 +1332,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                                   </div>
                                                 </div>
                                               </div>
+                                              :''
                                             ))}
                                           </div>
                                         </div>
@@ -1350,6 +1357,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                             }}
                                           >
                                             {item.additives.map((val) => (
+                                              val.record_status || !val.hasOwnProperty('record_status')?
                                               <div
                                                 style={{ display: 'flex', alignItems: 'center' }}
                                               >
@@ -1371,6 +1379,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                                   Qty: {val.quantity}
                                                 </p>
                                               </div>
+                                              :''
                                             ))}
                                           </div>
                                         </div>

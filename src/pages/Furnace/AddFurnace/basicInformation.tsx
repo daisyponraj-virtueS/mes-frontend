@@ -33,7 +33,7 @@ const BasicInformation = ({ setTab, setAddId }:any) => {
   const [workshopDropdownData, setWorkshopDropdownData] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [editData, setEditData] = useState<any>(null);
-  const [editId, setEditId] = useState<any>(9);
+  const [editId, setEditId] = useState<any>(11);
   const [isTouched, setIsTouched] = useState<any>({
     workshopNo: false,
     powerDelivery: false,
