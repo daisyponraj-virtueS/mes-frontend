@@ -115,7 +115,6 @@ const BasicInformation = ({ setTab, setAddId }:any) => {
           }
         });
         
-        console.log("filteredObject",filteredObject,values)
         if (!isEdit) {
           const response = await axios.post('http://127.0.0.1:8000/api/plant/furnace-config/', {
             ...filteredObject,
@@ -535,7 +534,7 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
     try {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
 
-      const workshopResponse = await axios.get('http://127.0.0.1:8000/api/plant/plant-config/1001/');
+      const workshopResponse = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${1000}/`);
 
       console.log("workshopResponse",workshopResponse)
 
@@ -653,7 +652,7 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
                 backgroundColor: '#C1D3DF40',
                 cursor: 'pointer',
               }}
-              onClick={() => setTab(2)}
+            //   onClick={() => setTab(2)}
             >
               <p
                 style={{

@@ -16,4 +16,5 @@ export const SILICON_GRADE_HEAT_MAINTENANCE = '/core-process/silicon-grade-heat-
 export const BIN_CONTENTS = '/core-process/bin-contents';
 export const BIN_CONTENT_ITEM = '/core-process/bin-contents/items';
 export const ADD_PAGE = '/add-page'
-export const SYSTEM_ADMIN = '/system-admin' 
+export const SYSTEM_ADMIN = '/system-admin';
+export const FURNACE_CONFIGURATION = '/system-admin/furnace-configuration';

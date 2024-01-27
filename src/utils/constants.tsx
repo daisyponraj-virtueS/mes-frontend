@@ -5,11 +5,7 @@ type PermissionsMapper = {
   [key: string]: string;
 };
 
-export const permissionsMapper: PermissionsMapper = {
-  //system Admin
-  'system-admin': 'System Admin',
-  'plant-configuration': 'Plant Configuration',
-  
+export const permissionsMapper: PermissionsMapper = {  
   //user-access-control
   'user-access-control': 'User Access Control',
   users: 'Users',
@@ -30,6 +26,11 @@ export const permissionsMapper: PermissionsMapper = {
   'production-schedule': 'Production Schedule',
   'silicon-grade-material-maintenance': 'Silicon Grade Material Maintenance',
   'bin-contents': 'Bin Contents',
+
+   //system Admin
+   'system-admin': 'System Admin',
+   'plant-configuration': 'Plant Configuration',
+   'furnace-configuration': 'Furnace Configuration'
 };
 
 export enum crudType {

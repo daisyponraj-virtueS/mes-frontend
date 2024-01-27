@@ -6,7 +6,6 @@ import Accordion from 'components/common/Accordion';
 import ParameterComponent from './parameterComponent';
 import axios from 'axios';
 
-
 const commonLabelStyle = {
   fontWeight: 600,
   fontSize: '14px',
@@ -14,136 +13,149 @@ const commonLabelStyle = {
   // marginBottom: '3px', // Adjusted margin bottom for reduced space
 };
 
-const furnaceView = () => {
+const furnaceView = ({ setTab }:any) => {
   const ProductData = ['E1', 'E2', 'E3'];
   const data = ['Molten', 'WIP'];
 
   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
 
-  console.log("praveen3", masterData)
+  console.log('praveen3', masterData);
   console.log('praveen2', furnaceData);
 
-let coreValue, CoreMassLengthValue, pasteValue, pasteMassLengthValue, casingValue, casingMassLenthValue;
-let coreValue2, CoreMassLengthValue2, pasteValue2, pasteMassLengthValue2, casingValue2, casingMassLenthValue2;
-let coreValue3, CoreMassLengthValue3, pasteValue3, pasteMassLengthValue3, casingValue3, casingMassLenthValue3;
+  let coreValue,
+    CoreMassLengthValue,
+    pasteValue,
+    pasteMassLengthValue,
+    casingValue,
+    casingMassLenthValue;
+  let coreValue2,
+    CoreMassLengthValue2,
+    pasteValue2,
+    pasteMassLengthValue2,
+    casingValue2,
+    casingMassLenthValue2;
+  let coreValue3,
+    CoreMassLengthValue3,
+    pasteValue3,
+    pasteMassLengthValue3,
+    casingValue3,
+    casingMassLenthValue3;
 
-    furnaceData?.furnace
-    .map((val) => val.furnace_electrodes.find((electrode) => electrode.type_name === "E1" ))
-    .filter((e1Electrode) => e1Electrode !== undefined)
-    .map((e1Electrode) => {       
-            coreValue = e1Electrode.core_value;
-            CoreMassLengthValue = e1Electrode.core_mass_length
-            pasteValue = e1Electrode.paste_value
-            pasteMassLengthValue = e1Electrode.paste_mass_length
-            casingValue = e1Electrode.casing_value
-            casingMassLenthValue = e1Electrode.core_mass_length
-        // return e1Electrode; // You can return or use the core_value as needed
-    });
-
-    furnaceData?.furnace
-    .map((val) => val.furnace_electrodes.find((electrode) => electrode.type_name === "E2" ))
-    .filter((e1Electrode) => e1Electrode !== undefined)
-    .map((e1Electrode) => {
-            coreValue2 = e1Electrode.core_value;
-            CoreMassLengthValue2 = e1Electrode.core_mass_length
-            pasteValue2 = e1Electrode.paste_value
-            pasteMassLengthValue2 = e1Electrode.paste_mass_length
-            casingValue2 = e1Electrode.casing_value
-            casingMassLenthValue2 = e1Electrode.core_mass_length
-        // return e1Electrode; // You can return or use the core_value as needed
-    });
-
-    furnaceData?.furnace
-    .map((val) => val.furnace_electrodes.find((electrode) => electrode.type_name === "E3" ))
+  furnaceData?.furnace
+    .map((val) => val.furnace_electrodes.find((electrode) => electrode.type_name === 'E1'))
     .filter((e1Electrode) => e1Electrode !== undefined)
     .map((e1Electrode) => {
-            coreValue3 = e1Electrode.core_value;
-            CoreMassLengthValue3 = e1Electrode.core_mass_length
-            pasteValue3 = e1Electrode.paste_value
-            pasteMassLengthValue3 = e1Electrode.paste_mass_length
-            casingValue3 = e1Electrode.casing_value
-            casingMassLenthValue3 = e1Electrode.core_mass_length
-        // return e1Electrode; // You can return or use the core_value as needed
+      coreValue = e1Electrode.core_value;
+      CoreMassLengthValue = e1Electrode.core_mass_length;
+      pasteValue = e1Electrode.paste_value;
+      pasteMassLengthValue = e1Electrode.paste_mass_length;
+      casingValue = e1Electrode.casing_value;
+      casingMassLenthValue = e1Electrode.core_mass_length;
+      // return e1Electrode; // You can return or use the core_value as needed
     });
 
-    // const Molten = {masterData.filter((val)=>val.id == furnace.power_delivery_id)?.[0]?.value
-// console.log("praveenram3", E1);
-// console.log("praveenram55", E2);
-// console.log("praveenram55", E3);
+  furnaceData?.furnace
+    .map((val) => val.furnace_electrodes.find((electrode) => electrode.type_name === 'E2'))
+    .filter((e1Electrode) => e1Electrode !== undefined)
+    .map((e1Electrode) => {
+      coreValue2 = e1Electrode.core_value;
+      CoreMassLengthValue2 = e1Electrode.core_mass_length;
+      pasteValue2 = e1Electrode.paste_value;
+      pasteMassLengthValue2 = e1Electrode.paste_mass_length;
+      casingValue2 = e1Electrode.casing_value;
+      casingMassLenthValue2 = e1Electrode.core_mass_length;
+      // return e1Electrode; // You can return or use the core_value as needed
+    });
 
-let productTypeValues1: any[] = [];
-let productCodeValues1: any[] = [];
-let productStateValue1;
+  furnaceData?.furnace
+    .map((val) => val.furnace_electrodes.find((electrode) => electrode.type_name === 'E3'))
+    .filter((e1Electrode) => e1Electrode !== undefined)
+    .map((e1Electrode) => {
+      coreValue3 = e1Electrode.core_value;
+      CoreMassLengthValue3 = e1Electrode.core_mass_length;
+      pasteValue3 = e1Electrode.paste_value;
+      pasteMassLengthValue3 = e1Electrode.paste_mass_length;
+      casingValue3 = e1Electrode.casing_value;
+      casingMassLenthValue3 = e1Electrode.core_mass_length;
+      // return e1Electrode; // You can return or use the core_value as needed
+    });
 
-let productTypeValues2: any[] = [];
-let productCodeValues2: any[] = [];
-let productStateValue2;
+  // const Molten = {masterData.filter((val)=>val.id == furnace.power_delivery_id)?.[0]?.value
+  // console.log("praveenram3", E1);
+  // console.log("praveenram55", E2);
+  // console.log("praveenram55", E3);
 
-furnaceData?.furnace.forEach((product) => {
-  product.furnace_products.forEach((val) => {
-    if (val?.product_state_value === 'Molten') {
-      productTypeValues1.push(val.product_type_value);
-      productCodeValues1.push(val.product_code);
-      productStateValue1 = val.product_state_value;
-    }
-    if (val?.product_state_value === 'WIP') {
-      productTypeValues2.push(val.product_type_value);
-      productCodeValues2.push(val.product_code);
-      productStateValue2 = val.product_state_value;
-    }
+  let productTypeValues1: any[] = [];
+  let productCodeValues1: any[] = [];
+  let productStateValue1;
+
+  let productTypeValues2: any[] = [];
+  let productCodeValues2: any[] = [];
+  let productStateValue2;
+
+  furnaceData?.furnace.forEach((product) => {
+    product.furnace_products.forEach((val) => {
+      if (val?.product_state_value === 'Molten') {
+        productTypeValues1.push(val.product_type_value);
+        productCodeValues1.push(val.product_code);
+        productStateValue1 = val.product_state_value;
+      }
+      if (val?.product_state_value === 'WIP') {
+        productTypeValues2.push(val.product_type_value);
+        productCodeValues2.push(val.product_code);
+        productStateValue2 = val.product_state_value;
+      }
+    });
   });
-});
 
-const productDataMapping = {
-  [productStateValue1]: productTypeValues1.map((type, index) => ({
-    'Product Type': type,
-    'Product Code': productCodeValues1[index],
-  })),
-  [productStateValue2]: productTypeValues2.map((type, index) => ({
-    'Product Type': type,
-    'Product Code': productCodeValues2[index],
-  })),
-};
+  const productDataMapping = {
+    [productStateValue1]: productTypeValues1.map((type, index) => ({
+      'Product Type': type,
+      'Product Code': productCodeValues1[index],
+    })),
+    [productStateValue2]: productTypeValues2.map((type, index) => ({
+      'Product Type': type,
+      'Product Code': productCodeValues2[index],
+    })),
+  };
 
+  //   let productTypeValue1, productCodeValue1, productStateValue1;
+  //   let productTypeValue2, productCodeValue2, productStateValue2;
 
+  //   furnaceData?.furnace.forEach((product) => {
+  //     product.furnace_products.forEach((val) => {
+  //       if (val?.product_state_value === 'Molten') {
+  //         productTypeValue1 = val.product_type_value;
+  //         productCodeValue1 = val.product_code;
+  //         productStateValue1 = val.product_state_value;
+  //       }
+  //       if (val?.product_state_value === 'WIP') {
+  //         productTypeValue2 = val.product_type_value;
+  //         productCodeValue2 = val.product_code;
+  //         productStateValue2 = val.product_state_value;
+  //       }
+  //     });
+  //   });
 
-//   let productTypeValue1, productCodeValue1, productStateValue1;
-//   let productTypeValue2, productCodeValue2, productStateValue2;
-
-//   furnaceData?.furnace.forEach((product) => {
-//     product.furnace_products.forEach((val) => {
-//       if (val?.product_state_value === 'Molten') {
-//         productTypeValue1 = val.product_type_value;
-//         productCodeValue1 = val.product_code;
-//         productStateValue1 = val.product_state_value;
-//       }
-//       if (val?.product_state_value === 'WIP') {
-//         productTypeValue2 = val.product_type_value;
-//         productCodeValue2 = val.product_code;
-//         productStateValue2 = val.product_state_value;
-//       }
-//     });
-//   });
-
-//   const productDataMapping = {
-//     [productStateValue1]: [
-//       { 'Product Type': productTypeValue1, 'Product Code': productCodeValue1 },
-//     //   { 'Product Type': 'Si', 'Product Code': '4400596 - Si 65%' },
-//     ],
-//     [productStateValue2]: [
-//       { 'Product Type': productTypeValue2, 'Product Code': productCodeValue2 },
-//       // Add more WIP data as needed
-//     ],
-//   };
+  //   const productDataMapping = {
+  //     [productStateValue1]: [
+  //       { 'Product Type': productTypeValue1, 'Product Code': productCodeValue1 },
+  //     //   { 'Product Type': 'Si', 'Product Code': '4400596 - Si 65%' },
+  //     ],
+  //     [productStateValue2]: [
+  //       { 'Product Type': productTypeValue2, 'Product Code': productCodeValue2 },
+  //       // Add more WIP data as needed
+  //     ],
+  //   };
   useEffect(() => {
     const fetchData = async () => {
       try {
         // const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/${plantId}`);
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/${1000}`);
+        const response = await axios.get( `http://127.0.0.1:8000/api/plant/furnace-config//${11}/`);
         const data = response.data;
-        console.log('praveen1', data);
-        setFurnaceData({ furnace: data });
+        console.log('praveen1', response);
+        setFurnaceData({ furnace: [data] });
       } catch (error) {
         console.error('Error fetching data:', error);
         // Handle the error, e.g., set an error state or show a message to the user
@@ -153,13 +165,12 @@ const productDataMapping = {
     fetchData();
   }, []);
 
-
   const appmasterData = async () => {
     try {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
 
-      const masterResponseList = masterResponse?.data
-      console.log("praveen4", masterResponseList)
+      const masterResponseList = masterResponse?.data;
+      console.log('praveen4', masterResponseList);
       setMasterData(masterResponseList);
     } catch (error) {
       // Handle errors here
@@ -169,7 +180,6 @@ const productDataMapping = {
   useEffect(() => {
     appmasterData();
   }, []);
-
 
   const dataMapping2 = {
     E1: [
@@ -193,11 +203,11 @@ const productDataMapping = {
       },
       {
         one: { label: 'Paste', value: pasteValue2 },
-        two: { label: 'Paste Mass/Length', value: pasteMassLengthValue2},
+        two: { label: 'Paste Mass/Length', value: pasteMassLengthValue2 },
       },
       {
         one: { label: 'Casing', value: casingValue2 },
-        two: { label: 'Casing Mass/Length', value: casingMassLenthValue2},
+        two: { label: 'Casing Mass/Length', value: casingMassLenthValue2 },
       },
     ],
     E3: [
@@ -207,25 +217,98 @@ const productDataMapping = {
       },
       {
         one: { label: 'Paste', value: pasteValue3 },
-        two: { label: 'Paste Mass/Length', value: pasteMassLengthValue3},
+        two: { label: 'Paste Mass/Length', value: pasteMassLengthValue3 },
       },
       {
-        one: { label: 'Casing', value:casingValue3 },
+        one: { label: 'Casing', value: casingValue3 },
         two: { label: 'Casing Mass/Length', value: casingMassLenthValue3 },
       },
     ],
   };
-//   const createOptions = (masterData, type) => [
-//     { option: 'Select', value: 'Select' },
-//     ...(masterData && masterData.filter((val) => val?.type === type) || []),
-//   ];
-
-
+  //   const createOptions = (masterData, type) => [
+  //     { option: 'Select', value: 'Select' },
+  //     ...(masterData && masterData.filter((val) => val?.type === type) || []),
+  //   ];
+ let titleId: any 
+  furnaceData?.furnace.map((furnace: any)=> titleId = furnace.furnace_no)
   return (
     <>
-      <Header title='Furnace FCE05' />
+      <Header title={`Furnace ${titleId}`} />
       <div className='container mt-3 mb-3' style={{ height: '100%', overflow: 'auto' }}>
         <div className='card'>
+        <div style={{ display: 'flex' }}>
+            <div
+              style={{
+                display: 'flex',
+                width: '50%',
+                alignItems: 'center',
+                padding: '14px 31px 14px 31px',
+                gap: '15px',
+                borderTop: '2px solid #0D659E',
+                borderTopLeftRadius: '4px',
+              }}
+            >
+              <p
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#0D659E',
+                  color: '#fff',
+                }}
+              >
+                1
+              </p>
+              <p
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0D659E',
+                }}
+              >
+                BASIC INFORMATION
+              </p>
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                width: '50%',
+                alignItems: 'center',
+                gap: '15px',
+                padding: '14px 31px 14px 31px',
+                backgroundColor: '#C1D3DF40',
+                cursor: 'pointer',
+              }}
+              onClick={() => setTab(2)}
+            >
+              <p
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  border: '1px solid #CDD0D1',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                }}
+              >
+                2
+              </p>
+              <p
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#757E85',
+                }}
+              >
+                REFINING STEPS
+              </p>
+            </div>
+          </div>
           <div className='card-body' style={{ padding: '0px 20px 0px 20px' }}>
             <div className='btn-edit-absolute d-flex justify-content-end'>
               <button
@@ -292,7 +375,11 @@ const productDataMapping = {
                     <div style={{ flexBasis: '23%', marginBottom: '5px' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <label style={commonLabelStyle}>Workshop No</label>
-                        <span style={{ height: '20px', fontSize: '14px', fontWeight: 600 }}> {masterData.filter((val)=>val.id == furnace.workshop)?.[0]?.value}</span>
+                        <span style={{ height: '20px', fontSize: '14px', fontWeight: 600 }}>
+                          {' '}
+                          {/* {masterData.filter((val) => val.id == furnace.workshop)?.[0]?.value} */}
+                          {furnace.workshop_value}
+                        </span>
                       </div>
                     </div>
 
@@ -300,8 +387,11 @@ const productDataMapping = {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <label style={commonLabelStyle}>Power Delivery</label>
                         <span style={{ height: '20px', fontSize: '14px', fontWeight: 600 }}>
-                        {masterData.filter((val)=>val.id == furnace.power_delivery_id)?.[0]?.value}
-                        {/* {masterData.filter((val)=>val.id == 28)?.[0]?.value} */}
+                          {
+                            masterData.filter((val) => val.id == furnace.power_delivery)?.[0]
+                              ?.value
+                          }
+                          {/* {masterData.filter((val)=>val.id == 28)?.[0]?.value} */}
                         </span>
                       </div>
                     </div>
@@ -337,71 +427,73 @@ const productDataMapping = {
                             }}
                           >
                             {dataMapping2[val as keyof typeof dataMapping2].map(
-                              (item: any, itemIndex: any) => (
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    gap: '110px',
-                                  }}
-                                >
+                              (item: any, itemIndex: any) =>
+                                item.one.value &&
+                                item.two.value && (
                                   <div
-                                    key={itemIndex}
                                     style={{
+                                      display: 'flex',
+                                      flexDirection: 'row',
+                                      gap: '110px',
+                                    }}
+                                  >
+                                    <div
+                                      key={itemIndex}
+                                      style={{
                                         // flex: 1, // Allow the item to grow
-      minWidth: '150px', // Set a minimum width
-                                      fontSize: '14px',
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        fontSize: '14px',
-                                        fontWeight: 600,
-                                        color: ' #5F6466',
-                                      }}
-                                    >
-                                      {item.one.label}
-                                    </div>
-                                    <div
-                                      style={{
+                                        minWidth: '150px', // Set a minimum width
                                         fontSize: '14px',
                                         fontWeight: 600,
                                       }}
                                     >
-                                      {item.one.value}
+                                      <div
+                                        style={{
+                                          fontSize: '14px',
+                                          fontWeight: 600,
+                                          color: ' #5F6466',
+                                        }}
+                                      >
+                                        {item.one.label}
+                                      </div>
+                                      <div
+                                        style={{
+                                          fontSize: '14px',
+                                          fontWeight: 600,
+                                        }}
+                                      >
+                                        {item.one.value}
+                                      </div>
                                     </div>
-                                  </div>
 
-                                  <div
-                                    key={itemIndex}
-                                    style={{
-                                      fontSize: '14px',
-                                      fontWeight: 600,
-                                    //   flex: 1, // Allow the item to grow
-                                      minWidth: '150px', // Set a minimum width
-                                    }}
-                                  >
                                     <div
+                                      key={itemIndex}
                                       style={{
                                         fontSize: '14px',
                                         fontWeight: 600,
-                                        color: ' #5F6466',
+                                        //   flex: 1, // Allow the item to grow
+                                        minWidth: '150px', // Set a minimum width
                                       }}
                                     >
-                                      {item.two.label}
-                                    </div>
-                                    <div
-                                      style={{
-                                        fontSize: '14px',
-                                        fontWeight: 600,
-                                      }}
-                                    >
-                                       {`${item.two.value} kg/cm`}
+                                      <div
+                                        style={{
+                                          fontSize: '14px',
+                                          fontWeight: 600,
+                                          color: ' #5F6466',
+                                        }}
+                                      >
+                                        {item.two.label}
+                                      </div>
+                                      <div
+                                        style={{
+                                          fontSize: '14px',
+                                          fontWeight: 600,
+                                        }}
+                                      >
+                                        {`${item.two.value} kg/cm`}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              )
+                                )
                             )}
                           </div>
                         </Accordion>
@@ -437,18 +529,20 @@ const productDataMapping = {
                                 <tr>
                                   {Object.keys(
                                     productDataMapping[val as keyof typeof productDataMapping][0]
-                                  ).map((header, headerIndex) => (
-                                    <th
-                                      key={headerIndex}
-                                      style={{
-                                        fontSize: '14px',
-                                        fontWeight: 600,
-                                        color: '#5F6466',
-                                      }}
-                                    >
-                                      {header}
-                                    </th>
-                                  ))}
+                                  ).map(
+                                    (header, headerIndex) => (
+                                        <th
+                                          key={headerIndex}
+                                          style={{
+                                            fontSize: '14px',
+                                            fontWeight: 600,
+                                            color: '#5F6466',
+                                          }}
+                                        >
+                                          {header}
+                                        </th>
+                                      )
+                                  )}
                                 </tr>
                               </thead>
                               <tbody>
@@ -498,24 +592,41 @@ const productDataMapping = {
                       }}
                     >
                       <ParameterComponent label='Iron Losses' value={furnace.iron_losses} />
-                      <ParameterComponent label='Joule Losses Coefficient' value={furnace.joule_losses_coeffient} />
-                      <ParameterComponent label='Default EPI Index' value={furnace.default_epi_index} />
-                      <ParameterComponent label='Corrected Reactance Coefficient' value={furnace.corrected_reactance_coefficient} />
+                      <ParameterComponent
+                        label='Joule Losses Coefficient'
+                        value={furnace.joule_losses_coeffient}
+                      />
+                      <ParameterComponent
+                        label='Default EPI Index'
+                        value={furnace.default_epi_index}
+                      />
+                      <ParameterComponent
+                        label='Corrected Reactance Coefficient'
+                        value={furnace.corrected_reactance_coefficient}
+                      />
                       <ParameterComponent label='k SIC' value={furnace.k_sic} />
                       <ParameterComponent label='Design MW' value={furnace.design_mv} />
                       <ParameterComponent label='Silicon FC%' value={furnace.silicon_fc} />
                       <ParameterComponent
                         label='Default Moisture'
-                        value='Enabled'
+                        value={furnace.default_moisture === true ? 'Enable': "Disable"}
                         color='#238903'
                       />
                       <ParameterComponent
                         label='Silica Fume Default Material'
-                        value={masterData.filter((val)=>val.id == furnace.silica_fume_default_material)?.[0]?.value}
+                        value={
+                          masterData.filter(
+                            (val) => val.id == furnace.silica_fume_default_material
+                          )?.[0]?.value
+                        }
                       />
                       <ParameterComponent
                         label='Slag Product Default Material'
-                        value={masterData.filter((val)=>val.id == furnace.slag_product_default_material)?.[0]?.value}
+                        value={
+                          masterData.filter(
+                            (val) => val.id == furnace.slag_product_default_material
+                          )?.[0]?.value
+                        }
                       />
                       <ParameterComponent label='Shell Losses' value={furnace.shell_losses} />
                     </div>
@@ -545,7 +656,7 @@ const productDataMapping = {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                           <label style={commonLabelStyle}>Remelt</label>
                           <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
-                            {masterData.filter((val)=>val.id == furnace.remelt)?.[0]?.value}
+                            {masterData.filter((val) => val.id == furnace.remelt)?.[0]?.value}
                           </span>
                         </div>
                       </div>
@@ -554,7 +665,7 @@ const productDataMapping = {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <label style={commonLabelStyle}>Sand</label>
                           <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
-                          {masterData.filter((val)=>val.id == furnace.sand)?.[0]?.value}
+                            {masterData.filter((val) => val.id == furnace.sand)?.[0]?.value}
                           </span>
                         </div>
                       </div>
@@ -563,7 +674,7 @@ const productDataMapping = {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <label style={commonLabelStyle}>Al</label>
                           <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
-                          {masterData.filter((val)=>val.id ==furnace.ai)?.[0]?.value}
+                            {masterData.filter((val) => val.id == furnace.ai)?.[0]?.value}
                           </span>
                         </div>
                       </div>
@@ -572,7 +683,7 @@ const productDataMapping = {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <label style={commonLabelStyle}>Lime</label>
                           <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
-                          {masterData.filter((val)=>val.id ==furnace.lime)?.[0]?.value}
+                            {masterData.filter((val) => val.id == furnace.lime)?.[0]?.value}
                           </span>
                         </div>
                       </div>
@@ -602,7 +713,7 @@ const productDataMapping = {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                           <label style={commonLabelStyle}>Slag</label>
                           <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
-                          {masterData.filter((val)=>val.id == furnace.slag)?.[0]?.value}
+                            {masterData.filter((val) => val.id == furnace.slag)?.[0]?.value}
                           </span>
                         </div>
                       </div>
@@ -618,7 +729,7 @@ const productDataMapping = {
                               fontWeight: 600,
                             }}
                           >
-                           {masterData.filter((val)=>val.id == furnace.skull)?.[0]?.value}
+                            {masterData.filter((val) => val.id == furnace.skull)?.[0]?.value}
                           </span>
                         </div>
                       </div>

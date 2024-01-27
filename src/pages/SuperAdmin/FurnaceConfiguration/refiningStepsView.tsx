@@ -51,72 +51,169 @@ const AdditiveBlock: React.FC<InfoBlockProps> = ({ label, value, flexBasis, marg
 //     { label: 'RM39 - SIME DUST (FINES)', value: '5' },
 //   ];
 
-const additiveData = {
-    Wait: [
-      { label: '3AA9 - Silica Sand', value: '5' },
-      { label: 'RM39 - SIME DUST (FINES)', value: '5' },
-      // Add additive data for Wait step
-    ],
-    Fill: [
-      { label: 'Another Additive', value: '10' },
-      // Add additive data for Fill step
-    ],
-    // Add mappings for other steps
-  };
-const RefiningSteps = () => {
+// const additiveData = {
+//     Wait: [
+//       { label: '3AA9 - Silica Sand', value: '5' },
+//       { label: 'RM39 - SIME DUST (FINES)', value: '5' },
+//       // Add additive data for Wait step
+//     ],
+//     Fill: [
+//       { label: 'Another Additive', value: '10' },
+//       // Add additive data for Fill step
+//     ],
+//     // Add mappings for other steps
+//   };
+const RefiningSteps = ({setTab}: any) => {
   const navigate = useNavigate();
-  const [furnaceData, setFurnaceData] = useState<any>(null);
   const [StepData, setStepData] = useState([]);
   const [stepDataMapping, setStepDataMapping] = useState({});
   const [additiveData, setAdditiveData] = useState({});
-//   const [masterData, setMasterData] = useState([]);
-//   console.log("praveen3", masterData)
-  console.log('praveen2', furnaceData);
+//   const [furnaceData, setFurnaceData] = useState<any>(null);
+  const [masterData, setMasterData] = useState([]);
+  console.log('praveen3', masterData);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/${1}`);
-        const data = response.data;
-        console.log("praveen12",data)
-
-        const step2Data = data[0].step2;
-
-        const StepData = step2Data.map((step) => step.step);
-
-        const stepDataMapping = {};
-        step2Data.forEach((step) => {
-          const parameters = step.control_parameters.map((param) => ({
-            label: param.param,
-            value: param.value,
-            type: param.is_mandatory ? 'mandatory' : 'optional',
-          }));
-          stepDataMapping[step.step] = parameters;
-        });
-
-        const additiveData = {};
-        step2Data.forEach((step) => {
-          const additives = step.additives.map((additive) => ({
-            label: additive.material,
-            value: additive.quantity,
-          }));
-          additiveData[step.step] = additives;
-        });
-
-        setStepData(StepData);
-        setStepDataMapping(stepDataMapping);
-        setAdditiveData(additiveData);
+        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config-steps/${11}/`);
+        const responseData = response.data;
+  
+        if (Array.isArray(responseData.data)) {
+          const data = responseData.data;
+  console.log("praveen123",data)
+          const stepDataMapping = {};
+          const additiveData = {};
+  
+          const StepData = data.map((step) => {
+            const parameters = step.control_parameters.map((param) => ({
+              label: param.param,
+              value: param.value,
+              type: param.is_mandatory ? 'mandatory' : 'optional',
+            }));
+  
+            stepDataMapping[step.step] = parameters;
+  
+            const additives = step.additives.map((additive) => ({
+              label: additive.material,
+              value: additive.quantity,
+            }));
+  
+            additiveData[step.step] = additives;
+  
+            return step.step; // Extract the 'step' value
+          });
+  
+          setStepData(StepData);
+          setStepDataMapping(stepDataMapping);
+          setAdditiveData(additiveData);
+        } else {
+          console.error('Invalid data format:', responseData);
+          // Handle the error, e.g., set an error state or show a message to the user
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
         // Handle the error, e.g., set an error state or show a message to the user
       }
     };
-
+  
     fetchData();
   }, []);
+
+  const appmasterData = async () => {
+    try {
+      const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
+
+      const masterResponseList = masterResponse?.data;
+      setMasterData(masterResponseList);
+    } catch (error) {
+      // Handle errors here
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
+    appmasterData();
+  }, []);
+
+  //this below code is used for map refine data filter
+//   let stepTitle: any;
+//   furnaceData?.furnace?.map((val) => val.step.map((e) => stepTitle = e.electrode_type_id)); 
   return (
     <div className='container mt-3 mb-3' style={{ height: '100%' }}>
       <div className='container card' style={{ height: '100%' }}>
+      <div style={{ display: 'flex' }}>
+            <div
+              style={{
+                display: 'flex',
+                width: '50%',
+                alignItems: 'center',
+                gap: '15px',
+                padding: '14px 31px 14px 31px',
+                backgroundColor: '#C1D3DF40',
+                cursor: 'pointer',
+              }}
+              onClick={() => setTab(1)}
+            >
+              <p
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  border: '1px solid #CDD0D1',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                }}
+              >
+                1
+              </p>
+              <p
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#757E85',
+                }}
+              >
+                BASIC INFORMATION
+              </p>
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                width: '50%',
+                alignItems: 'center',
+                padding: '14px 31px 14px 31px',
+                gap: '15px',
+                borderTop: '2px solid #0D659E',
+                borderTopRightRadius: '4px',
+              }}
+            >
+              <p
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#0D659E',
+                  color: '#fff',
+                }}
+              >
+                2
+              </p>
+              <p
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0D659E',
+                }}
+              >
+                REFINING STEPS
+              </p>
+            </div>
+          </div>
         <div className='card-body card_body_container'>
           <div className='btn-edit-absolute d-flex justify-content-end'>
             <button
@@ -153,9 +250,9 @@ const RefiningSteps = () => {
                     borderRadius: index === 0 ? '5px 5px 0 0' : '0',
                   }}
                 >
-                  {step}
+                   {masterData.filter((val) => val.id == step)?.[0]?.value}
                 </div>
-                <p style={{ padding: '10px', color: '#04436B' }}>Parameters</p>
+                <p style={{ padding: '10px', color: '#04436B' }}>{stepDataMapping[step]?.length > 0 ? "Parameters" :""}</p>
                 <div
                   className='flex-row-container'
                   style={{
@@ -168,7 +265,7 @@ const RefiningSteps = () => {
                   {(stepDataMapping[step] || [])?.map((item, itemIndex) => (
                     <InfoBlock
                       key={itemIndex}
-                      label={item.label}
+                      label={masterData.filter((val) => val.id == item.label)?.[0]?.value}
                       value={item.value}
                       flexBasis='25%'
                       marginBottom='5'
@@ -178,7 +275,7 @@ const RefiningSteps = () => {
                   ))}
                 </div>
 
-                <p style={{ padding: '0px 10px 0px 10px', color: '#04436B' }}>Additives</p>
+                <p style={{ padding: '0px 10px 0px 10px', color: '#04436B' }}>{additiveData[step]?.length > 0 ? "Additives" :""}</p>
                 <div
                   className='flex-row-container'
                   style={{
@@ -191,7 +288,7 @@ const RefiningSteps = () => {
                   {additiveData[step]?.map((item, itemIndex) => (
                     <AdditiveBlock
                       key={itemIndex}
-                      label={item.label}
+                      label={masterData.filter((val) => val.id == item.label)?.[0]?.value}
                       value={`Qty: ${item.value} lbs/tn`}
                       flexBasis='28%'
                       marginBottom='10px'

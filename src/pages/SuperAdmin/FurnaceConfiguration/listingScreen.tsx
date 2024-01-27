@@ -17,17 +17,14 @@ import { paths } from 'routes/paths';
 //     { code: 'FCE01', quantity: 3, type: 'Arc', size: 14, price: 1500.0, material: 'Composite' },
 //     { code: 'FCE05', quantity: 1, type: 'Arc', size: 9, price: 1000.0, material: 'Soderberg' },
 //   ];
-  
 
 const listingScreen = (props: any) => {
-    const {
-        handleOnchangeStatus,
-      } = props;
-      const navigate = useNavigate();
-//   const dispatch = useAppDispatch();
+  const { handleOnchangeStatus } = props;
+  const navigate = useNavigate();
+  //   const dispatch = useAppDispatch();
   const itemsPerPage = 10;
   // const [currentPage, setCurrentPage] = useState(1);
-//   const [filteredData, setFilteredData] = useState<any>();
+  //   const [filteredData, setFilteredData] = useState<any>();
   const [searchValue, setSearchValue] = useState<string | number>('');
   const [inputData, setInputData] = useState<any>({
     page_size: itemsPerPage,
@@ -36,45 +33,43 @@ const listingScreen = (props: any) => {
   });
   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
-  console.log("praveen3", furnaceData)
-  console.log("praveen4",masterData)
+  console.log('praveen3', furnaceData);
+  console.log('praveen4', masterData);
 
-  const [isHovered, setIsHovered] = useState("");
+  const [isHovered, setIsHovered] = useState('');
 
   const handleMouseEnter = (role: any) => {
     setIsHovered(role);
-   
   };
   const handleMouseLeave = () => {
-    setIsHovered("");
+    setIsHovered('');
   };
 
-  const handleEditClick = (event: any, roleId: number) => {
+  const handleEditClick = (event: any, furnaceId: number) => {
     event.stopPropagation();
-    navigate(`${paths.binContenets}/${roleId}`);
+    navigate(`${paths.furnaceConfig.edit}/${furnaceId}`);
   };
 
-  const handleViewClick = (event: any, roleId: number) => {
+  const handleViewClick = (event: any, furnaceId: number) => {
     event.stopPropagation();
-    navigate(`${paths.rolesListView}/${roleId}`);
+    navigate(`${paths?.furnaceConfig?.view}/${furnaceId}`);
   };
-  const handleTableRowClick = (roleId: number) => {
-    navigate(`${paths.rolesListView}/${roleId}`);
+  const handleTableRowClick = (furnaceId: number) => {
+    navigate(`${paths.furnaceConfig.view}/${furnaceId}`);
   };
 
-//   const fetchSearchList = async (inputData: any) => {
-//     const response = await dispatch(filterSearch(inputData));
-//     return response;
-//   };
+  //   const fetchSearchList = async (inputData: any) => {
+  //     const response = await dispatch(filterSearch(inputData));
+  //     return response;
+  //   };
 
-useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        // const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/${plantId}`);
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/${1000}`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config//${11}`);
         const data = response.data;
         console.log('praveen1', data);
-        setFurnaceData({ furnace: data });
+        setFurnaceData({ furnace: [data] });
       } catch (error) {
         console.error('Error fetching data:', error);
         // Handle the error, e.g., set an error state or show a message to the user
@@ -84,13 +79,12 @@ useEffect(() => {
     fetchData();
   }, []);
 
-
   const appmasterData = async () => {
     try {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
 
-      const masterResponseList = masterResponse?.data
-      console.log("pravee2", masterResponseList)
+      const masterResponseList = masterResponse?.data;
+      console.log('pravee2', masterResponseList);
       setMasterData(masterResponseList);
     } catch (error) {
       // Handle errors here
@@ -102,14 +96,16 @@ useEffect(() => {
   }, []);
   //this below code is used for map electrodeData
   let electrodeData: any;
-  furnaceData?.furnace.map((val) => val.furnace_electrodes.map((e) => electrodeData = e.electrode_type_id)); 
+  furnaceData?.furnace.map((val) =>
+    val.furnace_electrodes.map((e) => (electrodeData = e.electrode_type_id))
+  );
 
   return (
     <>
       <Header
         title='Furnace Configuration'
         buttonText='Add New Furnace'
-        //   onButtonClick={""}
+        onButtonClick={() => navigate(paths.furnaceConfig.create)}
         placeholder='Search'
         // hasPermission={hasAddUserPermission}
         onSearchChange={(value) => {
@@ -140,65 +136,71 @@ useEffect(() => {
             </thead>
             <tbody>
               {furnaceData &&
-                furnaceData?.furnace.map((furnace, index) => (
+                furnaceData?.furnace.map((furnace, index) => (                   
                   <React.Fragment key={index}>
-                    <tr key={index}
-                    onMouseEnter={()=>handleMouseEnter(index)}
-                    onMouseLeave={handleMouseLeave}
-                    // key={furnace.id}
-                    onClick={() => !furnace.record_status && handleTableRowClick(furnace.id)}
+                    <tr
+                      key={index}
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      onMouseLeave={handleMouseLeave}
+                      // key={furnace.id}
+                      onClick={() => !furnace.record_status && handleTableRowClick(furnace.id)}
                     >
                       <td>{furnace.furnace_no}</td>
-                      <td>{masterData.filter((val)=>val.id == furnace.workshop)?.[0]?.value}</td>
-                      <td> {masterData.filter((val)=>val.id == furnace.power_delivery_id)?.[0]?.value}</td>
-                      {/* <td>{rowData.size}</td>
-            <td>{rowData.price}</td> */}
+                      <td> {furnace.workshop_value}</td>
+                      <td>
+                        {' '}
+                        {masterData.filter((val) => val.id == furnace.power_delivery)?.[0]?.value}
+                      </td>
+
                       <td>{masterData.filter((val) => val.id === electrodeData)?.[0]?.value}</td>
                       <td>
-                        <div style={{width: '90px', alignContent: 'center'}}>
-                        {isHovered === index && furnace.record_status && (
+                        <div style={{ width: '90px', alignContent: 'center' }}>
+                          {isHovered === index && furnace.record_status && (
                             <>
-                          <Link
-                            to='#'
-                             onClick={(e) => handleViewClick(e, furnace.id)}
-                            data-tip='View'
-                          >
-                            <img
-                              src={viewIcon}
-                              alt='view'
-                              className='icon mr-2'
-                              style={{ width: '26px', height: '26px' }}
-                            />
-                          </Link>
-                          <Link
-                            to='#'
-                            onClick={(e) => handleEditClick(e, furnace.id)}
-                            data-tip='Edit'
-                          >
-                            <img src={editIcon} alt='edit' className='icon mr-2' />
-                          </Link>
-                          <Link to={`/deactivate`} data-tip='Deactivate'>
-                            <img src={deactivateIcon} alt='deactivate' className='icon mr-2' />
-                          </Link>
-                          </>
-                            )}
-                             {isHovered === index && !furnace.record_status && (
-                         <div className='flex items-center justify-start'>
-                            <div className='switch-container mr-2' onClick={(e) => e.stopPropagation()}>
-                            <input
-                              id={`switch-${furnace.id}`}
-                              type='checkbox'
-                              className='switch-input'
-                              checked={!furnace.record_status}
-                              onChange={(e: any) => handleOnchangeStatus(e, furnace)}
-                            />
-                            <label
-                              htmlFor={`switch-${furnace.id}`}
-                              className='switch-label switch-label--sm'
-                            ></label>
+                              <Link
+                               to='#'
+                                onClick={(e) => handleViewClick(e, furnace?.id)}
+                                data-tip='View'
+                              >
+                                <img
+                                  src={viewIcon}
+                                  alt='view'
+                                  className='icon mr-2'
+                                  style={{ width: '26px', height: '26px' }}
+                                />
+                              </Link>
+                              <Link
+                                to='#'
+                                onClick={(e) => handleEditClick(e, furnace?.id)}
+                                data-tip='Edit'
+                              >
+                                <img src={editIcon} alt='edit' className='icon mr-2' />
+                              </Link>
+                              <Link to={`/deactivate`} data-tip='Deactivate'>
+                                <img src={deactivateIcon} alt='deactivate' className='icon mr-2' />
+                              </Link>
+                            </>
+                          )}
+                          {isHovered === index && !furnace.record_status && (
+                            <div className='flex items-center justify-start'>
+                              <div
+                                className='switch-container mr-2'
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <input
+                                  id={`switch-${furnace.id}`}
+                                  type='checkbox'
+                                  className='switch-input'
+                                  checked={!furnace.record_status}
+                                  onChange={(e: any) => handleOnchangeStatus(e, furnace)}
+                                />
+                                <label
+                                  htmlFor={`switch-${furnace.id}`}
+                                  className='switch-label switch-label--sm'
+                                ></label>
+                              </div>
                             </div>
-                            </div>
-                       )}
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -18,7 +18,7 @@ const formValidationSchema = yup.object({});
 
 const RefiningSteps = ({ setTab,addId }: any) => {
   const [enabled, setEnabled] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(true);
   const [controlParameters, setControlParameters] = useState({
     control_parameters: '',
     value: '',
@@ -1293,7 +1293,7 @@ const RefiningSteps = ({ setTab,addId }: any) => {
                                             }}
                                           >
                                             {item.controlParameters.map((val) => (
-                                              (val.record_status || !val.hasOwnProperty('record_status')) &&  item.step == values.step?
+                                              val.record_status || !val.hasOwnProperty('record_status')?
                                               <div>
                                                 <p
                                                   style={{

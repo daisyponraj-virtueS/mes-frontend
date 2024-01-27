@@ -260,6 +260,11 @@ export const getPath = (subModule: string) => {
      case 'Plant Configuration':
       pathname = paths.plantScreen.create;
       break;
+
+    // Furnace config
+    case 'Furnace Configuration':
+      pathname = paths.furnaceConfig.list;
+      break;
     
     default:
       pathname = '';
