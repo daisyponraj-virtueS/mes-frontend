@@ -44,10 +44,10 @@ export const SystemAdminRoutes = [
     path: paths.furnaceConfig.view,
     element: getRouteElement(ViewFurance, true),
   },
-  {
-    path: paths.furnaceConfig.view,
-    element: getRouteElement(ViewFurnaceRefine, true),
-  },
+//   {
+//     path: paths.furnaceConfig.view,
+//     element: getRouteElement(ViewFurnaceRefine, true),
+//   },
   {
     path: paths.furnaceConfig.create,
     element: getRouteElement(AddFurnace, true),
