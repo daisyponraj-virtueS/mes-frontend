@@ -266,6 +266,7 @@ const shiftTimes = [
                       </thead>
                       <tbody>
                         {plantData?.workshops_json?.map((workshop:any, index:any) => (
+                          workshop.record_status ?
                           <tr key={index}>
                             <td style={{ fontSize: '14px', fontWeight: 600, paddingLeft: '0px' }}>
                               {workshop?.workshop_id}
@@ -274,6 +275,7 @@ const shiftTimes = [
                               {workshop?.workshop_name}
                             </td>
                           </tr>
+                          :''
                         ))}
                       </tbody>
                     </table>

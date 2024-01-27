@@ -171,12 +171,7 @@ const AddPlant = () => {
 
         const editData :any = plantConfigResponse.data
 
-        function formatTimeString(dateString: any) {
-          const dateObject = new Date(parseInt(dateString));
-          const hours = dateObject.getHours();
-          const minutes = dateObject.getMinutes();
-          return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-        }
+    
 
         const editObj = {
           plant_id: editData.plant_id,
@@ -212,16 +207,16 @@ const AddPlant = () => {
             return functionData
           }),
           shift1: {
-            from: formatTimeString(editData.shift1_from),
-            to: formatTimeString(editData.shift1_to),
+            from: editData.shift1_from,
+            to: editData.shift1_to,
           },
           shift2: {
-            from: formatTimeString(editData.shift2_from),
-            to: formatTimeString(editData.shift2_to),
+            from: editData.shift2_from,
+            to: editData.shift2_to,
           },
           shift3: {
-            from: formatTimeString(editData.shift3_from),
-            to: formatTimeString(editData.shift3_to),
+            from: editData.shift3_from,
+            to: editData.shift3_to,
           },
         };
         setEditData(editObj);
@@ -245,7 +240,7 @@ const AddPlant = () => {
 
   const handleAddWorkshop = () => {
     if (workshop.workshop_id && workshop.workshop_name) {
-      const newWorkshopList = [...workshopList, workshop];
+      const newWorkshopList = [...workshopList, {...workshop,record_status:true}];
       setWorkshopList(newWorkshopList);
       setFieldValue('workshops', newWorkshopList);
       setWorkshop({ workshop_id: '', workshop_name: '' });
@@ -263,6 +258,7 @@ const AddPlant = () => {
       const editedArray = arrayToRemove.map((val, i) => {
         if (index == i) {
           const obj = {
+            id:val.id,
             workshop_id: val.workshop_id,
             workshop_name: val.workshop_name,
             record_status: false,
@@ -487,6 +483,7 @@ const AddPlant = () => {
     setModulesAndFunctionList(coreProcess);
   }, [functionList.userControlAccess]);
 
+  console.log("workshopList",workshopList)
   return (
     <form onSubmit={handleSubmit}>
       <Header title='Plant Configuration' />
@@ -705,7 +702,9 @@ const AddPlant = () => {
                     </tr>
 
                     {workshopList.map((val: any, index: any) => (
+                      val.record_status ?
                       <tr className='workshop__table_data'>
+                        
                         <td>{val.workshop_id}</td>
                         <td>{val.workshop_name}</td>
                         <td>
@@ -741,6 +740,7 @@ const AddPlant = () => {
                           </div>
                         </td>
                       </tr>
+                      :""
                     ))}
                   </table>
                 )}
