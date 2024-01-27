@@ -19,7 +19,7 @@ if(params?.id && params?.tab){
 },[])
   return (
     <div>
-      <Header title={params?.id && params?.tab ?'Add New Furnace':'Edit Furnace' }/>
+      <Header title={params?.id && params?.tab ?'Edit Furnace':'Add New Furnace' }/>
     <div >
       {tab == 1?
         <BasicInformation setAddId={setAddId} setTab={setTab} edit_Id={editId}/>
