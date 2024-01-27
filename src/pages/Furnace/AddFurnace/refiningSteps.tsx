@@ -13,12 +13,13 @@ import info from '../../../assets/icons/info.svg';
 
 import editIcon from '../../../assets/icons/edit1.svg';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const formValidationSchema = yup.object({});
 
-const RefiningSteps = ({ setTab,addId }: any) => {
+const RefiningSteps = ({ setTab,addId,edit_Id }: any) => {
   const [enabled, setEnabled] = useState(false);
-  const [isEdit, setIsEdit] = useState(true);
+  const [isEdit, setIsEdit] = useState(edit_Id?true:false);
   const [controlParameters, setControlParameters] = useState({
     control_parameters: '',
     value: '',
@@ -35,7 +36,9 @@ const RefiningSteps = ({ setTab,addId }: any) => {
   const [showAdditiveTooltip, setShowAdditiveTooltip] = useState<any>('');
   const [cardEdit, setCardEdit] = useState([]);
   const [masterData, setMasterData] = useState([]);
-  const [editId, setEditId] = useState<any>(11);
+  const [editId, setEditId] = useState<any>(edit_Id);
+
+  const navigate = useNavigate()
 
   const { handleSubmit, values, handleBlur, handleChange, setFieldValue, touched, errors } =
     useFormik({
@@ -62,6 +65,8 @@ const RefiningSteps = ({ setTab,addId }: any) => {
               { step_data: dataList }
             );
             console.log(response);
+            navigate("/system-admin/furnace-configuration/list")
+
           }
         }
         setIsSaved(true);
@@ -377,7 +382,12 @@ const RefiningSteps = ({ setTab,addId }: any) => {
     }
   };
 
-  console.log('dataList', dataList);
+  useEffect(()=>{
+    if(edit_Id){
+      setIsEdit(true)
+      setEditId(edit_Id)
+    }
+  },[])
 
   return (
     <form onSubmit={handleSubmit}>

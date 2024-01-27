@@ -27,15 +27,29 @@ import { paths } from './paths';
 //     );
 // };
 const FurnaceListScreen = lazy(() => import('pages/SuperAdmin/FurnaceConfiguration/listingScreen'));
-const AddFurnace = lazy(() => import('pages/Furnace/AddFurnace/basicInformation'));
-// const AddRefine = lazy(()=> import('pages/Furnace/AddFurnace/refiningSteps'))
-// const EditFurnace = lazy(() => import('pages/Furnace/AddFurnace/basicInformation'));
+const AddFurnace = lazy(() => import('pages/Furnace/furnace'));
+const EditFurnace = lazy(() => import('pages/Furnace/furnace'));
 const ViewFurance = lazy(() => import('pages/SuperAdmin/FurnaceConfiguration/furnaceView'));
-//const ViewFurnaceRefine = lazy(() => import('pages/SuperAdmin/FurnaceConfiguration/refiningStepsView'));
+
+const PlantEditScreen = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
+const AddPlant = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
+const ViewPlant= lazy(() => import('pages/SuperAdmin/Plant/PlantConfiguration/PlantView'));
 console.log("praveenram123",FurnaceListScreen)
 
 // const renderDashboard = <Navigate to={paths.dashboard} />;
 export const SystemAdminRoutes = [
+  {
+    path: paths.plantScreen.view,
+    element: getRouteElement(ViewPlant, true),
+  },
+  {
+    path: paths.plantScreen.create,
+    element: getRouteElement(AddPlant, true),
+  },
+  {
+    path: paths.plantScreen.edit,
+    element: getRouteElement(PlantEditScreen, true),
+  },
   {
     path: paths.furnaceConfig.list,
     element: getRouteElement(FurnaceListScreen, true),
@@ -51,5 +65,9 @@ export const SystemAdminRoutes = [
   {
     path: paths.furnaceConfig.create,
     element: getRouteElement(AddFurnace, true),
+  },
+  {
+    path: paths.furnaceConfig.edit,
+    element: getRouteElement(EditFurnace, true),
   },
 ];

@@ -256,7 +256,7 @@ export const getPath = (subModule: string) => {
       pathname = paths.rolesList;
       break;
 
-    // user access control
+    // Plant config
      case 'Plant Configuration':
       pathname = paths.plantScreen.create;
       break;

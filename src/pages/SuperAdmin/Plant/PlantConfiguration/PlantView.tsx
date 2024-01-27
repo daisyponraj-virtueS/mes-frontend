@@ -45,13 +45,11 @@ const TimeRange: React.FC<TimeRangeProps> = ({ label, value }) => (
 );
 
 const PlantView = () => {
-  const [timeZoneList, setTimeZoneList] = useState<any>([]);
-  const [languageList, setLanguageList] = useState<any>([]);
-  const [unitSystemList, setUnitSystemList] = useState<any>([]);
-  const [currencyList, setCurrencyList] = useState<any>([]);
-  const [productList, setProductList] = useState<any>([]);
   const [functionList, setFunctionList] = useState<any>([]);
   const [modelList, setModelList] = useState<any>([]);
+  const [masterData, setMasterData] = useState<any>([]);
+
+  const plant_id = 1000;
 
 
   const navigate = useNavigate()
@@ -67,7 +65,7 @@ const PlantView = () => {
 //   ];
 
   // State to store the fetched data
-  const [plantData, setPlantData] = useState<any>(null);
+  const [plantData, setPlantData] = useState<any>({});
   const functionData = [
     'User Control Access',
     'Master Data',
@@ -113,87 +111,34 @@ const PlantView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/plant/plant-config/');
-        const response1 = JSON.parse(response.data[0][0])
-        const response2 = JSON.parse(response.data[0][1])
-        const response3 = JSON.parse(response.data[0][2])
-        const response4 = JSON.parse(response.data[0][3])
-        setPlantData({plant:response1,product:response2,workshop:response3,functions:response4});
 
+        const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
 
-        const timeZoneResponse = await axios.get('http://127.0.0.1:8000/api/plant/time-zone/');
-        const TimeZoneResponseList = timeZoneResponse?.data?.map((val: any) => {
-          const list = {
-            option: val[2],
-            value: val[0],
-          };
-          return list;
+        setMasterData(masterResponse.data)
+        console.log("master",masterResponse.data)
+
+        const response = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${plant_id}`);
+
+        console.log("response",response)
+
+        setPlantData(response.data);
+
+        const functionResponse = await axios.get('http://127.0.0.1:8000/api/plant/function/');
+
+        const functionResponseData = functionResponse.data
+
+        const filteredModelList = functionResponseData.map((val: any) => {
+          const models = { option: val.module_name, value: val.id };
+  
+          return models;
         });
-        const languageResponse = await axios.get('http://127.0.0.1:8000/api/plant/language/');
-        const languageResponseList = languageResponse?.data?.map((val: any) => {
-          const list = {
-            option: val[2],
-            value: val[0],
-          };
-          return list;
-        });
-        const unitSystemResponse = await axios.get('http://127.0.0.1:8000/api/plant/unit/');
-        const unitSystemResponseList = unitSystemResponse?.data?.map((val: any) => {
-          const list = {
-            option: val[2],
-            value: val[0],
-          };
-          return list;
-        });
-        const currencyResponse = await axios.get('http://127.0.0.1:8000/api/plant/currency/');
-        const currencyResponseList = currencyResponse?.data?.map((val: any) => {
-          const list = {
-            option: val[2],
-            value: val[0],
-          };
-          return list;
-        });
+        const removedElement :any = filteredModelList.splice(3, 1)[0];
+  
+        filteredModelList.push(removedElement)
+        setModelList(filteredModelList);
+        console.log("functionResponseData",functionResponseData)
         
-      const productResponse = await axios.get('http://127.0.0.1:8000/api/plant/product/');
-      const productResponseList = productResponse?.data?.map((val: any) => {
-        const list = {
-          option: val[2],
-          value: val[0],
-        };
-        return list;
-      });
-
-        setTimeZoneList(TimeZoneResponseList);
-      setLanguageList(languageResponseList);
-      setUnitSystemList(unitSystemResponseList);
-      setCurrencyList(currencyResponseList);
-      setProductList(productResponseList)
-
-      const functionResponse = await axios.get('http://127.0.0.1:8000/api/plant/function/');
-      const functionResponseList = functionResponse?.data[0]?.map((val: any) => {
-        const list = JSON.parse(val);
-        return list;
-      });
-
-      const filteredModelList = functionResponseList[0]?.map((val: any) => {
-        const models = { option: val.module_name, value: val.module_id };
-
-        return models;
-      });
-
-      setModelList(filteredModelList)
-
-      const functions = []
-      
-      for (let i = 0; i < functionResponseList[1].length; i++) {
-          functions.push({
-            model_id:functionResponseList[1][i].module_id,
-            option: functionResponseList[1][i].function_name,
-            value: functionResponseList[1][i].function_id,
-          });
-
-      }
-      
+        const functions = functionResponseData.flatMap(item => item.module_functions);
       setFunctionList(functions);
 
       } catch (error) {
@@ -205,28 +150,28 @@ const PlantView = () => {
   }, []);
 
 
-const shift1_from = plantData?.plant.shift1_from;
-const shift1_to = plantData?.plant.shift1_to;
-const shift2_from = plantData?.plant.shift2_from;
-const shift2_to = plantData?.plant.shift2_to;
-const shift3_from = plantData?.plant.shift3_from;
-const shift3_to = plantData?.plant.shift3_to;
+const shift1_from = plantData?.shift1_from;
+const shift1_to = plantData?.shift1_to;
+const shift2_from = plantData?.shift2_from;
+const shift2_to = plantData?.shift2_to;
+const shift3_from = plantData?.shift3_from;
+const shift3_to = plantData?.shift3_to;
 
 const shiftTimes = [
     { label: 'Shift 1', from: shift1_from, to: shift1_to },
     { label: 'Shift 2', from: shift2_from, to: shift2_to },
     { label: 'Shift 3', from: shift3_from, to: shift3_to },
   ];
-  const uniqueModules = Array.from(new Set(plantData?.functions?.map(item => item.module_id)));
+  const uniqueModules = Array.from(new Set(plantData?.function_json?.map(item => item.module_id)));
 
   const uniqueModulesWithFunctions = uniqueModules?.map(moduleId => {
     return {
       moduleId: moduleId,
-      functions: plantData?.functions.filter(item => item.module_id === moduleId),
+      functions: plantData?.function_json.filter(item => item.module_id === moduleId),
     };
   });
   
-  console.log("uniqueModulesWithFunctions", uniqueModulesWithFunctions);
+  console.log("uniqueModulesWithFunctions",shiftTimes, plantData);
   
   
   return (
@@ -242,7 +187,7 @@ const shiftTimes = [
                 //   ${
                 //   hasEditPermission ? '' : 'disabled'
                 // }`}
-                onClick={()=>navigate("/core-process/bin-contents/items/view")}
+                onClick={()=>navigate("/system-admin/plant-configuration/edit")}
               >
                 <img src={editIcon} alt='edit' className='mr-2' />
                 Edit
@@ -257,12 +202,12 @@ const shiftTimes = [
                 marginTop: '12px',
               }}
             >
-              <InfoBlock label='Plant ID' value={plantData?.plant.plant_id} flexBasis='20%' marginBottom='5' />
-              <InfoBlock label='Area Code' value={plantData?.plant.area_code} flexBasis='15%' marginBottom='5' />
-              <InfoBlock label='Plant Name' value={plantData?.plant.plant_name} flexBasis='15%' marginBottom='5' />
+              <InfoBlock label='Plant ID' value={plantData?.plant_id} flexBasis='20%' marginBottom='5' />
+              <InfoBlock label='Area Code' value={plantData?.area_code} flexBasis='15%' marginBottom='5' />
+              <InfoBlock label='Plant Name' value={plantData?.plant_name} flexBasis='15%' marginBottom='5' />
               <InfoBlock
                 label='Plant Address'
-                value={plantData?.plant.plant_address}
+                value={plantData?.plant_address}
                 flexBasis='30%'
                 marginBottom='5'
               />
@@ -278,20 +223,20 @@ const shiftTimes = [
             >
               <InfoBlock
                 label='Time Zone'
-                value={timeZoneList?.filter((val:any)=>(val.value == plantData?.plant.timezone_id))[0]?.option}
+                value={masterData?.filter((val:any)=>(val.id == plantData?.timezone_id))[0]?.value}
                 flexBasis='20%'
                 marginBottom='5'
               />
-              <InfoBlock label='Language' value={languageList.filter((val:any)=>(val.value == plantData?.plant.language_id))[0]?.option } flexBasis='15%' marginBottom='5' />
+              <InfoBlock label='Language' value={masterData.filter((val:any)=>(val.id == plantData?.language_id))[0]?.value } flexBasis='15%' marginBottom='5' />
               <InfoBlock
                 label='Unit System'
-                value={unitSystemList?.filter((val:any)=>(val.value == plantData?.plant.unit_id))[0]?.option}
+                value={masterData?.filter((val:any)=>(val.id == plantData?.unit_id))[0]?.value}
                 flexBasis='15%'
                 marginBottom='5'
               />
               <InfoBlock
                 label='Currency'
-                value={currencyList?.filter((val:any)=>(val.value ==  plantData?.plant.currency_id))[0]?.option}
+                value={masterData?.filter((val:any)=>(val.id ==  plantData?.currency_id))[0]?.value}
                 flexBasis='30%'
                 marginBottom='5'
               />
@@ -320,7 +265,7 @@ const shiftTimes = [
                         </tr>
                       </thead>
                       <tbody>
-                        {plantData?.workshop?.map((workshop:any, index:any) => (
+                        {plantData?.workshops_json?.map((workshop:any, index:any) => (
                           <tr key={index}>
                             <td style={{ fontSize: '14px', fontWeight: 600, paddingLeft: '0px' }}>
                               {workshop?.workshop_id}
@@ -353,7 +298,7 @@ const shiftTimes = [
                   alignItems: 'flex-start',
                 }}
               >
-                {plantData?.product?.map(
+                {plantData?.products_json?.map(
                   (product:any, index:any) =>
                      (
                       <div key={index}>
@@ -364,7 +309,7 @@ const shiftTimes = [
                             color: '#041724',
                           }}
                         >
-                          {productList.filter((val:any)=>(val.value == product?.product_id))[0]?.option}
+                          {masterData.filter((val:any)=>(val.id == product?.product_id))[0]?.value}
                          
                         </label>
                       </div>
@@ -391,7 +336,7 @@ const shiftTimes = [
                       }}
                     >
                       {functionList?.map((item: any, itemIndex: any) => (
-                        value.functions.some((val:any)=>val.function_id == item.value ) ?
+                        value.functions.some((val:any)=>val.function_id == item.id ) ?
                         <div
                           key={itemIndex}
                           style={{
@@ -402,7 +347,7 @@ const shiftTimes = [
                             fontWeight: 600,
                           }}
                         >
-                          { item?.option}
+                          { item?.function_name}
                         </div>
                         :''
                       ))}
@@ -426,9 +371,9 @@ const shiftTimes = [
                 {shiftTimes?.map((shiftTime, index) => (
                   <div key={index} style={{ display: 'flex', flexDirection: 'row', marginLeft: '35px', gap: '15px', marginTop: '5px' }}>
                    <span style={{ fontSize: '14px', fontWeight: 600, marginRight: '20px', color: '#212529'}}>{`Shift ${index + 1}`}</span>
-                    <TimeRange label={`From`} value={`: ${new Date(shiftTime.from).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`} />
+                    <TimeRange label={`From`} value={shiftTime.from} />
                     <span style={{ color: '#818182', fontWeight: 400,fontSize:'14px',  marginRight: '15px' }}>HH:MM</span>
-                    <TimeRange label={`To`} value={`: ${new Date(shiftTime.to).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })} `} />
+                    <TimeRange label={`To`} value={shiftTime.to} />
                     <span style={{ color: '#818182', fontWeight: 400,fontSize:'14px' }}>HH:MM</span>
                   </div>
                 ))}

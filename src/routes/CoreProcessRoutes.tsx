@@ -39,12 +39,10 @@ const AddEditProductionSchedule = lazy(
 
 // Bin Contents
 // const MixSystemList = lazy(() => import('pages/Furnace/furnace'));
-const MixSystemList = lazy(() => import('pages/SuperAdmin/FurnaceConfiguration/listingScreen'));
-// const MixSystemList = lazy(() => import('pages/SuperAdmin/FurnaceConfiguration/furnaceView'));
-// const MixSystemList = lazy(() => import('pages/SuperAdmin/PlantConfigurationAddScreen/plant'));
+const MixSystemList = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
 // const MixSystemList = lazy(() => import('pages/CoreProcess/BinContents/MixSystemList'));
-const MixSystemView = lazy(() => import('pages/SuperAdmin/PlantConfiguration/PlantView'));
-const EditBinContents = lazy(() => import('pages/SuperAdmin/PlantConfigurationAddScreen/plant'));
+const MixSystemView = lazy(() => import('pages/SuperAdmin/Plant/PlantConfiguration/PlantView'));
+const EditBinContents = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
 
 export const CoreProcessRoutes = [
   //production schedule

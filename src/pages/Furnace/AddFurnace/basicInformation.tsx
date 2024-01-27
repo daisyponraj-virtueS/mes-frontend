@@ -18,7 +18,7 @@ const formValidationSchema = yup.object({
   electrodes: yup.array().min(1, 'Electrodes is required'),
   products: yup.array().min(1, 'Products is required'),
 });
-const BasicInformation = ({ setTab, setAddId }:any) => {
+const BasicInformation = ({ setTab, setAddId,edit_Id }:any) => {
   const [electrode, setElectrode] = useState([]);
   const [enabled, setEnabled] = useState(false);
   const [productSelected, setProductSelected] = useState({
@@ -31,9 +31,9 @@ const BasicInformation = ({ setTab, setAddId }:any) => {
   const [product, setProduct] = useState({ productState: '', productType: '', productCode: '' });
   const [masterData, setMasterData] = useState([]);
   const [workshopDropdownData, setWorkshopDropdownData] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(edit_Id?true : false);
   const [editData, setEditData] = useState<any>(null);
-  const [editId, setEditId] = useState<any>(11);
+  const [editId, setEditId] = useState<any>(edit_Id);
   const [isTouched, setIsTouched] = useState<any>({
     workshopNo: false,
     powerDelivery: false,
@@ -601,7 +601,12 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
     }
   }, [values]);
   
-
+useEffect(()=>{
+  if(edit_Id){
+    setIsEdit(true)
+    setEditId(edit_Id)
+  }
+},[])
   return (
     <form onSubmit={handleSubmit}>
       <div className='container mt-3 mb-3'>

@@ -17,6 +17,7 @@ import {
   BIN_CONTENT_ITEM,
   SYSTEM_ADMIN,
   FURNACE_CONFIGURATION,
+  PLANT_CONFIGURATION,
 } from './Routes';
 
 export const paths = {
@@ -116,12 +117,14 @@ export const paths = {
   },
   plant:SYSTEM_ADMIN,
   plantScreen:{
-    create: `${SYSTEM_ADMIN}/plant/create`
+    create: `${PLANT_CONFIGURATION}/create`,
+    view: `${PLANT_CONFIGURATION}/view`,
+    edit: `${PLANT_CONFIGURATION}/edit`,
   },
   furnaceConfig:{
     list: `${FURNACE_CONFIGURATION}/list`,
     view: `${FURNACE_CONFIGURATION}/view`,
-    edit: `${FURNACE_CONFIGURATION}/edit`,
+    edit: `${FURNACE_CONFIGURATION}/edit/:id/:tab`,
     create: `${FURNACE_CONFIGURATION}/create`,
   },
 };

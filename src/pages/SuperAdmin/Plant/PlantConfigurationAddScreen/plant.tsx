@@ -1,20 +1,20 @@
 /* eslint-disable no-inner-declarations */
 import { useEffect, useState } from 'react';
-import 'assets/styles/scss/pages/plant.scss';
+import '../../../../assets/styles/scss/pages/plant.scss'
 import PlantFooter from 'components/common/PlantFooter';
 import Header from 'components/common/PlantHeader';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import CustomSelect from 'components/common/SelectField';
-import deactiveIcon from '../../../assets/icons/deactivate.svg';
+import deactiveIcon from '../../../../assets/icons/deactivate.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const formValidationSchema = yup.object({
-  timeZone: yup.string().required('Select the Time zone'),
-  language: yup.string().required('Select the Language'),
-  unitSystem: yup.string().required('Select the Unit system'),
-  currency: yup.string().required('Select the currency'),
+  timezone_id: yup.string().required('Select the Time zone'),
+  language_id: yup.string().required('Select the Language'),
+  unit_id: yup.string().required('Select the Unit system'),
+  currency_id: yup.string().required('Select the currency'),
   productName: yup.array().min(1, 'Product name is required').required('Product name is required'),
   shift1: yup.object({
     from: yup.string().required('Shift start time is required'),
@@ -63,7 +63,7 @@ const AddPlant = () => {
   const [modulesAndFunctionList, setModulesAndFunctionList] = useState<any>([]);
   const [functionCategory, setFunctionCategory] = useState<any>(3);
   const [isEdit, setIsEdit] = useState(
-    pathName == '/core-process/bin-contents/items/view' || false
+    pathName == '/system-admin/plant-configuration/edit' || false
   );
   const [isTouched, setIsTouched] = useState({
     timeZone: false,
@@ -72,15 +72,20 @@ const AddPlant = () => {
     currency: false,
   });
 
+  const local_plant_id : any = 1000;
+  const local_plant_name : any = localStorage.getItem('plantName');
+
+
+
   const initialValuesObj = {
-    plantId: '1000',
-    plantName: 'Beverly',
-    areaCode: 'US 10',
-    plantAddress: '',
-    timeZone: '',
-    language: '',
-    unitSystem: '',
-    currency: '',
+    plant_id: local_plant_id,
+    plant_name: JSON.parse(local_plant_name),
+    area_code: 'US 10',
+    plant_address: '',
+    timezone_id: '',
+    language_id: '',
+    unit_id: '',
+    currency_id: '',
     workshops: [],
     productName: [],
     function: [],
@@ -106,53 +111,54 @@ const AddPlant = () => {
       onSubmit: async (values: any, { resetForm }: any) => {
         const data = {
           ...values,
-          shift1: {
-            from:
+          ...{
+          
+            shift1_from:
               values.shift1.from.length < 3
                 ? `${String(values.shift1.from).padStart(2, '0')}:00`
                 : values.shift1.from,
-            to:
+                shift1_to:
               values.shift1.to.length < 3
                 ? `${String(values.shift1.to).padStart(2, '0')}:00`
                 : values.shift1.to,
-          },
-          shift2: {
-            from:
+          
+                shift2_from:
               values.shift2.from.length < 3
                 ? `${String(values.shift2.from).padStart(2, '0')}:00`
                 : values.shift2.from,
-            to:
+                shift2_to:
               values.shift2.to.length < 3
                 ? `${String(values.shift2.to).padStart(2, '0')}:00`
                 : values.shift2.to,
-          },
-          shift3: {
-            from:
+          
+                shift3_from:
               values.shift3.from.length < 3
                 ? `${String(values.shift3.from).padStart(2, '0')}:00`
                 : values.shift3.from,
-            to:
+                shift3_to:
               values.shift3.to.length < 3
                 ? `${String(values.shift3.to).padStart(2, '0')}:00`
                 : values.shift3.to,
-          },
+        },
+        created_by:1,
+        modified_by:2,
         };
         console.log('values.shift1.from.length', data);
         if (isEdit) {
           const response = await axios.put(
-            'http://127.0.0.1:8000/api/plant/plant-config-update/',
+            `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}`,
             data
           );
           console.log(response);
         } else {
           const response = await axios.post(
-            'http://127.0.0.1:8000/api/plant/plant-config-create/',
+            'http://127.0.0.1:8000/api/plant/plant-config/',
             data
           );
           console.log(response);
         }
         setWorkshopList([]);
-        navigate('/core-process/bin-contents/view');
+        navigate('/system-admin/plant-configuration/view');
         resetForm();
       },
     });
@@ -160,54 +166,64 @@ const AddPlant = () => {
     const fetchData = async () => {
       try {
         const plantConfigResponse = await axios.get(
-          'http://127.0.0.1:8000/api/plant/plant-config/'
+          `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}`
         );
 
+        const editData :any = plantConfigResponse.data
+
         function formatTimeString(dateString: any) {
-          const dateObject = new Date(dateString);
+          const dateObject = new Date(parseInt(dateString));
           const hours = dateObject.getHours();
           const minutes = dateObject.getMinutes();
           return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
         }
 
         const editObj = {
-          plantId: '1000',
-          plantName: JSON.parse(plantConfigResponse.data[0][0]).plant_name,
-          areaCode: JSON.parse(plantConfigResponse.data[0][0]).area_code,
-          plantAddress: JSON.parse(plantConfigResponse.data[0][0]).plant_address,
-          timeZone: JSON.parse(plantConfigResponse.data[0][0]).timezone_id,
-          language: JSON.parse(plantConfigResponse.data[0][0]).language_id,
-          unitSystem: JSON.parse(plantConfigResponse.data[0][0]).unit_id,
-          currency: JSON.parse(plantConfigResponse.data[0][0]).currency_id,
-          workshops: JSON.parse(plantConfigResponse.data[0][2]).map((val: any) => {
+          plant_id: editData.plant_id,
+          plant_name: editData.plant_name,
+          area_code: editData.area_code,
+          plant_address: editData.plant_address,
+          timezone_id: editData.timezone_id,
+          language_id: editData.language_id,
+          unit_id: editData.unit_id,
+          currency_id: editData.currency_id,
+          workshops: editData?.workshops_json?.map((val: any) => {
             const workshopData = {
+              id:val.id,
               workshop_id: val.workshop_id,
               workshop_name: val.workshop_name,
               record_status: val.record_status,
             };
             return workshopData;
           }),
-          productName: JSON.parse(plantConfigResponse.data[0][1]).map((val: any) => {
+          productName: editData.products_json.map((val: any) => {
             const productData = {
+              id:val.id,
               product_id: val.product_id,
             };
             return productData;
           }),
-          function: [...JSON.parse(plantConfigResponse.data[0][3])],
+          function: editData.function_json.map((val:any)=>{
+            const functionData ={
+              id:val.id,
+              module_id: val.module_id, 
+              function_id: val.function_id
+            }
+            return functionData
+          }),
           shift1: {
-            from: formatTimeString(JSON.parse(plantConfigResponse.data[0][0]).shift1_from),
-            to: formatTimeString(JSON.parse(plantConfigResponse.data[0][0]).shift1_to),
+            from: formatTimeString(editData.shift1_from),
+            to: formatTimeString(editData.shift1_to),
           },
           shift2: {
-            from: formatTimeString(JSON.parse(plantConfigResponse.data[0][0]).shift2_from),
-            to: formatTimeString(JSON.parse(plantConfigResponse.data[0][0]).shift2_to),
+            from: formatTimeString(editData.shift2_from),
+            to: formatTimeString(editData.shift2_to),
           },
           shift3: {
-            from: formatTimeString(JSON.parse(plantConfigResponse.data[0][0]).shift3_from),
-            to: formatTimeString(JSON.parse(plantConfigResponse.data[0][0]).shift3_to),
+            from: formatTimeString(editData.shift3_from),
+            to: formatTimeString(editData.shift3_to),
           },
         };
-
         setEditData(editObj);
       } catch (error) {
         console.error('Error fetching plant config data:', error);
@@ -262,46 +278,30 @@ const AddPlant = () => {
   const timeZoneSelect = {
     label: 'Time Zone*',
     option: [
-      {
-        option: 'Select',
-        value: 'Select',
-      },
       ...timeZoneList,
     ],
-    name: 'timeZone',
+    name: 'timezone_id',
   };
   const languageSelect = {
     label: 'Language*',
     option: [
-      {
-        option: 'Select',
-        value: 'Select',
-      },
       ...languageList,
     ],
-    name: 'language',
+    name: 'language_id',
   };
   const unitSystemSelect = {
     label: 'Unit System*',
     option: [
-      {
-        option: 'Select',
-        value: 'Select',
-      },
       ...unitSystemList,
     ],
-    name: 'unitSystem',
+    name: 'unit_id',
   };
   const currencySelect = {
     label: 'Currency*',
     option: [
-      {
-        option: 'Select',
-        value: 'Select',
-      },
-      ...currencyList,
+       ...currencyList,
     ],
-    name: 'currency',
+    name: 'currency_id',
   };
   const Products = [...productList];
   const moduleFunction = [...modelList];
@@ -315,6 +315,7 @@ const AddPlant = () => {
   const labAbalysis = [...functionList.labAbalysis];
 
   const reports = [...functionList.reports];
+
 
   const handleFunctinAndModules = (value: any, index: any) => {
     if (index === 0) {
@@ -374,54 +375,44 @@ const AddPlant = () => {
   };
   const fetchData = async () => {
     try {
-      const timeZoneResponse = await axios.get('http://127.0.0.1:8000/api/plant/time-zone/');
-      const TimeZoneResponseList = timeZoneResponse?.data?.map((val: any) => {
+      
+      const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
+      const masterResponseList = masterResponse?.data?.map((val: any) => {
         const list = {
-          option: val[2],
-          value: val[0],
-        };
-        return list;
-      });
-      const languageResponse = await axios.get('http://127.0.0.1:8000/api/plant/language/');
-      const languageResponseList = languageResponse?.data?.map((val: any) => {
-        const list = {
-          option: val[2],
-          value: val[0],
-        };
-        return list;
-      });
-      const unitSystemResponse = await axios.get('http://127.0.0.1:8000/api/plant/unit/');
-      const unitSystemResponseList = unitSystemResponse?.data?.map((val: any) => {
-        const list = {
-          option: val[2],
-          value: val[0],
-        };
-        return list;
-      });
-      const currencyResponse = await axios.get('http://127.0.0.1:8000/api/plant/currency/');
-      const currencyResponseList = currencyResponse?.data?.map((val: any) => {
-        const list = {
-          option: val[2],
-          value: val[0],
+          option: val.value,
+          value: val.id,
+          type: val.category,
         };
         return list;
       });
 
-      const productResponse = await axios.get('http://127.0.0.1:8000/api/plant/product/');
-      const productResponseList = productResponse?.data?.map((val: any) => {
-        const list = {
-          option: val[2],
-          value: val[0],
-        };
-        return list;
-      });
+      const createOptions = (masterData, type) => [
+        { option: 'Select', value: 'Select' },
+        ...((masterData && masterData.filter((val) => val?.type === type)) || []),
+      ];
+      const createProductOptions = (masterData, type) => [
+        ...((masterData && masterData.filter((val) => val?.type === type)) || []),
+      ];
+
+
+      const TimeZoneResponseList = createOptions(masterResponseList, 'TIMEZONE')
+  
+      const languageResponseList = createOptions(masterResponseList, 'LANGUAGE')
+
+      const unitSystemResponseList = createOptions(masterResponseList, 'UNITSYSTEM')
+
+      const currencyResponseList = createOptions(masterResponseList, 'CURRENCY')
+
+
+      const productResponseList = createProductOptions(masterResponseList, 'PRODUCT')
 
       const functionResponse = await axios.get('http://127.0.0.1:8000/api/plant/function/');
 
-      const functionResponseList = functionResponse?.data[0]?.map((val: any) => {
-        const list = JSON.parse(val);
-        return list;
-      });
+      const functionResponseData = functionResponse.data
+
+     
+
+ 
 
       setTimeZoneList(TimeZoneResponseList);
       setLanguageList(languageResponseList);
@@ -429,50 +420,52 @@ const AddPlant = () => {
       setCurrencyList(currencyResponseList);
       setProductList(productResponseList);
 
-      const filteredModelList = functionResponseList[0].map((val: any) => {
-        const models = { option: val.module_name, value: val.module_id };
+      const filteredModelList = functionResponse.data.map((val: any) => {
+        const models = { option: val.module_name, value: val.id };
 
         return models;
       });
+      const removedElement :any = filteredModelList.splice(3, 1)[0];
 
+      filteredModelList.push(removedElement)
       setModelList(filteredModelList);
 
+
+      
+
       let functions = {
-        userControlAccess: [...functionList.userControlAccess],
-        masterData: [...functionList.masterData],
-        coreProcess: [...functionList.coreProcess],
-        labAbalysis: [...functionList.labAbalysis],
-        reports: [...functionList.reports],
+        userControlAccess: [],
+        masterData: [],
+        coreProcess: [],
+        labAbalysis: [],
+        reports: [],
       };
 
-      for (let i = 0; i < functionResponseList[1].length; i++) {
-        if (functionResponseList[1][i].module_id === 1) {
-          functions.userControlAccess.push({
-            option: functionResponseList[1][i].function_name,
-            value: functionResponseList[1][i].function_id,
-          });
-        } else if (functionResponseList[1][i].module_id === 2) {
-          functions.masterData.push({
-            option: functionResponseList[1][i].function_name,
-            value: functionResponseList[1][i].function_id,
-          });
-        } else if (functionResponseList[1][i].module_id === 3) {
-          functions.coreProcess.push({
-            option: functionResponseList[1][i].function_name,
-            value: functionResponseList[1][i].function_id,
-          });
-        } else if (functionResponseList[1][i].module_id === 4) {
-          functions.labAbalysis.push({
-            option: functionResponseList[1][i].function_name,
-            value: functionResponseList[1][i].function_id,
-          });
-        } else if (functionResponseList[1][i].module_id === 5) {
-          functions.reports.push({
-            option: functionResponseList[1][i].function_name,
-            value: functionResponseList[1][i].function_id,
-          });
+      functionResponseData.forEach((module:any) => {
+        const functionNameValuePairs :any = module.module_functions.map(func => ({
+            option: func.function_name,
+            value: func.id
+        }));
+    
+        switch (module.module_name) {
+            case "User Control Access":
+                functions.userControlAccess.push(...functionNameValuePairs);
+                break;
+            case "Master Data":
+                functions.masterData.push(...functionNameValuePairs);
+                break;
+            case "Core Process":
+                functions.coreProcess.push(...functionNameValuePairs);
+                break;
+            case "Lab Analysis":
+                functions.labAbalysis.push(...functionNameValuePairs);
+                break;
+            case "Reports":
+                functions.reports.push(...functionNameValuePairs);
+                break;
         }
-      }
+    });
+
 
       setFunctionList(functions);
     } catch (error) {
@@ -498,16 +491,16 @@ const AddPlant = () => {
     <form onSubmit={handleSubmit}>
       <Header title='Plant Configuration' />
       <div className='container mt-3 mb-3'>
-        <div className='card'>
+        <div className='child-container card'>
           <div className='card-body card_body_container'>
             <div className='plant'>
               <div className='plant__plant_child'>
                 <label className='plant__label'>Plant ID</label>
                 <input
                   className='plant__input'
-                  name='plantId'
+                  name='plant_id'
                   disabled
-                  value={values.plantId}
+                  value={values.plant_id}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -517,9 +510,9 @@ const AddPlant = () => {
                 <label className='plant__label'>Plant Name</label>
                 <input
                   className='plant__input'
-                  name='plantName'
+                  name='plant_name'
                   disabled
-                  value={values.plantName}
+                  value={values.plant_name}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -529,9 +522,9 @@ const AddPlant = () => {
                 <label className='plant__label'>Area Code</label>
                 <input
                   className='plant__input'
-                  name='areaCode'
+                  name='area_code'
                   disabled
-                  value={values.areaCode}
+                  value={values.area_code}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -542,9 +535,9 @@ const AddPlant = () => {
               <label className='plant_address__label'>Plant Address</label>
               <input
                 className='plant_address__input'
-                name='plantAddress'
+                name='plant_address'
                 placeholder='Enter Address'
-                value={values.plantAddress}
+                value={values.plant_address}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -558,7 +551,7 @@ const AddPlant = () => {
                   index={0}
                   options={timeZoneSelect.option}
                   onChange={(val: any) => {
-                    setFieldValue('timeZone', val);
+                    setFieldValue('timezone_id', val);
                     setIsTouched({
                       timeZone: true,
                       language: false,
@@ -568,12 +561,12 @@ const AddPlant = () => {
                   }}
                   disabled={isEdit}
                   value={
-                    timeZoneSelect?.option.filter((item) => item.value == values.timeZone)[0]
+                    timeZoneSelect?.option.filter((item) => item.value == values.timezone_id)[0]
                       ?.option || 'Select'
                   }
                 />
-                {errors.timeZone && isTouched.timeZone ? (
-                  <p style={{ fontSize: '12px', color: '#ff0000' }}>{errors.timeZone}</p>
+                {errors.timezone_id && isTouched.timezone_id ? (
+                  <p style={{ fontSize: '12px', color: '#ff0000' }}>{errors.timezone_id}</p>
                 ) : (
                   ''
                 )}
@@ -586,7 +579,7 @@ const AddPlant = () => {
                   index={0}
                   options={languageSelect.option}
                   onChange={(val: any) => {
-                    setFieldValue('language', val);
+                    setFieldValue('language_id', val);
                     setIsTouched({
                       timeZone: false,
                       language: true,
@@ -595,12 +588,12 @@ const AddPlant = () => {
                     });
                   }}
                   value={
-                    languageSelect?.option.filter((item) => item.value == values.language)[0]
+                    languageSelect?.option.filter((item) => item.value == values.language_id)[0]
                       ?.option || 'Select'
                   }
                 />
-                {errors.language && isTouched.language ? (
-                  <p style={{ fontSize: '12px', color: '#ff0000' }}>{errors.language}</p>
+                {errors.language_id && isTouched.language_id ? (
+                  <p style={{ fontSize: '12px', color: '#ff0000' }}>{errors.language_id}</p>
                 ) : (
                   ''
                 )}
@@ -612,7 +605,7 @@ const AddPlant = () => {
                   index={0}
                   options={unitSystemSelect.option}
                   onChange={(val: any) => {
-                    setFieldValue('unitSystem', val);
+                    setFieldValue('unit_id', val);
                     setIsTouched({
                       timeZone: false,
                       language: false,
@@ -622,12 +615,12 @@ const AddPlant = () => {
                   }}
                   disabled={isEdit}
                   value={
-                    unitSystemSelect?.option.filter((item) => item.value == values.unitSystem)[0]
+                    unitSystemSelect?.option.filter((item) => item.value == values.unit_id)[0]
                       ?.option || 'Select'
                   }
                 />
-                {errors.unitSystem && isTouched.unitSystem ? (
-                  <p style={{ fontSize: '12px', color: '#ff0000' }}>{errors.unitSystem}</p>
+                {errors.unit_id && isTouched.unit_id ? (
+                  <p style={{ fontSize: '12px', color: '#ff0000' }}>{errors.unit_id}</p>
                 ) : (
                   ''
                 )}
@@ -639,7 +632,7 @@ const AddPlant = () => {
                   index={0}
                   options={currencySelect.option}
                   onChange={(val: any) => {
-                    setFieldValue('currency', val);
+                    setFieldValue('currency_id', val);
                     setIsTouched({
                       timeZone: false,
                       language: false,
@@ -649,12 +642,12 @@ const AddPlant = () => {
                   }}
                   disabled={isEdit}
                   value={
-                    currencySelect?.option.filter((item) => item.value == values.currency)[0]
+                    currencySelect?.option.filter((item) => item.value == values.currency_id)[0]
                       ?.option || 'Select'
                   }
                 />
-                {errors.currency && isTouched.currency ? (
-                  <p style={{ fontSize: '12px', color: '#ff0000' }}>{errors.currency}</p>
+                {errors.currency_id && isTouched.currency_id ? (
+                  <p style={{ fontSize: '12px', color: '#ff0000' }}>{errors.currency_id}</p>
                 ) : (
                   ''
                 )}
