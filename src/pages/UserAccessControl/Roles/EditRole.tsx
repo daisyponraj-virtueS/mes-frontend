@@ -196,14 +196,14 @@ const DashboardRolesEditView = () => {
         <div className='dashboard__main__body px-8 py-6 scroll-0'>
           <div className='card-box px-6 py-8'>
             <div className='flex'>
-              <div className='flex flex-col' style={{ width: 260 }}>
+              {/* <div className='flex flex-col' style={{ width: 260 }}>
                 <h2 className='text-xl font-medium'>Edit Role</h2>
                 <p className='color-tertiary-text text-sm mt-2'>
                   This could be used to write very important message.
                 </p>
-              </div>
-              <div style={{ width: 352, marginLeft: 108 }}>
-                <label className='input-field-label'></label>
+              </div> */}
+              <div style={{ width: 352}}>
+                <label className='input-field-label'>Role Name*</label>
                 <input
                   type='text'
                   className={`input-field input-field--h40 input-field--md w-full ${

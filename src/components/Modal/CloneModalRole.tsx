@@ -74,14 +74,14 @@ const ModalClone: FC<ModalProps> = ({
         <div className='modal__header'>
           <div className='flex items-center justify-between'>
             <div className='flex-1 pr-8'>
-              <h3 className='modal__title text-xl'>Clone Role</h3>
+              <h3 style={{fontSize: '16px'}}className='modal__title text-xl'>Clone Role</h3>
             </div>
           </div>
         </div>
         <div className='modal__body p-4 overflow-auto'>
-          <p className='color-tertiary-text'>Copy data from another role and modify it</p>
+          {/* <p className='color-tertiary-text'>Copy data from another role and modify it</p> */}
           <div className='mt-6'>
-            <label className='input-field-label font-semibold'>Select role using role name</label>
+            <label className='input-field-label font-semibold'>Select Role</label>
             <div className='custom-select-wrapper'>
               <div
                 className='custom-select-container custom-select-container--md custom-select-container--h36 satoshi-bold text-sm'
@@ -109,7 +109,7 @@ const ModalClone: FC<ModalProps> = ({
               </ul>
             </div>
           </div>
-          <div
+          <div style={{marginLeft: '10px'}}
             className={`flex items-center justify-end pt-6 pb-2 px-4 ${
               isDropdownOpen ? 'mt-170' : ''
             }`}
@@ -124,7 +124,7 @@ const ModalClone: FC<ModalProps> = ({
                 isEmpty(dropdownValue) && 'disabled'
               }`}
             >
-              Proceed
+              Save
             </button>
           </div>
         </div>

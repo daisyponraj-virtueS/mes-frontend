@@ -12,6 +12,7 @@ import { isEmpty, validatePermissions } from 'utils/utils';
 import Loading from 'components/common/Loading';
 import { crudType, permissionsMapper } from 'utils/constants';
 
+
 const RolesDetailView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,6 +29,11 @@ const RolesDetailView = () => {
     crudType.edit
   );
 
+  const dummyData = [
+    { userId: '001', name: 'John Williams', username: 'JohnWilliams', ssoStatus: 'Enabled' },
+    { userId: '002', name: 'Jane Smith', username: 'janesmith', ssoStatus: 'Disabled' },
+    // Add more dummy data as needed
+  ];
   const handleEditRoleClick = () => {
     navigate(`${paths.editRole}/${id}`);
   };
@@ -69,7 +75,7 @@ const RolesDetailView = () => {
             <div className='btn-edit-absolute'>
               <button
                 onClick={hasEditPermission && handleEditRoleClick}
-                className={`btn btn--h30 py-1 px-4 font-bold ${
+                className={`btn btn--h30 py-1 px-3 font-bold ${
                   hasEditPermission ? '' : 'disabled'
                 }`}
               >
@@ -78,39 +84,37 @@ const RolesDetailView = () => {
               </button>
             </div>
             <div className='flex'>
-              <div className='flex flex-col' style={{ width: 260 }}>
-                <h2 className='text-xl font-medium'>
-                  {/* {roleDetails?.role_name}  */}
-                  Role Details
-                </h2>
-                {/* <p className="color-tertiary-text text-sm mt-2">
-                  This could be used to write very important message.
-                </p> */}
-              </div>
-              <div style={{ width: 352, marginLeft: 108 }}>
+              <div className='flex flex-col' style={{ width: '100%', marginTop: '10px' }}>
                 <div className='flex flex-wrap -mx-2'>
-                  <div className='col-6 px-2 mb-6'>
+                  <div className='px-1 mb-2' style={{ flex: '1' }}>
                     <label className='input-field-label'>Role Id</label>
                     <p className='input-field-text'>{roleDetails?.id}</p>
                   </div>
-                  <div className='col-6 px-2 mb-6'>
+                  <div className='px-1 mb-2' style={{ flex: '1' }}>
                     <label className='input-field-label'>Role Name</label>
                     <p className='input-field-text'>{roleDetails?.role_name}</p>
                   </div>
-                  <div className='col-6 px-2'>
+                  <div className='px-1 mb-2' style={{ flex: '1' }}>
                     <label className='input-field-label'>Active / Inactive Users</label>
                     <p className='input-field-text'>
                       {`${roleDetails.total_users?.active_user_count} / ${roleDetails.total_users?.inactive_user_count}`}
                     </p>
                   </div>
-                  <div className='col-6 px-2'>
+                  <div className='px-1 mb-2' style={{ flex: '1' }}>
                     <label className='input-field-label'>No of Functions</label>
                     <p className='input-field-text'>{roleDetails.total_functions}</p>
                   </div>
                 </div>
               </div>
             </div>
-            <div className='table-general-wrapper mt-8'>
+
+            <hr style={{ borderTop: '2px solid #CDD0D1', width: '100%' }} />
+            <div style={{ width: '100%' }}>
+              <p className='mb-2' style={{ fontWeight: 500, fontSize: '20px' }}>
+                Functions
+              </p>
+            </div>
+            <div className='table-general-wrapper mt-2'>
               <table className='table-general table-general--user-access table-general--user-access--list align-cells-center'>
                 <thead>
                   <tr>
@@ -169,6 +173,35 @@ const RolesDetailView = () => {
                     ))}
                   </tbody>
                 ))}
+              </table>
+            </div>
+
+            <hr style={{ borderTop: '2px solid #CDD0D1', width: '100%' }} />
+            <div style={{ width: '100%' }}>
+              <p className='mb-2' style={{ fontWeight: 500, fontSize: '20px' }}>
+                Users
+              </p>
+            </div>
+            <div className='table-general-wrapper mt-2'>
+              <table className='table-general table-general--user-access--list'>
+                <thead>
+                  <tr>
+                    <td className="align-items-start">User ID</td>
+                    <td className="align-items-start">Name</td>
+                    <td className="align-items-start">Username</td>
+                    <td className="align-items-start">SSO Status</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dummyData.map((data, index) => (
+                    <tr key={index}>
+                      <td className="">{data.userId}</td>
+                      <td className="align-items-start">{data.name}</td>
+                      <td className="align-items-start">{data.username}</td>
+                      <td className="align-items-start">{data.ssoStatus}</td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           </div>
