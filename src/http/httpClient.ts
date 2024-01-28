@@ -21,7 +21,8 @@ export class HttpClient {
 
   constructor() {
     this.httpClient = axios.create({
-      baseURL: 'http://72.181.13.50:7050',
+      // baseURL: 'http://72.181.13.50:7050',
+      baseURL:'http://127.0.0.1:8000',
       responseType: 'json',
       timeout: 60000,
     });
@@ -80,7 +81,7 @@ export class HttpClient {
       });
       return response;
     } catch (e: any) {
-      alert(e);
+      // alert(e);
       return e.error;
     }
   }

@@ -19,6 +19,7 @@ const UsersListView = () => {
   const { userId } = useParams();
   const [userDetails, setUserDetails] = useState<any>({});
   const [isLoggedInUser, setIsLoggedInUser] = useState(false);
+  const [allRoles, setAllRoles] = useState<any>([]);
 
   useEffect(() => {
     if (userId) {
@@ -32,6 +33,23 @@ const UsersListView = () => {
       }
     }
   }, [userId]);
+
+  useEffect(() => {
+    const getRolesAPI = async () => {
+      httpClient
+        // .get('/api/roles/?is_delete=false')
+        .get('/api/account/roles/?is_delete=false')
+        .then((response: any) => {
+          if (response.data) {
+            setAllRoles(response.data.results);
+          }
+        })
+        .catch((err) => {
+          console.log('errored -->', err);
+        });
+    };
+    getRolesAPI();
+  }, []);
 
   const { pathname } = useLocation();
   const module = pathname?.split('/')[1];
@@ -51,9 +69,12 @@ const UsersListView = () => {
   useEffect(() => {
     if (userId) {
       httpClient
-        .get(`/api/users/${userId}`)
+        // .get(`/api/users/${userId}`)
+        .get(`/api/account/users/${userId}`)
         .then((response) => {
           if (response.data) {
+            console.log(response.data);
+
             setUserDetails(response.data);
           }
         })
@@ -135,14 +156,14 @@ const UsersListView = () => {
                 src={arrowLeft}
                 alt='back-arrow'
               />
-              <h2 className='text-xl font-bold ml-4'> Daisy
-                {/* {userDetails.first_name + ' ' + userDetails.last_name} */}
+              <h2 className='text-xl font-bold ml-4'>
+                {userDetails?.first_name + ' ' + userDetails?.last_name}
               </h2>
             </div>
           </div>
         </div>
         <div className='dashboard__main__body px-8 py-6 scroll-0'>
-          <div className='card-box px-6 py-8' style={{paddingTop: '50px'}}>
+          <div className='card-box px-6 py-8' style={{ paddingTop: '50px' }}>
             <div className='btn-edit-absolute'>
               <button
                 onClick={hasEditPermission && !isLoggedInUser && handleEditClick}
@@ -170,49 +191,49 @@ const UsersListView = () => {
                   <div className='col-3 px-2 mb-6'>
                     <label className='input-field-label'>Name</label>
                     <p className='input-field-text'>
-                      {/* {userDetails.first_name + ' ' + userDetails.last_name} */}
-                      Daisy Ponraj
+                      {userDetails?.first_name + ' ' + userDetails?.last_name}
                     </p>
                   </div>
                   <div className='col-3 px-2'>
                     <label className='input-field-label'>Phone Number</label>
-                    <p className='input-field-text'>+124748592454</p>
+                    <p className='input-field-text'>{userDetails?.phone || '-'}</p>
                   </div>
                   <div className='col-3 px-2'>
                     <label className='input-field-label'>Email</label>
-                    <p className='input-field-text'>
-                      {/* {userDetails.email || '-'} */}
-                      daisyponraj@gamil.com
-                    </p>
+                    <p className='input-field-text'>{userDetails?.email || '-'}</p>
                   </div>
                 </div>
                 <div className='flex flex-wrap -mx-2'>
                   <div className='col-3 px-2'>
                     <label className='input-field-label'>Department</label>
-                    <p className='input-field-text'>Operations</p>
+                    <p className='input-field-text'>{userDetails?.department || '-'}</p>
                   </div>
                   <div className='col-3 px-2'>
                     <label className='input-field-label'>Roles</label>
-                    <p className='input-field-text'>{getCommaSeparatedRoles(userDetails?.roles)}</p>
+                    <p className='input-field-text'>
+                      {/* {getCommaSeparatedRoles(allRoles.find((role: any) => role.id === userDetails?.role))} */}
+                      {userDetails?.role
+                        ?.map((roleId: any) => {
+                          const role = allRoles.find((r: any) => r.id === roleId);
+                          return role ? role.role_name : null;
+                        })
+                        .join(', ')}
+                    </p>
                   </div>
                   <div className='col-3 px-2'>
                     <label className='input-field-label'>SSO login</label>
-                    <p className='input-field-text' style={{color:"#8F1D18"}}>Disabled</p>
-                    
+                    <p className='input-field-text' style={{ color: '#8F1D18' }}>
+                      Disabled
+                    </p>
                   </div>
                   <div className='col-3 px-2'>
                     <label className='input-field-label'>Username</label>
-                    <p className='input-field-text'>
-                      {/* {userDetails.username} */}daisyponraj
-                    </p>
+                    <p className='input-field-text'>{userDetails?.username || '-'}</p>
                   </div>
-                 
                 </div>
               </div>
             </div>
-            <div style={{borderBottom: "1px solid var(--grey30)",marginTop: "30px"}}>
-
-            </div>
+            <div style={{ borderBottom: '1px solid var(--grey30)', marginTop: '30px' }}></div>
             {!isEmpty(permission_list) && (
               <>
                 <div className='mt-8'>

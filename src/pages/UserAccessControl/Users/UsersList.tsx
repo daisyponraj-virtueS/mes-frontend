@@ -40,7 +40,7 @@ const UsersList = () => {
   const [status, setStatus] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState<any>({});
-
+  const [allRoles, setAllRoles] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [searchValue, setSearchValue] = useState<string | number>('');
@@ -65,7 +65,8 @@ const UsersList = () => {
   const getUsers = (pageNumber: any) => {
     let url = '';
     if (pageNumber === 1) {
-      url = `/api/users/?page_size=${itemsPerPage}`;
+      // url = `/api/users/?page_size=${itemsPerPage}`;
+      url = `/api/account/users/`;
     } else {
       url = `/api/users/?page=${pageNumber}&page_size=${itemsPerPage}`;
     }
@@ -90,6 +91,23 @@ const UsersList = () => {
         console.log('errored -->', err);
       });
   };
+
+  useEffect(() => {
+    const getRolesAPI = async () => {
+      httpClient
+        // .get('/api/roles/?is_delete=false')
+        .get('/api/account/roles/?is_delete=false')
+        .then((response: any) => {
+          if (response.data) {
+            setAllRoles(response.data.results);
+          }
+        })
+        .catch((err) => {
+          console.log('errored -->', err);
+        });
+    };
+    getRolesAPI();
+  }, []);
 
   const handleOptionModal = (event: any, id: number) => {
     event.stopPropagation();
@@ -157,7 +175,8 @@ const UsersList = () => {
 
   const userStatusChangeAPI = async (request: any) => {
     httpClient
-      .patch(`/api/users/${actionUserId}/`, { data: request })
+      // .patch(`/api/users/${actionUserId}/`, { data: request })
+      .patch(`/api/account/users/${actionUserId}/`, { data: request })
       .then((response: any) => {
         if (response.status === 200) {
           const statusMessage = !request?.is_delete ? 'Activated the User' : 'Deactivated the User';
@@ -216,6 +235,8 @@ const UsersList = () => {
   };
 
   const handleOnchangeStatus = (event: any, user: any) => {
+    console.log("called");
+    
     event.stopPropagation();
     if (!hasEditPermission) {
       notify('warning', 'No permission to do this operation');
@@ -269,25 +290,27 @@ const UsersList = () => {
           placeholder='Search'
           // hasPermission={hasAddUserPermission}
           onSearchChange={(value) => {
-              setSearchValue(value);
-              setInputData({ ...inputData, search: searchValue });
+            setSearchValue(value);
+            setInputData({ ...inputData, search: searchValue });
           }}
           // sort_filter_click={(inputValue: any, fromFilterSerach: boolean) =>
           //   onSort_Filter(inputValue, fromFilterSerach)
           // }
           filteredData={filteredData}
           fetchSearchList={fetchSearchList}
-          />
+        />
         <div className='dashboard__main__body px-8 pt-6 scroll-0 overflow-y-hidden'>
           {!isEmpty(users) ? (
             <TableUsersList
               users={users}
+              userStatusChangeAPI={userStatusChangeAPI}
               setUsers={setUsers}
               handleOptionModal={handleOptionModal}
               handleResetPassword={handleResetPassword}
               handleOnchangeStatus={handleOnchangeStatus}
               hasEditPermission={hasEditPermission}
               loggedInUser={loggedInUser}
+              allRoles={allRoles}
             />
           ) : (
             <div style={{ textAlign: 'center', padding: '50px 20px' }}>No records found.</div>

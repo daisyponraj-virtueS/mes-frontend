@@ -25,7 +25,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   const { pathname } = useLocation();
   const module = pathname?.split('/')[1];
   const subModule = pathname?.split('/')[2];
-  const [showTooltip,setShowTooltip] = useState(false)
+  const [showTooltip, setShowTooltip] = useState(false);
   const hasClonePermission = validatePermissions(
     permissionsMapper[module],
     permissionsMapper[subModule],
@@ -34,6 +34,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
   const [openCloneModal, setOpenCloneModal] = useState<boolean>(false);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [selectedLoginType, setSelectedLoginType] = useState<Number>(1);
   const [formData, setFormData] = useState<any>({
     firstname: '',
     lastname: '',
@@ -41,20 +42,21 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     phone: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    roles: [],
-    department: ''
+    // confirmPassword: '',
+    role: [],
+    department: '',
   });
+  console.log(selectedLoginType);
 
   const [existingRoles, setExistingRoles] = useState<any>([]);
   const [allRoles, setAllRoles] = useState<any>([]);
-  const [selectedLoginType, setSelectedLoginType] = useState<Number>(0);
-  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false)
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const getRolesAPI = async () => {
       httpClient
-        .get('/api/roles/?is_delete=false')
+        // .get('/api/roles/?is_delete=false')
+        .get('/api/account/roles/?is_delete=false')
         .then((response: any) => {
           if (response.data) {
             setExistingRoles(response.data.results);
@@ -67,6 +69,8 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     };
     getRolesAPI();
   }, []);
+
+  console.log(allRoles);
 
   const [errors, setErrors] = useState<any>({});
 
@@ -109,10 +113,9 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   function onValueChange(event: any) {
-    console.log("event", event.target.value)
-    setSelectedLoginType(event.target.value)
-
-}
+    console.log('event', event.target.value);
+    setSelectedLoginType(event.target.value);
+  }
   const handleConfirmPasswordChange = (value: any) => {
     setFormData({ ...formData, confirmPassword: value });
     setErrors({
@@ -122,11 +125,18 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const generatePassword = () => {
-    const randomstring = Math.random().toString(36).slice(-8);
-    setFormData({ ...formData, password: randomstring });
-    setIsPasswordVisible(true)
-    console.log("randomstring", randomstring)
-  }
+    // const randomstring = Math.random().toString(36).slice(-8);
+    // console.log(randomstring);
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?/{}[]';
+    let password = '';
+    for (let i = 0; i < 9; i++) {
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        password += chars.charAt(randomIndex);
+    }
+    setFormData({ ...formData, password: password });
+    setIsPasswordVisible(true);
+    console.log('randomstring', password);
+  };
   const handleDepartmentChange = (value: any) => {
     setFormData({ ...formData, department: value });
     // setErrors({ ...errors, department: validateFirstname(value) });
@@ -138,11 +148,11 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
   const handleRoleClick = (roleId: any) => {
     setOpenDropdown(false);
-    if (formData.roles.includes(roleId)) {
+    if (formData.role.includes(roleId)) {
       // Deselect the role if it's already selected
       setFormData({
         ...formData,
-        roles: formData.roles.filter((selectedRoleId: any) => selectedRoleId !== roleId),
+        role: formData.role.filter((selectedRoleId: any) => selectedRoleId !== roleId),
       });
       // Add the role back to existingRoles
       setExistingRoles([...existingRoles, getRoleById(roleId)]);
@@ -150,7 +160,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
       // Select the role if it's not selected
       setFormData({
         ...formData,
-        roles: [...formData.roles, roleId],
+        role: [...formData.role, roleId],
       });
       setExistingRoles(existingRoles.filter((role: any) => role.id !== roleId));
     }
@@ -164,12 +174,14 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
       phone: validatePhone(formData.phone),
       email: validateEmail(formData.email.trim()),
       password: validatePassword(formData.password.trim()),
-      confirmPassword: validateConfirmPassword(
-        formData.confirmPassword.trim(),
-        formData.password.trim()
-      ),
+      // confirmPassword: validateConfirmPassword(
+      //   formData.confirmPassword.trim(),
+      //   formData.password.trim()
+      // ),
     };
     setErrors(validationErrors);
+    console.log('validationErrors', validationErrors);
+
     return Object.values(validationErrors).every((error) => !error);
   };
 
@@ -261,18 +273,18 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   const validatePassword = (value: any) => {
     let errorMessage = '';
 
-    if (
-      value.length < 8 ||
-      !/[A-Z]/.test(value) ||
-      !/\d/.test(value) ||
-      !/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(value) ||
-      value.toLowerCase().includes(formData?.username?.toLowerCase()) ||
-      value.toLowerCase().includes(formData?.firstname.toLowerCase()) ||
-      value.toLowerCase().includes(formData?.lastname.toLowerCase())
-    ) {
-      errorMessage =
-        'Password must be at least 8 characters, contain at least one uppercase letter, one number, and one symbol. It cannot be part of the username or user’s name.';
-    }
+    // if (
+    //   value.length < 8 ||
+    //   !/[A-Z]/.test(value) ||
+    //   !/\d/.test(value) ||
+    //   !/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(value) ||
+    //   value.toLowerCase().includes(formData?.username?.toLowerCase()) ||
+    //   value.toLowerCase().includes(formData?.firstname.toLowerCase()) ||
+    //   value.toLowerCase().includes(formData?.lastname.toLowerCase())
+    // ) {
+    //   errorMessage =
+    //     'Password must be at least 8 characters, contain at least one uppercase letter, one number, and one symbol. It cannot be part of the username or user’s name.';
+    // }
     return errorMessage.trim();
   };
 
@@ -285,7 +297,8 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
   const addUserAPI = async (request: any) => {
     httpClient
-      .post('/api/users/', { data: request })
+      // .post('/api/users/', { data: request })
+      .post('/api/account/users/', { data: request })
       .then((response: any) => {
         if (response.status === 200 || response.status === 201) {
           if (response.data) {
@@ -315,7 +328,8 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
         phone: formData.phone,
         email: formData.email.trim(),
         password: formData.password.trim(),
-        roles: formData.roles,
+        role: formData.role,
+        login_type: selectedLoginType == 1 ? 'simple' : 'SSO',
       };
       addUserAPI(request);
     }
@@ -338,6 +352,8 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const isUserFormFilled = (formData: any) => {
+    console.log(formData);
+
     for (const key in formData) {
       if (formData.hasOwnProperty(key)) {
         if (key !== 'phone' && key !== 'email') {
@@ -396,7 +412,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
             </button> */}
           </div>
         </div>
-            {/* <Header
+        {/* <Header
             title='Additive Maintenance'
             onSearchChange={(value) => {
               setSearchValue(value);
@@ -513,7 +529,14 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                               className='custom-select__arrow-down'
                             />
                           </div> */}
-                          <CustomSelect options= {[]} index ={0} onChange={handleDropdown} ></CustomSelect>
+                          <CustomSelect
+                            options={existingRoles.map((role: any) => ({
+                              value: role.id,
+                              option: role.role_name,
+                            }))}
+                            index={0}
+                            onChange={handleDropdown}
+                          ></CustomSelect>
                           <ul
                             className={`select-dropdown-menu ${openDropdown ? 'open' : ''}`}
                             style={{ maxHeight: 140, overflow: 'auto' }}
@@ -544,7 +567,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                       </div>
                     </OutsideClickHandler>
                     <div className='pills-box-wrapper mt-3'>
-                      {formData.roles.map((roleId: any) => (
+                      {formData.role.map((roleId: any) => (
                         <div className='pills-box'>
                           {getRoleNameById(roleId)}
                           <img
@@ -557,23 +580,24 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div className='col-12 px-2 mb-6'>
                     <label className='input-field-label font-semibold'>Login Type*</label>
-                    <div className='modal__radio flex' style={{padding: "15px 0"}}>
-                        <label className='p-1 radio-container'>
-                          <input
-                            className='p-1'
-                            type='radio'
-                            name='current-mix-system'
-                            value={0}
-                            checked={selectedLoginType == 0}
-                            onChange={onValueChange}
-                          />
-                          <span className='radio-text radio-style'>SSO</span>
+                    <div className='modal__radio flex' style={{ padding: '15px 0' }}>
+                      <label className='p-1 radio-container'>
+                        <input
+                          className='p-1'
+                          type='radio'
+                          name='current-mix-system'
+                          value={0}
+                          disabled
+                          checked={selectedLoginType == 0}
+                          onChange={onValueChange}
+                        />
+                        <span className='radio-text radio-style'>SSO</span>
                       </label>
                       <div className='col-12 flex'>
-                        <label className='p-1 mt-16 col-2' style={{width: "93px"}}>
+                        <label className='p-1 mt-16 col-2' style={{ width: '93px' }}>
                           <input
                             className='p-1'
                             type='radio'
@@ -583,69 +607,91 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                             onChange={onValueChange}
                           />
                           <span className='radio-text radio-style'>User ID</span>
-                        </label>  
-                        {  (
-                        <div className='p-1 col-10'>
-                          <div className='flex' style={{marginTop: "-12px"}}>
-                            <div className='col-4 px-2 mb-6'>
-                              <div className='col-wrapper'>
-                                    <label className='input-field-label font-semibold'>User ID</label>
-                                    <input
-                                      type='text'
-                                      placeholder='Enter User Id'
+                        </label>
+                        {
+                          <div className='p-1 col-10'>
+                            <div className='flex' style={{ marginTop: '-12px' }}>
+                              <div className='col-4 px-2 mb-6'>
+                                <div className='col-wrapper'>
+                                  <label className='input-field-label font-semibold'>User ID</label>
+                                  <input
+                                    type='text'
+                                    placeholder='Enter User Id'
                                     name='username'
                                     disabled={selectedLoginType == 0}
-                                      value={formData.username}
-                                      onChange={(e) => handleUsernameChange(e.target.value.trim())}
-                                      className='input-field input-field--md input-field--h40 w-full'
-                                      spellCheck={false}
-                                    />
-                                    {errors.username && <div className='error-message'>{errors.username}</div>}
+                                    value={formData.username}
+                                    onChange={(e) => handleUsernameChange(e.target.value.trim())}
+                                    className='input-field input-field--md input-field--h40 w-full'
+                                    spellCheck={false}
+                                  />
+                                  {errors.username && (
+                                    <div className='error-message'>{errors.username}</div>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                            { selectedLoginType == 1 && isPasswordVisible && (
-                              <div className='col-4 px-2 mb-6 flex'>
-                                <div className='col-wrapper'>
-                                  <label className='input-field-label font-semibold'>Password Generated</label>
-                                  <input
+                              {selectedLoginType == 1 && isPasswordVisible && (
+                                <div className='col-4 px-2 mb-6 flex'>
+                                  <div className='col-wrapper'>
+                                    <label className='input-field-label font-semibold'>
+                                      Password Generated
+                                    </label>
+                                    <input
                                       type='password'
                                       disabled
-                                    placeholder=''
-                                    name='password'
-                                    value={formData.password}
-                                    // onChange={(e) => handlePasswordChange(e.target.value)}
+                                      placeholder=''
+                                      name='password'
+                                      value={formData.password}
+                                      // onChange={(e) => handlePasswordChange(e.target.value)}
                                       className='input-field input-field--md input-field--h40 w-full'
-                                      style={{minWidth: "222px"}}
-                                  />
-                                  {/* {errors.password && <div className='error-message'>{errors.password}</div>} */}
+                                      style={{ minWidth: '222px' }}
+                                    />
+                                    {/* {errors.password && <div className='error-message'>{errors.password}</div>} */}
                                   </div>
                                   {/* <div > */}
-                                  <img src={copy} alt='copy-icon' style={{cursor: "pointer",width:"30px", marginLeft: "10px", marginTop: "22px"}} 
-                                    onClick={() => { navigator.clipboard.writeText(formData.password) }} data-toggle="tooltip" data-placement="bottom" onMouseOver={() => setShowTooltip(true)} onMouseOut={() => setShowTooltip(false)} />
-                                  {showTooltip ? <span className='workshop__tooltip'>Copy Password</span> : ''}
-                                    {/* </div> */}
+                                  <img
+                                    src={copy}
+                                    alt='copy-icon'
+                                    style={{
+                                      cursor: 'pointer',
+                                      width: '30px',
+                                      marginLeft: '10px',
+                                      marginTop: '22px',
+                                    }}
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(formData.password);
+                                    }}
+                                    data-toggle='tooltip'
+                                    data-placement='bottom'
+                                    onMouseOver={() => setShowTooltip(true)}
+                                    onMouseOut={() => setShowTooltip(false)}
+                                  />
+                                  {showTooltip ? (
+                                    <span className='workshop__tooltip'>Copy Password</span>
+                                  ) : (
+                                    ''
+                                  )}
+                                  {/* </div> */}
                                 </div>
-                                
-                            )}
-                            
-                            {selectedLoginType == 1 && !isPasswordVisible && (<div className='pt-28'>
-                            <button
-                                type='button'
-                                className={`btn btn--primary btn--h36 px-8 py-2 ml-4`}
-                                onClick={generatePassword}
-                              >
-                               Generate Password
-                              </button>
+                              )}
+
+                              {selectedLoginType == 1 && !isPasswordVisible && (
+                                <div className='pt-28'>
+                                  <button
+                                    type='button'
+                                    className={`btn btn--primary btn--h36 px-8 py-2 ml-4`}
+                                    onClick={generatePassword}
+                                  >
+                                    Generate Password
+                                  </button>
+                                </div>
+                              )}
                             </div>
-                            )}
-                            
                           </div>
-                        </div>
-                        )}
+                        }
                       </div>
                     </div>
-                  </div>     
-                  
+                  </div>
+
                   {/* <div className='col-4 px-2 mb-6'>
                     <div className='col-wrapper'>
                       <label className='input-field-label font-semibold'>Confirm Password</label>
@@ -662,14 +708,13 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                       )}
                     </div>
                   </div> */}
-
-                  
                 </div>
               </div>
             </div>
           </div>
         </div>
-
+        {console.log(isUserFormFilled(formData))}
+        {console.log(isUserFormValid(formData))}
         <div className='dashboard__main__footer'>
           <div className='dashboard__main__footer__container'>
             <button
