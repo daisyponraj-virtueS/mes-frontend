@@ -4,6 +4,8 @@ import editIcon from 'assets/icons/edit-thick.svg';
 import InfoBlock from './infoBlock';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+
+
 // import { useState } from 'react';
 
 // import { useState } from 'react';
@@ -63,7 +65,7 @@ const AdditiveBlock: React.FC<InfoBlockProps> = ({ label, value, flexBasis, marg
 //     ],
 //     // Add mappings for other steps
 //   };
-const RefiningSteps = ({setTab}: any) => {
+const RefiningSteps = ({setTab, viewId}: any) => {
   const navigate = useNavigate();
   const [StepData, setStepData] = useState([]);
   const [stepDataMapping, setStepDataMapping] = useState({});
@@ -76,7 +78,7 @@ const RefiningSteps = ({setTab}: any) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config-steps/${11}/`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config-steps/${viewId}/`);
         const responseData = response.data;
   
         if (Array.isArray(responseData.data)) {
@@ -135,11 +137,11 @@ const RefiningSteps = ({setTab}: any) => {
     appmasterData();
   }, []);
 
-  //this below code is used for map refine data filter
-//   let stepTitle: any;
-//   furnaceData?.furnace?.map((val) => val.step.map((e) => stepTitle = e.electrode_type_id)); 
+//   let titleId: any 
+//   furnaceData?.furnace.map((furnace: any)=> titleId = furnace.furnace_no)
   return (
-    <div className='container mt-3 mb-3' style={{ height: '100%' }}>
+    <>
+    <div className='container mt-3 mb-3' style={{ height: '560px', overflow: 'auto' }}>
       <div className='container card' style={{ height: '100%' }}>
       <div style={{ display: 'flex' }}>
             <div
@@ -215,15 +217,17 @@ const RefiningSteps = ({setTab}: any) => {
             </div>
           </div>
         <div className='card-body card_body_container'>
-          <div className='btn-edit-absolute d-flex justify-content-end'>
-            <button
-              className={`btn btn--h30 py-1 px-3 font-bold mt-4 `}
-              onClick={() => navigate('/core-process/bin-contents/items/view')}
-            >
-              <img src={editIcon} alt='edit' className='mr-2' />
-              Edit
-            </button>
-          </div>
+
+           <div className='btn-edit-absolute d-flex justify-content-end'>
+              <button
+                className={`btn btn--h30 py-1 px-2 font-bold mt-4 `}
+
+                onClick={()=>navigate(`/system-admin/furnace-configuration/edit/${viewId}/2`)}
+              >
+                <img src={editIcon} alt='edit' className='mr-2' />
+                Edit
+              </button>
+            </div>
           <div
             className='box-container'
             style={{
@@ -301,6 +305,7 @@ const RefiningSteps = ({setTab}: any) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
-const PlantFooter = ({disabled=false}) => {
+const PlantFooter = ({disabled=false, currentTab}) => {
+    const buttonText = currentTab === 1 ? 'Save & Continue' : 'Save Changes';
   return (
     <div
       style={{
@@ -40,7 +41,7 @@ const PlantFooter = ({disabled=false}) => {
         }}
         disabled={disabled}
       >
-        Save Changes
+        {buttonText}
       </button>
     </div>
   );

@@ -14,12 +14,14 @@ import info from '../../../assets/icons/info.svg';
 import editIcon from '../../../assets/icons/edit1.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { notify } from 'utils/utils';
 
 const formValidationSchema = yup.object({});
 
-const RefiningSteps = ({ setTab,addId,edit_Id }: any) => {
+const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
   const [enabled, setEnabled] = useState(false);
   const [isEdit, setIsEdit] = useState(edit_Id?true:false);
+  console.log("praveen666",isEdit)
   const [controlParameters, setControlParameters] = useState({
     control_parameters: '',
     value: '',
@@ -49,14 +51,18 @@ const RefiningSteps = ({ setTab,addId,edit_Id }: any) => {
       },
       validationSchema: formValidationSchema,
       onSubmit: async (values, { resetForm }) => {
+        console.log("praveen7676767")
         if (!isSaved) {
           setDataList([...dataList, values]);
+          console.log("praveen1115")
         }
         if (isEdit) {
           if (!isSaved) {
             handleEditSubmit([...dataList, { ...values, order: dataList.length + 1 }]);
+            console.log("praveen1111")
           } else {
             handleEditSubmit(dataList);
+            console.log("praveen1112")
           }
         } else {
           if (isSaved) {
@@ -65,14 +71,23 @@ const RefiningSteps = ({ setTab,addId,edit_Id }: any) => {
               { step_data: dataList }
             );
             console.log(response);
-            navigate("/system-admin/furnace-configuration/list")
+            // navigate(`/system-admin/furnace-configuration/list`)
+           
 
           }
         }
         setIsSaved(true);
         setControlParametersList([]);
         setAdditiveList([]);
-
+        // navigate(`/system-admin/furnace-configuration/view/${viewId}/1`)
+        navigate(`/system-admin/furnace-configuration/list`)
+       
+        if(isEdit){
+            notify('success', 'Furnace Updated successfully');
+        }else{
+            notify('success', 'Furnace Created successfully');
+        }
+        console.log("praveen232323")
         resetForm();
       },
     });
@@ -110,6 +125,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id }: any) => {
 
     if (isEdit) {
       getEditData();
+      console.log("praveen1113")
     }
   }, []);
 
@@ -320,6 +336,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id }: any) => {
       step_data: values,
     });
     console.log(response);
+    console.log("praveen4444")
     setCardEdit([]);
   };
 
@@ -1412,7 +1429,8 @@ const RefiningSteps = ({ setTab,addId,edit_Id }: any) => {
         </div>
       </div>
 
-      <PlantFooter
+      <PlantFooter 
+      currentTab={2}
         disabled={
           dataList.length < 1 && additiveList.length < 1 && controlParametersList.length < 1
         }

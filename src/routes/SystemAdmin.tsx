@@ -29,7 +29,7 @@ import { paths } from './paths';
 const FurnaceListScreen = lazy(() => import('pages/SuperAdmin/FurnaceConfiguration/listingScreen'));
 const AddFurnace = lazy(() => import('pages/Furnace/furnace'));
 const EditFurnace = lazy(() => import('pages/Furnace/furnace'));
-const ViewFurance = lazy(() => import('pages/SuperAdmin/FurnaceConfiguration/furnaceView'));
+const ViewFurance = lazy(() => import('pages/SuperAdmin/furnace'));
 
 const PlantEditScreen = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
 const AddPlant = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
