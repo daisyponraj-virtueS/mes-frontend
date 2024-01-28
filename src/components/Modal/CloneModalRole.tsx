@@ -25,7 +25,8 @@ const ModalClone: FC<ModalProps> = ({
   const [roles, setRoles] = useState<any>([]);
 
   const getRoles = () => {
-    let url = `/api/roles/?is_delete=false`;
+    // let url = `/api/roles/?is_delete=false`;
+    let url = `/api/account/roles/`;
     httpClient
       .get(url)
       .then((response: any) => {
