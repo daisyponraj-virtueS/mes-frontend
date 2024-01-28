@@ -123,7 +123,7 @@ export const paths = {
   },
   furnaceConfig:{
     list: `${FURNACE_CONFIGURATION}/list`,
-    view: `${FURNACE_CONFIGURATION}/view`,
+    view: `${FURNACE_CONFIGURATION}/view/:id`,
     edit: `${FURNACE_CONFIGURATION}/edit/:id/:tab`,
     create: `${FURNACE_CONFIGURATION}/create`,
   },

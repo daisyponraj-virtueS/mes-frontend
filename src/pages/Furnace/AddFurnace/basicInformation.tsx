@@ -121,6 +121,7 @@ const BasicInformation = ({ setTab, setAddId,edit_Id }:any) => {
             plant_id: 1000,
             created_by: '10',
           });
+        
           console.log(response);
           setAddId(response.data.id)
           setTab(2)
@@ -129,6 +130,7 @@ const BasicInformation = ({ setTab, setAddId,edit_Id }:any) => {
             ...filteredObject,
           });
           console.log(response);
+          setTab(2)
         }
         setElectrode([]);
         setProductList([]);
@@ -1084,7 +1086,7 @@ useEffect(()=>{
           </div>
         </div>
       </div>
-      <PlantFooter />
+      <PlantFooter currentTab={1} />
     </form>
   );
 };

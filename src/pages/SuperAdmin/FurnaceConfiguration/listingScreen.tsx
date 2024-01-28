@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 import axios from 'axios';
 import { paths } from 'routes/paths';
+import Loader from 'components/Loader';
 
 // const tableData = [
 //     { code: 'FCE02', quantity: 1, type: 'Arc', size: 10, price: 1000.0, material: 'Carbon (pre baked)' },
@@ -35,6 +36,7 @@ const listingScreen = (props: any) => {
   const [masterData, setMasterData] = useState([]);
   console.log('praveen3', furnaceData);
   console.log('praveen4', masterData);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isHovered, setIsHovered] = useState('');
 
@@ -47,12 +49,12 @@ const listingScreen = (props: any) => {
 
   const handleEditClick = (event: any, furnaceId: number) => {
     event.stopPropagation();
-    navigate(`${paths.furnaceConfig.edit}/${furnaceId}`);
+    navigate(`/system-admin/furnace-configuration/edit/${furnaceId}/1`);
   };
-
+  console.log('praveen321', paths?.furnaceConfig?.edit);
   const handleViewClick = (event: any, furnaceId: number) => {
     event.stopPropagation();
-    navigate(`${paths?.furnaceConfig?.view}/${furnaceId}`);
+    navigate(`/system-admin/furnace-configuration/view/${furnaceId}`);
   };
   const handleTableRowClick = (furnaceId: number) => {
     navigate(`${paths.furnaceConfig.view}/${furnaceId}`);
@@ -66,10 +68,10 @@ const listingScreen = (props: any) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config//${11}`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/1000/`);
         const data = response.data;
         console.log('praveen1', data);
-        setFurnaceData({ furnace: [data] });
+        setFurnaceData({ furnace: data });
       } catch (error) {
         console.error('Error fetching data:', error);
         // Handle the error, e.g., set an error state or show a message to the user
@@ -78,7 +80,12 @@ const listingScreen = (props: any) => {
 
     fetchData();
   }, []);
-
+  useEffect(() => {
+    // Simulate data loading
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
   const appmasterData = async () => {
     try {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
@@ -95,10 +102,6 @@ const listingScreen = (props: any) => {
     appmasterData();
   }, []);
   //this below code is used for map electrodeData
-  let electrodeData: any;
-  furnaceData?.furnace.map((val) =>
-    val.furnace_electrodes.map((e) => (electrodeData = e.electrode_type_id))
-  );
 
   return (
     <>
@@ -119,97 +122,116 @@ const listingScreen = (props: any) => {
         //   fetchSearchList={fetchSearchList}
       />
 
-      <div className='container mt-3 mb-3' style={{ height: '100%' }}>
-        {/* <div className='container card' style={{ height: '100%' x}}> */}
-        <div className='table-general-wrapper'>
-          <table className='table-general' style={{ width: '100%' }}>
-            <thead>
-              <tr>
-                <td>Furnace No</td>
-                <td>Shop No</td>
-                <td>Power Delivery</td>
-                {/* <td>Taps Per Day</td>
+      <div>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <div className='container mt-3 mb-3' style={{ height: '100%' }}>
+            {/* <div className='container card' style={{ height: '100%' x}}> */}
+            <div className='table-general-wrapper'>
+              <table className='table-general' style={{ width: '100%' }}>
+                <thead>
+                  <tr>
+                    <td>Furnace No</td>
+                    <td>Shop No</td>
+                    <td>Power Delivery</td>
+                    {/* <td>Taps Per Day</td>
                   <td>Power Meter Factor</td> */}
-                <td>Electrode Type</td>
-                <td></td>
-              </tr>
-            </thead>
-            <tbody>
-              {furnaceData &&
-                furnaceData?.furnace.map((furnace, index) => (                   
-                  <React.Fragment key={index}>
-                    <tr
-                      key={index}
-                      onMouseEnter={() => handleMouseEnter(index)}
-                      onMouseLeave={handleMouseLeave}
-                      // key={furnace.id}
-                      onClick={() => !furnace.record_status && handleTableRowClick(furnace.id)}
-                    >
-                      <td>{furnace.furnace_no}</td>
-                      <td> {furnace.workshop_value}</td>
-                      <td>
-                        {' '}
-                        {masterData.filter((val) => val.id == furnace.power_delivery)?.[0]?.value}
-                      </td>
+                    <td>Electrode Type</td>
+                    <td></td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {furnaceData &&
+                    furnaceData?.furnace.map((furnace, index) => (
+                      <React.Fragment key={index}>
+                        <tr
+                          key={index}
+                          onMouseEnter={() => handleMouseEnter(index)}
+                          onMouseLeave={handleMouseLeave}
+                          // key={furnace.id}
+                          onClick={() => !furnace.record_status && handleTableRowClick(furnace.id)}
+                        >
+                          <td>{furnace.furnace_no}</td>
+                          <td> {furnace.workshop_value}</td>
+                          <td>
+                            {' '}
+                            {
+                              masterData.filter((val) => val.id == furnace.power_delivery)?.[0]
+                                ?.value
+                            }
+                          </td>
 
-                      <td>{masterData.filter((val) => val.id === electrodeData)?.[0]?.value}</td>
-                      <td>
-                        <div style={{ width: '90px', alignContent: 'center' }}>
-                          {isHovered === index && furnace.record_status && (
-                            <>
-                              <Link
-                               to='#'
-                                onClick={(e) => handleViewClick(e, furnace?.id)}
-                                data-tip='View'
-                              >
-                                <img
-                                  src={viewIcon}
-                                  alt='view'
-                                  className='icon mr-2'
-                                  style={{ width: '26px', height: '26px' }}
-                                />
-                              </Link>
-                              <Link
-                                to='#'
-                                onClick={(e) => handleEditClick(e, furnace?.id)}
-                                data-tip='Edit'
-                              >
-                                <img src={editIcon} alt='edit' className='icon mr-2' />
-                              </Link>
-                              <Link to={`/deactivate`} data-tip='Deactivate'>
-                                <img src={deactivateIcon} alt='deactivate' className='icon mr-2' />
-                              </Link>
-                            </>
-                          )}
-                          {isHovered === index && !furnace.record_status && (
-                            <div className='flex items-center justify-start'>
-                              <div
-                                className='switch-container mr-2'
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <input
-                                  id={`switch-${furnace.id}`}
-                                  type='checkbox'
-                                  className='switch-input'
-                                  checked={!furnace.record_status}
-                                  onChange={(e: any) => handleOnchangeStatus(e, furnace)}
-                                />
-                                <label
-                                  htmlFor={`switch-${furnace.id}`}
-                                  className='switch-label switch-label--sm'
-                                ></label>
-                              </div>
+                          <td>
+                            {/* {masterData.filter((val) => val.id === electrodeDataArray[index])?.[0]?.value} */}
+                            {furnace.furnace_electrodes &&
+                              masterData.filter(
+                                (val) => val.id === furnace.furnace_electrodes[0]?.electrode_type_id
+                              )?.[0]?.value}
+                          </td>
+                          <td>
+                            <div style={{ width: '90px', alignContent: 'center' }}>
+                              {isHovered === index && furnace.record_status && (
+                                <>
+                                  <Link
+                                    to='#'
+                                    onClick={(e) => handleViewClick(e, furnace?.id)}
+                                    data-tip='View'
+                                  >
+                                    <img
+                                      src={viewIcon}
+                                      alt='View'
+                                      className='icon mr-2'
+                                      style={{ width: '26px', height: '26px' }}
+                                    />
+                                  </Link>
+                                  <Link
+                                    to='#'
+                                    onClick={(e) => handleEditClick(e, furnace?.id)}
+                                    data-tip='Edit'
+                                  >
+                                    <img src={editIcon} alt='edit' className='icon mr-2' />
+                                  </Link>
+                                  <Link to={`/deactivate/${furnace?.id}`} data-tip='Deactivate'>
+                                    <img
+                                      src={deactivateIcon}
+                                      alt='deactivate'
+                                      className='icon mr-2'
+                                    />
+                                  </Link>
+                                </>
+                              )}
+                              {isHovered === index && !furnace.record_status && (
+                                <div className='flex items-center justify-start'>
+                                  <div
+                                    className='switch-container mr-2'
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <input
+                                      id={`switch-${furnace.id}`}
+                                      type='checkbox'
+                                      className='switch-input'
+                                      checked={!furnace.record_status}
+                                      onChange={(e: any) => handleOnchangeStatus(e, furnace)}
+                                    />
+                                    <label
+                                      htmlFor={`switch-${furnace.id}`}
+                                      className='switch-label switch-label--sm'
+                                    ></label>
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                ))}
-            </tbody>
-          </table>
-        </div>
-        {/* </div> */}
+                          </td>
+                        </tr>
+                      </React.Fragment>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+            {/* </div> */}
+          </div>
+        )}
       </div>
     </>
   );
