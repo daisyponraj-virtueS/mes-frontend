@@ -32,11 +32,12 @@ const RolesList = () => {
 
   const getRoles = (pageNumber: any) => {
     let url = '';
-    if (pageNumber === 1) {
-      url = `/api/roles/?page_size=${itemsPerPage}`;
-    } else {
-      url = `/api/roles/?page=${pageNumber}&page_size=${itemsPerPage}`;
-    }
+    // if (pageNumber === 1) {
+    //   url = `/api/roles/?page_size=${itemsPerPage}`;
+    // } else {
+    //   url = `/api/roles/?page=${pageNumber}&page_size=${itemsPerPage}`;
+    // }
+    url = "/api/account/roles/"
     httpClient
       .get(url)
       .then((response: any) => {
@@ -138,7 +139,8 @@ const RolesList = () => {
 
   const roleStatusChangeAPI = async (request: any) => {
     httpClient
-      .post(`/api/users/deactivate_role/`, { data: request })
+      // .post(`/api/users/deactivate_role/`, { data: request })
+      .post(`/api/account/deactivate_role/`, { data: request })
       .then((response: any) => {
         if (response.status === 200) {
           if (response.data) {

@@ -162,6 +162,9 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
       if (response.status === 200) {
         notify('success', 'Role created successfully');
         navigate(`${paths.rolesList}`);
+      }else{
+        console.log("Error",response.data?.error)
+        notify('error', response.data?.error)
       }
     }
   };
