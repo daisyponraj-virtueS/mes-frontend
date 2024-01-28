@@ -72,15 +72,17 @@ const AddPlant = () => {
     currency: false,
   });
 
-  const local_plant_id : any = 1000;
-  const local_plant_name : any = localStorage.getItem('plantName');
+  const plantData: any = JSON.parse(localStorage.getItem('plantData'));
+
+  const local_plant_id : any = plantData.plant_id;
+  // const local_plant_name : any = localStorage.getItem('plantName');
 
 
 
   const initialValuesObj = {
-    plant_id: local_plant_id,
-    plant_name: JSON.parse(local_plant_name),
-    area_code: 'US 10',
+    plant_id: plantData?.plant_id,
+    plant_name: plantData?.plant_name,
+    area_code: plantData?.area_code,
     plant_address: '',
     timezone_id: '',
     language_id: '',

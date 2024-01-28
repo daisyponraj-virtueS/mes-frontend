@@ -75,7 +75,7 @@ const ModalPlantSelection: FC<ModalPlantProps> = ({ showModal, closeModel, onCon
               className={`select-dropdown-menu ${isDropdownOpen ? 'open' : ''}`}
               style={{ maxHeight: 140, overflow: 'auto' }}
             >
-              {plants.map((plant: any) => (
+              {plants?.map((plant: any) => (
                 <li
                   className='select-dropdown-menu__list'
                   key={plant.id}

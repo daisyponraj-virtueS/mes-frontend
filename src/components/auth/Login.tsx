@@ -90,6 +90,7 @@ const Login: FC<LoginProps> = ({ state }) => {
     setLocalStorage('authToken', response.payload.data?.token);
     setLocalStorage('plantId', JSON.stringify(plantId));
     setLocalStorage('plantName', plantName);
+    setLocalStorage('plantData', response.payload.data?.plant);
     location.reload();
     // navigate(`${paths.dashboard}`);
   };
