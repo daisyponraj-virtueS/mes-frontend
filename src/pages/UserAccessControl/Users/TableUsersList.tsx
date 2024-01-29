@@ -153,7 +153,7 @@ const TableUsersList = (props: any) => {
                   <td style={{ width: '230px', padding: '14px', height: '54px' }}>
                     {user.username}
                   </td>
-                  <td style={{ width: '150px', padding: '14px', height: '54px' }}>Enabled</td>
+                  <td style={{ width: '150px', padding: '14px', height: '54px' }}>{user.login_type=="sso" ? "Enabled" : "Disabled"}</td>
                   {/* <td style={{ width: '230px', padding: "14px",height: "54px"  }}>{getCommaSeparatedRoles(user.roles)}</td> */}
                   <td style={{ width: '230px', padding: '14px', height: '54px' }}>
                     {user?.role
