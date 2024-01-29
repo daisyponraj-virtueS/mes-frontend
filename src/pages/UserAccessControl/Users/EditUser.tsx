@@ -150,11 +150,11 @@ const EditUser = () => {
 
   const validateForm = () => {
     const validationErrors = {
-      firstname: validateFirstname(formData.firstname),
-      lastname: validateLastname(formData.lastname),
-      username: validateUsername(formData.username),
-      phone: validatePhone(formData.phone),
-      email: validateEmail(formData.email.trim()),
+      firstname: validateFirstname(formData?.firstname),
+      lastname: validateLastname(formData?.lastname),
+      username: validateUsername(formData?.username),
+      phone: validatePhone(formData?.phone),
+      email: validateEmail(formData?.email?.trim()),
     };
     setErrors(validationErrors);
     return Object.values(validationErrors).every((error) => !error);
@@ -285,10 +285,12 @@ const EditUser = () => {
         last_name: formData.lastname,
         // username: formData.username,
         phone: formData.phone,
-        email: formData.email.trim(),
+        email: formData.email?.trim(),
         role: [...formData.roles],
         department: formData.department,
       };
+      console.log(request);
+      
       editUserAPI(request);
     }
   };
