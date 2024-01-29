@@ -443,7 +443,7 @@ const EditUser = () => {
                         <input
                           type='text'
                           placeholder=''
-                          name='username'
+                          name='department'
                           value={formData.department}
                           onChange={(e) => handleDepartmentChange(e.target.value.trim())}
                           className='input-field input-field--md input-field--h40 w-full'
