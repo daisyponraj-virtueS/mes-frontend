@@ -312,10 +312,10 @@ const EditUser = () => {
   const isUserFormFilled = (formData: any) => {
     for (const key in formData) {
       if (formData.hasOwnProperty(key)) {
-        if (key !== 'phone' && key !== 'email') {
+        if ( key !== 'email' && key!=='department') {
           if (Array.isArray(formData[key]) && formData[key].length === 0) {
             return false;
-          } else if (formData[key] === '') {
+          } else if (formData[key] === '' || formData[key] === undefined || formData[key] === null) {
             return false;
           }
         }
@@ -329,7 +329,7 @@ const EditUser = () => {
       if (formData.hasOwnProperty(key) && key !== 'confirmPassword') {
         if (Array.isArray(formData[key]) && formData[key].length === 0) {
           return false;
-        } else if (formData[key] === '' && key !== 'phone' && key !== 'email') {
+        } else if (formData[key] === '' && key !== 'phone' && key !== 'email' && key!=='department') {
           return false;
         }
       }

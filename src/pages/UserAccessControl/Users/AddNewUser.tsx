@@ -146,7 +146,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     return allRoles.find((role: any) => role.id === roleId);
   };
 
-  const handleRoleClick = (roleId: any) => {
+  const handleRoleClick = (roleId: any) => {    
     setOpenDropdown(false);
     if (formData.role.includes(roleId)) {
       // Deselect the role if it's already selected
