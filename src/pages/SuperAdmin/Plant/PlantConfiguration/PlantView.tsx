@@ -118,7 +118,7 @@ const PlantView = () => {
         setMasterData(masterResponse.data)
         console.log("master",masterResponse.data)
 
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${plant_id}`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${plant_id}/`);
 
         console.log("response",response)
 

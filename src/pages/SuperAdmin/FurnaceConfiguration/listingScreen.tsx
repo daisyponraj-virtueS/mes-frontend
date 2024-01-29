@@ -34,8 +34,7 @@ const listingScreen = (props: any) => {
   });
   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
-  console.log('praveen3', furnaceData);
-  console.log('praveen4', masterData);
+  
   const [isLoading, setIsLoading] = useState(true);
 
   const [isHovered, setIsHovered] = useState('');
@@ -51,7 +50,7 @@ const listingScreen = (props: any) => {
     event.stopPropagation();
     navigate(`/system-admin/furnace-configuration/edit/${furnaceId}/1`);
   };
-  console.log('praveen321', paths?.furnaceConfig?.edit);
+  
   const handleViewClick = (event: any, furnaceId: number) => {
     event.stopPropagation();
     navigate(`/system-admin/furnace-configuration/view/${furnaceId}`);
@@ -90,7 +89,6 @@ const listingScreen = (props: any) => {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
 
       const masterResponseList = masterResponse?.data;
-      console.log('pravee2', masterResponseList);
       setMasterData(masterResponseList);
     } catch (error) {
       // Handle errors here

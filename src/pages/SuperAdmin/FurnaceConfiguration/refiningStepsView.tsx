@@ -72,8 +72,7 @@ const RefiningSteps = ({setTab, viewId}: any) => {
   const [additiveData, setAdditiveData] = useState({});
 //   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
-  console.log('praveen3', masterData);
-
+  
 
   useEffect(() => {
     const fetchData = async () => {

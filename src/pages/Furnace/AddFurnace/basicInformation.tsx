@@ -69,6 +69,10 @@ const BasicInformation = ({ setTab, setAddId,edit_Id }:any) => {
       casingMassLength: '',
     },
   ]);
+  const plantData: any = JSON.parse(localStorage.getItem('plantData'));
+
+  const local_plant_id : any = plantData.plant_id;
+
   const initialValues = {
     furnace_no: '',
     furnace_description: '',
@@ -118,7 +122,7 @@ const BasicInformation = ({ setTab, setAddId,edit_Id }:any) => {
         if (!isEdit) {
           const response = await axios.post('http://127.0.0.1:8000/api/plant/furnace-config/', {
             ...filteredObject,
-            plant_id: 1000,
+            plant_id: local_plant_id,
             created_by: '10',
           });
         
@@ -537,8 +541,6 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
 
       const workshopResponse = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/6V/`);
-
-      console.log("workshopResponse",workshopResponse)
 
       const masterResponseList = masterResponse?.data?.map((val: any) => {
         const list = {

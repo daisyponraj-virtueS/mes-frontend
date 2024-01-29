@@ -1,7 +1,6 @@
 import 'assets/styles/scss/components/accordion.scss'
 const Accordion = ({title,children}: any)=>{
 
-  console.log("accTitle",title)
 
     const identifier = title?.split(' ').join('')
     return(

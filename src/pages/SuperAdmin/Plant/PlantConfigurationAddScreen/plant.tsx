@@ -145,10 +145,9 @@ const AddPlant = () => {
         created_by:1,
         modified_by:2,
         };
-        console.log('values.shift1.from.length', data);
         if (isEdit) {
           const response = await axios.put(
-            `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}`,
+            `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}/`,
             data
           );
           console.log(response);
@@ -168,7 +167,7 @@ const AddPlant = () => {
     const fetchData = async () => {
       try {
         const plantConfigResponse = await axios.get(
-          `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}`
+          `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}/`
         );
 
         const editData :any = plantConfigResponse.data
@@ -311,11 +310,11 @@ const AddPlant = () => {
   const coreProcess = [...functionList.coreProcess];
 
   const labAbalysis = [...functionList.labAbalysis];
-
   const reports = [...functionList.reports];
 
 
   const handleFunctinAndModules = (value: any, index: any) => {
+    console.log("index", index, value)
     if (index === 0) {
       setModulesAndFunctionList(userControlAccess);
       setFunctionCategory(value);
@@ -359,7 +358,6 @@ const AddPlant = () => {
             function_id: value,
           },
         ];
-
     setFieldValue('function', updatedFunctions);
   };
 
@@ -446,9 +444,8 @@ const AddPlant = () => {
         labAbalysis: [],
         reports: [],
       };
-
       functionResponseData.forEach((module:any) => {
-        const functionNameValuePairs :any = module.module_functions.map(func => ({
+        const functionNameValuePairs :any = module.module_functions.map((func:any) => ({
             option: func.function_name,
             value: func.id
         }));
@@ -471,7 +468,7 @@ const AddPlant = () => {
                 break;
         }
     });
-
+    console.log("functions", functions)
 
       setFunctionList(functions);
     } catch (error) {
@@ -668,7 +665,7 @@ const AddPlant = () => {
 
               <div className='workshop__workshop_container'>
                 <div className='workshop__child'>
-                  <label className='workshop__label'>Workshop ID</label>
+                  <label className='workshop__label'>Workshop ID*</label>
                   <input type='number'
                     className='workshop__input'
                     value={workshop.workshop_id}
@@ -678,7 +675,7 @@ const AddPlant = () => {
                 </div>
 
                 <div className='workshop__child'>
-                  <label className='workshop__label'>Workshop Name</label>
+                  <label className='workshop__label'>Workshop Name*</label>
                   <input
                     className='workshop__input'
                     value={workshop.workshop_name}

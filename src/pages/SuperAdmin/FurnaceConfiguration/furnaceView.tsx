@@ -23,9 +23,7 @@ const furnaceView = ({ setTab, viewId }: any) => {
   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
 
-  console.log('praveen3', masterData);
-  console.log('praveen2', furnaceData);
-
+ 
   let coreValue,
     CoreMassLengthValue,
     pasteValue,
