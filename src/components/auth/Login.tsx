@@ -5,8 +5,10 @@ import AuthModuleBanner from './AuthModuleBanner';
 import { userLogin } from 'store/slices/authSlice';
 import eyeClose from '../../assets/icons/eye-off.svg';
 import '../../assets/styles/scss/components/auth-module.scss';
-import ModalPlantSelection from 'components/Modal/ModalPlantSelection';
+// import ModalPlantSelection from 'components/Modal/ModalPlantSelection';
 import { isEmpty, notify, setLocalStorage } from 'utils/utils';
+import { useNavigate } from 'react-router-dom';
+import { paths } from 'routes/paths';
 interface LoginProps {
   state: {
     user: {
@@ -16,16 +18,17 @@ interface LoginProps {
 }
 
 const Login: FC<LoginProps> = ({ state }) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [error, setError] = useState<any>({});
   const [password, setPassword] = useState('');
-  const [openModel, setOpenModel] = useState(false);
+  // const [openModel, setOpenModel] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState(state ? state.user.email : '');
   const [formErrors, setFormErrors] = useState({ email: '', password: '' });
   const [response, setResponse] = useState<any>();
 
-  const closeModel = () => setOpenModel(false);
+  // const closeModel = () => setOpenModel(false);
 
   const validateUsername = (value: any) => {
     if (!value) {
@@ -68,13 +71,15 @@ const Login: FC<LoginProps> = ({ state }) => {
 
   const userLoginAPI = async () => {
     const data = await dispatch(userLogin(inputData));
+    console.log('data', data);
     setResponse(data);
     if (data?.payload.status === 200 && data.payload.data?.token) {
       setError({
         toastType: 'success',
         text: data.payload.data.message,
       });
-      setOpenModel(true);
+      // setOpenModel(true);
+      onContinue();
       setPassword('');
     } else {
       setError({
@@ -84,15 +89,15 @@ const Login: FC<LoginProps> = ({ state }) => {
     }
   };
 
-  const onContinue = (plantId: number, plantName: string) => {
+  const onContinue = () => {
     notify('success', 'Login Successful');
     setLocalStorage('userData', response.payload.data?.user);
     setLocalStorage('authToken', response.payload.data?.token);
-    setLocalStorage('plantId', JSON.stringify(plantId));
-    setLocalStorage('plantName', plantName);
+    // setLocalStorage('plantId', JSON.stringify(plantId));
+    // setLocalStorage('plantName', plantName);
     setLocalStorage('plantData', response.payload.data?.plant);
     location.reload();
-    // navigate(`${paths.dashboard}`);
+    navigate(`${paths.dashboard}`);
   };
 
   useEffect(() => {
@@ -174,7 +179,7 @@ const Login: FC<LoginProps> = ({ state }) => {
               {/* {error && <span className="error-message ">{error}</span>} */}
               <button
                 className='btn btn--primary btn--lg btn--h42 w-full mt-3'
-                // onClick={() => setOpenModel(true)}
+                // onClick={() => onContinue()}
               >
                 Log In
               </button>
@@ -182,7 +187,7 @@ const Login: FC<LoginProps> = ({ state }) => {
           </div>
         </div>
       </section>
-      <ModalPlantSelection showModal={openModel} closeModel={closeModel} onContinue={onContinue} />
+      {/* <ModalPlantSelection showModal={openModel} closeModel={closeModel} onContinue={onContinue} /> */}
     </>
   );
 };
