@@ -70,7 +70,7 @@ const UsersListView = () => {
     if (userId) {
       httpClient
         // .get(`/api/users/${userId}`)
-        .get(`/api/account/users/${userId}`)
+        .get(`/api/account/users/${userId}/?type=view`)
         .then((response) => {
           if (response.data) {
             console.log(response.data);

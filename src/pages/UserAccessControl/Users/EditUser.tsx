@@ -25,22 +25,45 @@ const EditUser = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   useEffect(() => {
+    const getRolesAPI = async () => {
+      console.log('Roles calling');
+
+      httpClient
+        // .get('/api/roles/?is_delete=false')
+        .get('/api/account/roles/?is_delete=false')
+        .then((response: any) => {
+          if (response.data) {
+            console.log(response.data.results);
+
+            setExistingRoles(response.data.results);
+            setAllRoles(response.data.results);
+          }
+        })
+        .catch((err) => {
+          console.log('errored -->', err);
+        });
+    };
+    getRolesAPI();
+    console.log('Roles calling ended');
+  }, []);
+
+  useEffect(() => {
     if (userId) {
       httpClient
         // .get(`/api/users/${userId}`)
-        .get(`/api/account/users/${userId}`)
+        .get(`/api/account/users/${userId}/?type=edit`)
         .then((response) => {
           if (response.data) {
             const user: any = response.data;
-            setUserDetails(user);
+                        setUserDetails(user);
             setFormData({
-              firstname: user.first_name,
-              lastname: user.last_name,
-              username: user.username,
-              phone: user.phone,
-              email: user.email,
-              department: user.department,
-              roles: user.role.length ? [...user.role.map((role: any) => role)] : [],
+              firstname: user?.first_name,
+              lastname: user?.last_name,
+              username: user?.username,
+              phone: user?.phone,
+              email: user?.email,
+              department: user?.department,
+              roles: user?.role.length ? [...user.role.map((role: any) => role)] : [],
             });
             user.login_type == 'SSO' ? setSelectedLoginType(0) : setSelectedLoginType(1);
           }
@@ -51,34 +74,16 @@ const EditUser = () => {
     }
   }, [userId]);
 
-  useEffect(() => {
-    const getRolesAPI = async () => {
-      httpClient
-        // .get('/api/roles/?is_delete=false')
-        .get('/api/account/roles/?is_delete=false')
-        .then((response: any) => {
-          if (response.data) {
-            setExistingRoles(response.data.results);
-            setAllRoles(response.data.results);
-          }
-        })
-        .catch((err) => {
-          console.log('errored -->', err);
-        });
-    };
-    getRolesAPI();
-  }, []);
-
   // filter user roles from existing roles
   useEffect(() => {
-    if (!isEmpty(userDetails) && !isEmpty(existingRoles)) {
-      const remainingRoles = [...existingRoles].filter(
-        (obj1) => ![...userDetails?.roles].some((obj2) => obj1.id === obj2.id)
+        if (!isEmpty(userDetails) && !isEmpty(existingRoles)) {
+            const remainingRoles = [...existingRoles].filter(
+        (obj1) => ![...(userDetails?.roles ?? [])].some((obj2) => obj1.id === obj2.id)
       );
-      setExistingRoles(remainingRoles);
+        setExistingRoles(remainingRoles);
     }
   }, [userDetails]);
-
+  
   const [openDropdown, setOpenDropdown] = useState(false);
 
   const [formData, setFormData] = useState<any>({
@@ -118,10 +123,10 @@ const EditUser = () => {
     setErrors({ ...errors, email: validateEmail(value.trim()) });
   };
 
-  const handleDepartmentChange=(value:any)=>{
+  const handleDepartmentChange = (value: any) => {
     setFormData({ ...formData, department: value.trim() });
     // setErrors({ ...errors, depart: validateEmail(value.trim()) });
-  }
+  };
 
   const handleRoleClick = (roleId: any) => {
     setOpenDropdown(false);
@@ -282,7 +287,7 @@ const EditUser = () => {
         phone: formData.phone,
         email: formData.email.trim(),
         role: [...formData.roles],
-        department:formData.department
+        department: formData.department,
       };
       editUserAPI(request);
     }
@@ -358,7 +363,7 @@ const EditUser = () => {
                 userDetails.first_name + ' ' + userDetails.last_name
                 }
               `}</h2> */}
-              <h2 className='text-xl font-bold ml-4'>{`Edit - ${formData.firstname}
+              <h2 className='text-xl font-bold ml-4'>{`Edit - ${formData?.firstname}
               `}</h2>
             </div>
           </div>
@@ -494,7 +499,7 @@ const EditUser = () => {
                             </ul>
                           </div> */}
                           <div className='custom-select-wrapper'>
-                          {/* <div
+                            {/* <div
                             className='custom-select-container custom-select-container--md custom-select-container--h36 satoshi-bold text-sm'
                             onClick={handleDropdown} style={{color: "#aeaeae"}}
                           >
@@ -505,44 +510,44 @@ const EditUser = () => {
                               className='custom-select__arrow-down'
                             />
                           </div> */}
-                          <CustomSelect
-                            options={existingRoles.map((role: any) => ({
-                              value: role.id,
-                              option: role.role_name,
-                            }))}
-                            index={0}
-                            onChange={handleDropdown}
-                          ></CustomSelect>
-                          <ul
-                            className={`select-dropdown-menu ${openDropdown ? 'open' : ''}`}
-                            style={{ maxHeight: 140, overflow: 'auto' }}
-                          >
-                            {existingRoles.length > 0 ? (
-                              existingRoles?.map((role: any) => (
+                            <CustomSelect
+                              options={existingRoles.map((role: any) => ({
+                                value: role.id,
+                                option: role.role_name,
+                              }))}
+                              index={0}
+                              onChange={handleDropdown}
+                            ></CustomSelect>
+                            <ul
+                              className={`select-dropdown-menu ${openDropdown ? 'open' : ''}`}
+                              style={{ maxHeight: 140, overflow: 'auto' }}
+                            >
+                              {existingRoles.length > 0 ? (
+                                existingRoles?.map((role: any) => (
+                                  <li
+                                    key={role.id}
+                                    className='select-dropdown-menu__list sm'
+                                    onClick={() => handleRoleClick(role.id)}
+                                  >
+                                    {role.role_name}
+                                  </li>
+                                ))
+                              ) : (
                                 <li
-                                  key={role.id}
-                                  className='select-dropdown-menu__list sm'
-                                  onClick={() => handleRoleClick(role.id)}
+                                  className='select-dropdown-menu__list'
+                                  style={{
+                                    cursor: 'not-allowed',
+                                    pointerEvents: 'none',
+                                  }}
                                 >
-                                  {role.role_name}
+                                  No records found
                                 </li>
-                              ))
-                            ) : (
-                              <li
-                                className='select-dropdown-menu__list'
-                                style={{
-                                  cursor: 'not-allowed',
-                                  pointerEvents: 'none',
-                                }}
-                              >
-                                No records found
-                              </li>
-                            )}
-                          </ul>
-                        </div>
+                              )}
+                            </ul>
+                          </div>
                         </div>
                       </OutsideClickHandler>
-
+                                    
                       <div className='pills-box-wrapper mt-3'>
                         {formData.roles?.map((role: any) => (
                           <div key={role} className='pills-box'>
