@@ -51,7 +51,7 @@ const EditUser = () => {
     if (userId) {
       httpClient
         // .get(`/api/users/${userId}`)
-        .get(`/api/account/users/${userId}`)
+        .get(`/api/account/users/${userId}/edit`)
         .then((response) => {
           if (response.data) {
             const user: any = response.data;
