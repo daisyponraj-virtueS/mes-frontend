@@ -536,7 +536,7 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
     try {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
 
-      const workshopResponse = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${1000}/`);
+      const workshopResponse = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/6V/`);
 
       console.log("workshopResponse",workshopResponse)
 

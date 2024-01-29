@@ -42,7 +42,7 @@ const AddPlant = () => {
 
   const navigate = useNavigate();
 
-  const [workshop, setWorkshop] = useState({ workshop_id: '', workshop_name: '' });
+  const [workshop, setWorkshop] = useState({ workshop_id: null, workshop_name: '' });
   const [workshopList, setWorkshopList] = useState<any>([]);
   const [selectFunction, setSelectFunction] = useState<any>(2);
   const [timeZoneList, setTimeZoneList] = useState<any>([]);
@@ -234,7 +234,7 @@ const AddPlant = () => {
 
   const handleWorkshop = (value: any, type: any) => {
     if (type === 'id') {
-      setWorkshop({ workshop_id: parseInt(value), workshop_name: workshop.workshop_name });
+      setWorkshop({ workshop_id: value, workshop_name: workshop.workshop_name });
     } else {
       setWorkshop({ workshop_id: workshop.workshop_id, workshop_name: value });
     }
@@ -245,7 +245,7 @@ const AddPlant = () => {
       const newWorkshopList = [...workshopList, {...workshop,record_status:true}];
       setWorkshopList(newWorkshopList);
       setFieldValue('workshops', newWorkshopList);
-      setWorkshop({ workshop_id: '', workshop_name: '' });
+      setWorkshop({ workshop_id: null, workshop_name: '' });
     }
   };
 
@@ -366,10 +366,18 @@ const AddPlant = () => {
   const validateNumberInput = (e: any) => {
     const keyCode = e.charCode || e.keyCode;
 
-    // Allow only numeric input (0-9)
-    if (keyCode < 48 || keyCode > 57) {
-      e.preventDefault();
-    }
+    // Allow only numeric input (0-9) and colon (:)
+ 
+      if
+      ((keyCode <
+      48
+      || keyCode >
+      57
+      ) && keyCode !==
+      58
+      ) {     e.
+      preventDefault
+      ();   }
   };
   const fetchData = async () => {
     try {
@@ -485,7 +493,6 @@ const AddPlant = () => {
     setModulesAndFunctionList(coreProcess);
   }, [functionList.userControlAccess]);
 
-  console.log("workshopList",workshopList)
   return (
     <form onSubmit={handleSubmit}>
       <Header title='Plant Configuration' />
@@ -531,7 +538,7 @@ const AddPlant = () => {
             </div>
 
             <div className='plant_address'>
-              <label className='plant_address__label'>Plant Address</label>
+              <label className='plant_address__label'>Plant Address*</label>
               <input
                 className='plant_address__input'
                 name='plant_address'
@@ -543,7 +550,7 @@ const AddPlant = () => {
             </div>
 
             <div className='select_body'>
-              <div className='select_body__container'>
+              <div className='select_body__container' style={{width: '370px' }}>
                 <label className='select_body__label'>{timeZoneSelect.label}</label>
 
                 <CustomSelect
@@ -586,6 +593,7 @@ const AddPlant = () => {
                       currency: false,
                     });
                   }}
+                  disabled={isEdit}
                   value={
                     languageSelect?.option.filter((item) => item.value == values.language_id)[0]
                       ?.option || 'Select'
@@ -661,12 +669,11 @@ const AddPlant = () => {
               <div className='workshop__workshop_container'>
                 <div className='workshop__child'>
                   <label className='workshop__label'>Workshop ID</label>
-                  <input
+                  <input type='number'
                     className='workshop__input'
                     value={workshop.workshop_id}
                     onChange={(e) => handleWorkshop(e.target.value, 'id')}
                     placeholder='Enter ID'
-                    onKeyPress={validateNumberInput}
                   />
                 </div>
 

@@ -49,8 +49,9 @@ const PlantView = () => {
   const [modelList, setModelList] = useState<any>([]);
   const [masterData, setMasterData] = useState<any>([]);
 
-  const plant_id = 1000;
+  const plant: any = JSON.parse(localStorage.getItem('plantData'));
 
+  const plant_id : any = '6V'
 
   const navigate = useNavigate()
 
