@@ -245,11 +245,11 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
         <div className='dashboard__main__body px-8 py-6'>
           <div className='card-box px-6 py-8'>
             <div className='flex'>
-              <div className='flex flex-col' style={{ width: 260 }}>
+              {/* <div className='flex flex-col' style={{ width: 260 }}>
                 <h2 className='text-xl font-medium'>Enter Role Details</h2>
-              </div>
-              <div style={{ width: 352, marginLeft: 108 }}>
-                <label className='input-field-label'>Role Name</label>
+              </div> */}
+              <div style={{ width: 352 }}>
+                <label className='input-field-label'>Role Name*</label>
                 <input
                   type='text'
                   placeholder='Enter Role Name'
@@ -276,7 +276,7 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
                 </label>
               </div>
             </div>
-            <div className='table-general-wrapper mt-8'>
+            <div className='table-general-wrapper mt-3'>
               <table className='table-general table-general--user-access'>
                 <thead>
                   <tr>
