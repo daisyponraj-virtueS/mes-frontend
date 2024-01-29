@@ -65,7 +65,7 @@ const EditUser = () => {
               department: user?.department,
               roles: user?.role.length ? [...user.role.map((role: any) => role)] : [],
             });
-            user.login_type == 'simple' ? setSelectedLoginType(1) : setSelectedLoginType(0);
+            user.login_type == '' ? setSelectedLoginType(1) : user.login_type=="simple" ? setSelectedLoginType(1) : setSelectedLoginType(0);
           }
         })
         .catch((err) => {
