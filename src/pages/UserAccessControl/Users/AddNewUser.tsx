@@ -330,6 +330,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
         password: formData.password.trim(),
         role: formData.role,
         login_type: selectedLoginType == 1 ? 'simple' : 'SSO',
+        department:formData.department
       };
       addUserAPI(request);
     }
