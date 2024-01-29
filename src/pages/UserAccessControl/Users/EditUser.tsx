@@ -585,6 +585,7 @@ const EditUser = () => {
                             type='radio'
                             name='current-mix-system'
                             value={1}
+                            disabled={true}
                             checked={selectedLoginType == 1}
                             onChange={onValueChange}
                           />
