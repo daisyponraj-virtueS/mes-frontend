@@ -88,6 +88,7 @@ const TableRolesList = (props: any) => {
                 key={role.id}
                 onClick={() => !role.is_delete && handleTableRowClick(role.id)}
                 // className={`${role.is_delete ? 'pointer-events-none' : ''}`}
+                style={{height: '50px'}}
               >
                 <td style={{ width: '100px', padding: '8px', paddingLeft: '13px'}}>{role.id}</td>
                 <td style={{ width: '210px', padding: '8px' }}>{role.role_name}</td>
@@ -100,7 +101,8 @@ const TableRolesList = (props: any) => {
                     pointerEvents: role.is_delete && 'auto',
                     width: '210px',
                     padding: '8px',
-                    verticalAlign: 'baseline'
+                    verticalAlign: 'baseline',
+                    paddingTop: '12px'
                   }}
                 >
                   <div className='flex items-center'>
