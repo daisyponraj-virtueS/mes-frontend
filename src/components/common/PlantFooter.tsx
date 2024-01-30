@@ -1,4 +1,5 @@
-const PlantFooter = ({disabled=false, currentTab}) => {
+
+const PlantFooter = ({ disabled = false, currentTab, onback }) => {
     const buttonText = currentTab === 1 ? 'Save & Continue' : 'Save Changes';
   return (
     <div
@@ -14,6 +15,8 @@ const PlantFooter = ({disabled=false, currentTab}) => {
       }}
     >
       <button
+        onClick={() => onback()}
+        type='button'
         style={{
           border: '1px solid #CDD0D1',
           fontWeight: 700,

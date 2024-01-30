@@ -51,7 +51,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
       },
       validationSchema: formValidationSchema,
       onSubmit: async (values, { resetForm }) => {
-        console.log("praveen7676767")
+        console.log("praveen7676767", isSaved)
         if (!isSaved) {
           setDataList([...dataList, values]);
           console.log("praveen1115")
@@ -71,8 +71,8 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
               { step_data: dataList }
             );
             console.log(response);
-            // navigate(`/system-admin/furnace-configuration/list`)
-           
+            navigate(`/system-admin/furnace-configuration/list`)
+            notify('success', 'Furnace Created successfully');
 
           }
         }
@@ -80,14 +80,8 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
         setControlParametersList([]);
         setAdditiveList([]);
         // navigate(`/system-admin/furnace-configuration/view/${viewId}/1`)
-        navigate(`/system-admin/furnace-configuration/list`)
+        // navigate(`/system-admin/furnace-configuration/list`)
        
-        if(isEdit){
-            notify('success', 'Furnace Updated successfully');
-        }else{
-            notify('success', 'Furnace Created successfully');
-        }
-        console.log("praveen232323")
         resetForm();
       },
     });
@@ -336,6 +330,8 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
       step_data: values,
     });
     console.log(response);
+    navigate(`/system-admin/furnace-configuration/list`)
+    notify('success', 'Furnace Updated successfully');
     console.log("praveen4444")
     setCardEdit([]);
   };
@@ -940,6 +936,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                               color: '#04436B',
                                               fontSize: '16px',
                                               fontWeight: 600,
+                                              paddingBottom: '16px'
                                             }}
                                           >
                                             Parameters
@@ -1133,6 +1130,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                               color: '#04436B',
                                               fontSize: '16px',
                                               fontWeight: 600,
+                                              paddingBottom: '16px'
                                             }}
                                           >
                                             Additives
@@ -1434,6 +1432,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
         disabled={
           dataList.length < 1 && additiveList.length < 1 && controlParametersList.length < 1
         }
+        onback={() => navigate(-1)}
       />
     </form>
   );

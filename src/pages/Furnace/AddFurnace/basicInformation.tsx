@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import PlantFooter from 'components/common/PlantFooter';
 import ToggleButton from 'components/common/ToggleButton';
 import InputField from 'components/common/InputWithIcon';
-
+import { useNavigate } from 'react-router-dom';
 const formValidationSchema = yup.object({
   furnace_no: yup.string().required('Furnace No is required'),
   furnace_description: yup.string().required('Furnace Description is required'),
@@ -18,7 +18,8 @@ const formValidationSchema = yup.object({
   electrodes: yup.array().min(1, 'Electrodes is required'),
   products: yup.array().min(1, 'Products is required'),
 });
-const BasicInformation = ({ setTab, setAddId,edit_Id }:any) => {
+const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
+  const navigate = useNavigate()
   const [electrode, setElectrode] = useState([]);
   const [enabled, setEnabled] = useState(false);
   const [productSelected, setProductSelected] = useState({
@@ -130,7 +131,7 @@ const BasicInformation = ({ setTab, setAddId,edit_Id }:any) => {
           setAddId(response.data.id)
           setTab(2)
         } else {
-          const response = await axios.put(`http://127.0.0.1:8000/api/plant/furnace-config//${editId}/`, {
+          const response = await axios.put(`http://127.0.0.1:8000/api/plant/furnace-config/${editId}/`, {
             ...filteredObject,
           });
           console.log(response);
@@ -146,7 +147,7 @@ const BasicInformation = ({ setTab, setAddId,edit_Id }:any) => {
   useEffect(() => {
     const getEditData = async () => {
       const furnaceConfigResponse = await axios.get(
-        `http://127.0.0.1:8000/api/plant/furnace-config//${editId}/`
+        `http://127.0.0.1:8000/api/plant/furnace-config/${editId}/`
       );
 
       
@@ -540,7 +541,7 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
     try {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
 
-      const workshopResponse = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/6V/`);
+      const workshopResponse = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}/`);
 
       const masterResponseList = masterResponse?.data?.map((val: any) => {
         const list = {
@@ -1088,7 +1089,7 @@ useEffect(()=>{
           </div>
         </div>
       </div>
-      <PlantFooter currentTab={1} />
+      <PlantFooter currentTab={1} onback={() => navigate(-1)}/>
     </form>
   );
 };

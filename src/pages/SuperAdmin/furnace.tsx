@@ -11,11 +11,10 @@ const AddFurnace = () => {
   const [furnaceData, setFurnaceData] = useState<any>(null);
 //   const [addId,setAddId] = useState('')
  const { id } = useParams()
-console.log("praveen111",id)
 useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get( `http://127.0.0.1:8000/api/plant/furnace-config//${id}/`);
+        const response = await axios.get( `http://127.0.0.1:8000/api/plant/furnace-config/${id}/`);
         const data = response.data;
         console.log('praveen1', response);
         setFurnaceData({ furnace: [data] });

@@ -153,7 +153,7 @@ const furnaceView = ({ setTab, viewId }: any) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/plant/furnace-config//${viewId}/`
+          `http://127.0.0.1:8000/api/plant/furnace-config/${viewId}/`
         );
         const data = response?.data;
         console.log('praveen1', response);
@@ -645,7 +645,7 @@ const furnaceView = ({ setTab, viewId }: any) => {
                       <div>
                         <p
                           className='mb-3'
-                          style={{ fontWeight: 500, fontSize: '20px', color: '#041724' }}
+                          style={{ fontWeight: 600, fontSize: '20px', color: '#041724' }}
                         >
                           Parameters
                         </p>
@@ -722,7 +722,7 @@ const furnaceView = ({ setTab, viewId }: any) => {
                         >
                           <div style={{ flexBasis: '23%', marginBottom: '5px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                              <label style={commonLabelStyle}>Remelt</label>
+                              <label style={commonLabelStyle} className={!furnace.remelt ? 'hidden': ''}>Remelt</label>
                               <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
                                 {masterData.filter((val) => val.id == furnace.remelt)?.[0]?.value}
                               </span>
@@ -731,25 +731,23 @@ const furnaceView = ({ setTab, viewId }: any) => {
 
                           <div style={{ flexBasis: '23%', marginBottom: '5px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={commonLabelStyle}>Sand</label>
+                              <label style={commonLabelStyle} className={!furnace.sand ? 'hidden': ''}>Sand</label>
                               <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
                                 {masterData.filter((val) => val.id == furnace.sand)?.[0]?.value}
                               </span>
                             </div>
                           </div>
-
-                          <div style={{ flexBasis: '23%', marginBottom: '5px' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={commonLabelStyle}>Al</label>
-                              <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
-                                {masterData.filter((val) => val.id == furnace.ai)?.[0]?.value}
-                              </span>
+                            <div style={{ flexBasis: '23%', marginBottom: '5px' }}>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <label style={commonLabelStyle} className={!furnace.ai ? 'hidden': ''}>Al</label>
+                                <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
+                                  {masterData.filter((val) => val.id == furnace.ai)?.[0]?.value}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-
                           <div style={{ flexBasis: '23%', marginBottom: '5px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={commonLabelStyle}>Lime</label>
+                              <label style={commonLabelStyle} className={!furnace.lime ? 'hidden': ''}>Lime</label>
                               <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
                                 {masterData.filter((val) => val.id == furnace.lime)?.[0]?.value}
                               </span>
@@ -779,7 +777,7 @@ const furnaceView = ({ setTab, viewId }: any) => {
                         >
                           <div style={{ flexBasis: '23%', marginBottom: '5px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                              <label style={commonLabelStyle}>Slag</label>
+                              <label style={commonLabelStyle} className={!furnace.slag ? 'hidden': ''}>Slag</label>
                               <span style={{ height: '40px', fontSize: '14px', fontWeight: 600 }}>
                                 {masterData.filter((val) => val.id == furnace.slag)?.[0]?.value}
                               </span>
@@ -788,7 +786,7 @@ const furnaceView = ({ setTab, viewId }: any) => {
 
                           <div style={{ flexBasis: '23%', marginBottom: '5px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <label style={commonLabelStyle}>Skull</label>
+                              <label style={commonLabelStyle} className={!furnace.skull ? 'hidden': ''}>Skull</label>
                               <span
                                 style={{
                                   height: '40px',

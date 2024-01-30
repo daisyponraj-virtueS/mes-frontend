@@ -251,11 +251,12 @@ const RefiningSteps = ({setTab, viewId}: any) => {
                     padding: '10px',
                     textAlign: 'left',
                     borderRadius: index === 0 ? '5px 5px 0 0' : '0',
+                    fontWeight: 600
                   }}
                 >
                    {masterData.filter((val) => val.id == step)?.[0]?.value}
                 </div>
-                <p style={{ padding: '10px', color: '#04436B' }}>{stepDataMapping[step]?.length > 0 ? "Parameters" :""}</p>
+                <p style={{ padding: '10px', color: '#04436B', fontWeight: 600 }}>{stepDataMapping[step]?.length > 0 ? "Parameters" :""}</p>
                 <div
                   className='flex-row-container'
                   style={{
@@ -265,7 +266,7 @@ const RefiningSteps = ({setTab, viewId}: any) => {
                     textAlign: 'left',
                   }}
                 >
-                  {(stepDataMapping[step] || [])?.map((item, itemIndex) => (
+                  {(stepDataMapping[step] || [])?.map((item: any, itemIndex: any) => (
                     <InfoBlock
                       key={itemIndex}
                       label={masterData.filter((val) => val.id == item.label)?.[0]?.value}
@@ -278,12 +279,12 @@ const RefiningSteps = ({setTab, viewId}: any) => {
                   ))}
                 </div>
 
-                <p style={{ padding: '0px 10px 0px 10px', color: '#04436B' }}>{additiveData[step]?.length > 0 ? "Additives" :""}</p>
+                <p style={{ padding: '0px 10px 0px 10px', color: '#04436B', fontWeight: 600 }}>{additiveData[step]?.length > 0 ? "Additives" :""}</p>
                 <div
                   className='flex-row-container'
                   style={{
                     display: 'flex',
-                    gap: '10px',
+                    gap: '35px',
                     padding: '0px 10px 0px 10px',
                     textAlign: 'left',
                   }}
@@ -293,7 +294,7 @@ const RefiningSteps = ({setTab, viewId}: any) => {
                       key={itemIndex}
                       label={masterData.filter((val) => val.id == item.label)?.[0]?.value}
                       value={`Qty: ${item.value} lbs/tn`}
-                      flexBasis='28%'
+                      
                       marginBottom='10px'
                     />
                   ))}

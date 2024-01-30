@@ -153,7 +153,7 @@ const AddPlant = () => {
           console.log(response);
         } else {
           const response = await axios.post(
-            'http://127.0.0.1:8000/api/plant/plant-config/',
+            'http://127.0.0.1:8000/api/plant/plant-config-post/',
             data
           );
           console.log(response);
@@ -244,7 +244,7 @@ const AddPlant = () => {
       const newWorkshopList = [...workshopList, {...workshop,record_status:true}];
       setWorkshopList(newWorkshopList);
       setFieldValue('workshops', newWorkshopList);
-      setWorkshop({ workshop_id: null, workshop_name: '' });
+      setWorkshop({ workshop_id: '', workshop_name: '' });
     }
   };
 
@@ -713,11 +713,11 @@ const AddPlant = () => {
                         
                         <td>{val.workshop_id}</td>
                         <td>{val.workshop_name}</td>
-                        <td>
+                        <td style={{paddingLeft: '15px'}}>
                           <div
                             onClick={() => handleRemoveWorkshop(index)}
                             data-toggle='tooltip'
-                            data-placement='bottom'
+                            data-placement='bottom' 
                             onMouseOver={() => setShowTooltip(index)}
                             onMouseOut={() => setShowTooltip('')}
                           >

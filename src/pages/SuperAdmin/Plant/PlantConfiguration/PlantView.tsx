@@ -51,7 +51,7 @@ const PlantView = () => {
 
   const plant: any = JSON.parse(localStorage.getItem('plantData'));
 
-  const plant_id : any = '6V'
+  const plant_id : any = plant.plant_id
 
   const navigate = useNavigate()
 

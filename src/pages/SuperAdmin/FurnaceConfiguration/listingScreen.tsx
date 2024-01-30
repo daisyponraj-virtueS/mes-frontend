@@ -32,6 +32,11 @@ const listingScreen = (props: any) => {
     material_no: searchValue,
     // page: currentPage,
   });
+
+  const plantData: any = JSON.parse(localStorage.getItem('plantData'));
+
+  const local_plant_id : any = plantData.plant_id;
+
   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
   
@@ -67,7 +72,7 @@ const listingScreen = (props: any) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/6V/`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/?plant_id=${local_plant_id}`);
         const data = response.data;
         setFurnaceData({ furnace: data });
       } catch (error) {
@@ -166,14 +171,15 @@ const listingScreen = (props: any) => {
                                 (val) => val.id === furnace.furnace_electrodes[0]?.electrode_type_id
                               )?.[0]?.value}
                           </td>
-                          <td>
-                            <div style={{ width: '90px', alignContent: 'center' }}>
+                          <td style={{padding: '5px 12px'}}>
+                            <div style={{minWidth: '120px', alignContent: 'center' }}>
                               {isHovered === index && furnace.record_status && (
                                 <>
                                   <Link
                                     to='#'
                                     onClick={(e) => handleViewClick(e, furnace?.id)}
                                     data-tip='View'
+                                    className='pr-2'
                                   >
                                     <img
                                       src={viewIcon}
@@ -186,6 +192,7 @@ const listingScreen = (props: any) => {
                                     to='#'
                                     onClick={(e) => handleEditClick(e, furnace?.id)}
                                     data-tip='Edit'
+                                    className='pr-2'
                                   >
                                     <img src={editIcon} alt='edit' className='icon mr-2' />
                                   </Link>
