@@ -81,7 +81,7 @@ const RefiningSteps = ({setTab, viewId}: any) => {
         const responseData = response.data;
   
         if (Array.isArray(responseData.data)) {
-          const data = responseData.data;
+          const data = responseData.data.reverse();
   console.log("praveen123",data)
           const stepDataMapping = {};
           const additiveData = {};
