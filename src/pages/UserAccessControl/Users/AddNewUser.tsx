@@ -190,11 +190,11 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const deleteRole = (roleId: any) => {
-    if (formData.roles.includes(roleId)) {
+    if (formData.role.includes(roleId)) {
       // Deselect the role if it's already selected
       setFormData({
         ...formData,
-        roles: formData.roles.filter((selectedRoleId: any) => selectedRoleId !== roleId),
+        role: formData.role.filter((selectedRoleId: any) => selectedRoleId !== roleId),
       });
       // Add the role back to existingRoles
       setExistingRoles([...existingRoles, getRoleById(roleId)]);
