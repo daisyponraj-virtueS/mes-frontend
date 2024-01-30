@@ -4,7 +4,7 @@ import { Login, createUser, AuthService as IAuthService, changePassword } from '
 const AuthService = (): IAuthService => {
   return {
     userLogin: (request: Login): HttpPromise<any> => {
-      return httpClient.post('/api/users/login/', {
+      return httpClient.post('api/account/simple-login/', {
         data: request,
       });
     },

@@ -143,7 +143,8 @@ const UsersListView = () => {
   };
 
   // if (isEmpty(userDetails)) return <Loading />;
-
+  console.log(userDetails);
+  
   return (
     <main className='dashboard'>
       <section className='dashboard__main'>
@@ -223,7 +224,7 @@ const UsersListView = () => {
                   <div className='col-3 px-2'>
                     <label className='input-field-label'>SSO login</label>
                     <p className='input-field-text' style={{ color: '#8F1D18' }}>
-                      Disabled
+                      {userDetails.login_type == 'sso' ? 'Enabled' : 'Disabled'}
                     </p>
                   </div>
                   <div className='col-3 px-2'>

@@ -18,6 +18,7 @@ const RolesDetailView = () => {
   const navigate = useNavigate();
   const [roleDetails, setRoleDetails] = useState<any>({});
   const [initialData, setInitialData] = useState<rolesInitialData>({});
+  const [userDetails, setUserDetails] = useState<any[]>([{}]);
 
   const { pathname } = useLocation();
   const module = pathname?.split('/')[1];
@@ -29,11 +30,6 @@ const RolesDetailView = () => {
     crudType.edit
   );
 
-  const dummyData = [
-    { userId: '001', name: 'John Williams', username: 'JohnWilliams', ssoStatus: 'Enabled' },
-    { userId: '002', name: 'Jane Smith', username: 'janesmith', ssoStatus: 'Disabled' },
-    // Add more dummy data as needed
-  ];
   const handleEditRoleClick = () => {
     navigate(`${paths.editRole}/${id}`);
   };
@@ -46,6 +42,7 @@ const RolesDetailView = () => {
     const response = await UserService.getRoleDetails(requestData);
     setInitialData(response.data.permission_list);
     setRoleDetails(response.data.role);
+    setUserDetails(response?.data?.users);
   };
 
   useEffect(() => {
@@ -193,12 +190,13 @@ const RolesDetailView = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dummyData.map((data, index) => (
+                  {userDetails.map((data, index) => (
                     <tr key={index}>
-                      <td className="">{data.userId}</td>
-                      <td className="align-items-start">{data.name}</td>
+                      {/* <td className="">{data.id}</td> */}
+                      <td className="">{index + 1}</td>
+                      <td className="align-items-start">{`${data.first_name} ${data.last_name}`}</td>
                       <td className="align-items-start">{data.username}</td>
-                      <td className="align-items-start">{data.ssoStatus}</td>
+                      <td className="align-items-start">{data.login_type === 'sso' ? 'Enabled' : 'Disabled'}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -65,7 +65,7 @@ const EditUser = () => {
               department: user?.department,
               roles: user?.role.length ? [...user.role.map((role: any) => role)] : [],
             });
-            user.login_type == 'SSO' ? setSelectedLoginType(0) : setSelectedLoginType(1);
+            user.login_type == '' ? setSelectedLoginType(1) : user.login_type=="simple" ? setSelectedLoginType(1) : setSelectedLoginType(0);
           }
         })
         .catch((err) => {
@@ -87,13 +87,13 @@ const EditUser = () => {
   const [openDropdown, setOpenDropdown] = useState(false);
 
   const [formData, setFormData] = useState<any>({
-    firstname: 'Daisy',
-    lastname: 'Ponraj',
-    username: 'daisyponraj',
-    phone: '2452345345',
-    email: 'daisyponraj@gmail.com',
+    firstname: '',
+    lastname: '',
+    username: '',
+    phone: '',
+    email: '',
     roles: [],
-    department: 'Operation',
+    department: '',
   });
 
   const [errors, setErrors] = useState<any>({});
@@ -150,11 +150,11 @@ const EditUser = () => {
 
   const validateForm = () => {
     const validationErrors = {
-      firstname: validateFirstname(formData.firstname),
-      lastname: validateLastname(formData.lastname),
-      username: validateUsername(formData.username),
-      phone: validatePhone(formData.phone),
-      email: validateEmail(formData.email.trim()),
+      firstname: validateFirstname(formData?.firstname),
+      lastname: validateLastname(formData?.lastname),
+      username: validateUsername(formData?.username),
+      phone: validatePhone(formData?.phone),
+      email: validateEmail(formData?.email?.trim()),
     };
     setErrors(validationErrors);
     return Object.values(validationErrors).every((error) => !error);
@@ -285,10 +285,12 @@ const EditUser = () => {
         last_name: formData.lastname,
         // username: formData.username,
         phone: formData.phone,
-        email: formData.email.trim(),
+        email: formData.email?.trim(),
         role: [...formData.roles],
         department: formData.department,
       };
+      console.log(request);
+      
       editUserAPI(request);
     }
   };
@@ -310,10 +312,10 @@ const EditUser = () => {
   const isUserFormFilled = (formData: any) => {
     for (const key in formData) {
       if (formData.hasOwnProperty(key)) {
-        if (key !== 'phone' && key !== 'email') {
+        if ( key !== 'email' && key!=='department') {
           if (Array.isArray(formData[key]) && formData[key].length === 0) {
             return false;
-          } else if (formData[key] === '') {
+          } else if (formData[key] === '' || formData[key] === undefined || formData[key] === null) {
             return false;
           }
         }
@@ -327,7 +329,7 @@ const EditUser = () => {
       if (formData.hasOwnProperty(key) && key !== 'confirmPassword') {
         if (Array.isArray(formData[key]) && formData[key].length === 0) {
           return false;
-        } else if (formData[key] === '' && key !== 'phone' && key !== 'email') {
+        } else if (formData[key] === '' && key !== 'phone' && key !== 'email' && key!=='department') {
           return false;
         }
       }
@@ -443,7 +445,7 @@ const EditUser = () => {
                         <input
                           type='text'
                           placeholder=''
-                          name='username'
+                          name='department'
                           value={formData.department}
                           onChange={(e) => handleDepartmentChange(e.target.value.trim())}
                           className='input-field input-field--md input-field--h40 w-full'
@@ -572,6 +574,7 @@ const EditUser = () => {
                           type='radio'
                           name='current-mix-system'
                           value={0}
+                          disabled={true}
                           checked={selectedLoginType == 0}
                           onChange={onValueChange}
                         />
@@ -584,6 +587,7 @@ const EditUser = () => {
                             type='radio'
                             name='current-mix-system'
                             value={1}
+                            disabled={true}
                             checked={selectedLoginType == 1}
                             onChange={onValueChange}
                           />
@@ -599,7 +603,7 @@ const EditUser = () => {
                                     type='text'
                                     placeholder='Enter User Id'
                                     name='username'
-                                    disabled={selectedLoginType == 0}
+                                    disabled={true}
                                     value={formData.username}
                                     onChange={(e) => handleUsernameChange(e.target.value.trim())}
                                     className='input-field input-field--md input-field--h40 w-full'
