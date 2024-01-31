@@ -250,8 +250,8 @@ const Login: FC<LoginProps> = ({ state }) => {
       "is_superuser": true
     }
     notify('success', 'Login Successful');
-    setLocalStorage('userData', userdata);
-    // setLocalStorage('userData', response.payload.data?.user);
+    // setLocalStorage('userData', userdata);
+    setLocalStorage('userData', response.payload.data?.user);
     setLocalStorage('authToken', response.payload.data?.token);
     // setLocalStorage('plantId', JSON.stringify(plantId));
     // setLocalStorage('plantName', plantName);
