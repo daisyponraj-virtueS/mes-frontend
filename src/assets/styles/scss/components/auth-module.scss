@@ -27,6 +27,7 @@
     .auth-module {
       &__main {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         &__container {
@@ -34,5 +35,27 @@
         }
       }
     }
+    .auth-module__main{
+      background-color: #F5F8FA;
+  }
+ 
+  .terms-policy_container{
+      display: flex;
+      justify-content: center;
+      gap:20px;
+      padding: 20px;
+      color: #606466;
+      font-weight: bold;
+  }
+  .terms-policy_container >p{
+      font-size: 14px;
+      cursor:pointer;
+  }
+  
+  .terms-policy_container > p > a{
+      font-size: 14px;
+      cursor:pointer;
+      color: #606466;
+  }
   }
 }

@@ -591,7 +591,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                           type='radio'
                           name='current-mix-system'
                           value={0}
-                          disabled
+                          // disabled
                           checked={selectedLoginType == 0}
                           onChange={onValueChange}
                         />

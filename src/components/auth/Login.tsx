@@ -5,10 +5,13 @@ import AuthModuleBanner from './AuthModuleBanner';
 import { userLogin } from 'store/slices/authSlice';
 import eyeClose from '../../assets/icons/eye-off.svg';
 import '../../assets/styles/scss/components/auth-module.scss';
-// import ModalPlantSelection from 'components/Modal/ModalPlantSelection';
+import ModalPlantSelection from 'components/Modal/ModalPlantSelection';
 import { isEmpty, notify, setLocalStorage } from 'utils/utils';
 import { useNavigate } from 'react-router-dom';
 import { paths } from 'routes/paths';
+import LoginForm from 'components/common/LoginForm';
+import ModalTermsOfUse from 'components/Modal/TermsModel/ModelTerms';
+
 interface LoginProps {
   state: {
     user: {
@@ -22,14 +25,16 @@ const Login: FC<LoginProps> = ({ state }) => {
   const dispatch = useAppDispatch();
   const [error, setError] = useState<any>({});
   const [password, setPassword] = useState('');
-  // const [openModel, setOpenModel] = useState(false);
+  const [openModel, setOpenModel] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState(state ? state.user.email : '');
   const [formErrors, setFormErrors] = useState({ email: '', password: '' });
-  const [response, setResponse] = useState<any>();
 
   // const closeModel = () => setOpenModel(false);
+  const [openTermsModel, setOpenTermsModel] = useState(false);
 
+  const closeTermsModel = () => setOpenTermsModel(false);
+	const closeModel = () => setOpenModel(false);
   const validateUsername = (value: any) => {
     if (!value) {
       setPassword('');
@@ -68,18 +73,20 @@ const Login: FC<LoginProps> = ({ state }) => {
       userLoginAPI();
     }
   }
-
+  const handleOpenTermsModel =()=>{
+		setOpenTermsModel(true)
+ }
   const userLoginAPI = async () => {
     const data = await dispatch(userLogin(inputData));
     console.log('data', data);
-    setResponse(data);
+    // setResponse(data);
     if (data?.payload.status === 200 && data.payload.data?.token) {
       setError({
         toastType: 'success',
         text: data.payload.data.message,
       });
       // setOpenModel(true);
-      onContinue();
+      onContinue(data);
       setPassword('');
     } else {
       setError({
@@ -89,9 +96,162 @@ const Login: FC<LoginProps> = ({ state }) => {
     }
   };
 
-  const onContinue = () => {
+  const onContinue = (response:any) => {
+    let userdata:any={
+      "id": 44,
+      "first_name": "Daisy",
+      "last_name": "Ponraj",
+      "url": "http://72.181.13.50:7050/api/users/44/",
+      "username": "daisyponraj",
+      "role": [
+        {
+          "role_name": "Super Admin",
+          "url": "http://72.181.13.50:7050/api/roles/16/",
+          "id": 16,
+          "total_functions": 19,
+          "total_users": { "active_user_count": 18, "inactive_user_count": 0 },
+          "is_delete": false,
+          "is_superuser": true
+        }
+      ],
+      "phone": "1111122222",
+      "email": "test@gmail1.com",
+      "is_delete": false,
+      "permission_list": {
+        "Core Process": {
+          "Heat Maintenance": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Bin Contents": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Production Schedule": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Silicon Grade Heat Maintenance": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          }
+        },
+        "Master Data": {
+          "Additive Maintenance": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Standard BOM": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Customer Specifications": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Active Furnace List": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Furnace Material Maintenance": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Material Maintenance": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Silicon Grade Material Maintenance": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          }
+        },
+        "Lab Analysis": {
+          "Additive Analysis": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Ladle (Heat) Analysis": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Furnace Mix Analysis": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Spout (Tap) Analysis": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          }
+        },
+        "Reports": {
+          "Primary Heat Report": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Production Schedule Analysis Report": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          }
+        },
+        "User Access Control": {
+          "Users": { "view": true, "create": true, "edit": true, "delete": true },
+          "Roles": { "view": true, "create": true, "edit": true, "delete": true }
+        },
+        "System Admin": {
+          "Plant Configuration": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "Furnace Configuration": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          }
+        }
+      },
+      "is_superuser": true
+    }
     notify('success', 'Login Successful');
-    setLocalStorage('userData', response.payload.data?.user);
+    setLocalStorage('userData', userdata);
+    // setLocalStorage('userData', response.payload.data?.user);
     setLocalStorage('authToken', response.payload.data?.token);
     // setLocalStorage('plantId', JSON.stringify(plantId));
     // setLocalStorage('plantName', plantName);
@@ -123,71 +283,16 @@ const Login: FC<LoginProps> = ({ state }) => {
         <div className='auth-module__container'>
           <AuthModuleBanner />
           <div className='auth-module__main'>
-            <form className='auth-module__main__container' onSubmit={handleSubmit}>
-              <h2 className='text-2xl font-semibold'>Log In</h2>
-              <p className='color-secondary-text mt-1'>
-                Enter your details to log in to your account.
-              </p>
-              <div className='mt-8'>
-                <div className='input-field-wrapper'>
-                  <label className='input-field-label'>Username</label>
-                  <input
-                    type='text'
-                    id='username'
-                    className='input-field  input-field--md input-field--h40 text-sm w-full'
-                    placeholder='Enter username'
-                    onChange={(e) => handleUsernameChange(e.target.value)}
-                    name='email'
-                    value={email}
-                  />
-                  <span className='error-message'>{formErrors.email}</span>
-                </div>
-                <div className='input-field-wrapper'>
-                  <label className='input-field-label'>Password</label>
-                  <div className='relative'>
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      id='password'
-                      className='input-field input-field--password input-field--md input-field--h40 text-sm w-full'
-                      placeholder='Enter password'
-                      name='password'
-                      value={password}
-                      // minLength={4}
-                      onChange={(e) => handlePasswordChange(e.target.value)}
-                    />
-                    <span className='error-message'>{formErrors.password}</span>
-                    {showPassword ? (
-                      <img
-                        src={eye}
-                        style={{ position: 'absolute', top: 13, right: 11 }}
-                        alt='eye'
-                        className='eye-icon eye-icon--normal'
-                        onClick={() => setShowPassword(!showPassword)}
-                      />
-                    ) : (
-                      <img
-                        src={eyeClose}
-                        style={{ position: 'absolute', top: 12, right: 12 }}
-                        alt='eye'
-                        className='eye-icon eye-icon-close'
-                        onClick={() => setShowPassword(!showPassword)}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-              {/* {error && <span className="error-message ">{error}</span>} */}
-              <button
-                className='btn btn--primary btn--lg btn--h42 w-full mt-3'
-                // onClick={() => onContinue()}
-              >
-                Log In
-              </button>
-            </form>
+          <LoginForm handleSubmit={handleSubmit} email={email} handleUsernameChange={handleUsernameChange} formErrors={formErrors} handlePasswordChange={handlePasswordChange} password={password} showPassword={showPassword} setShowPassword={setShowPassword}/>
+					<div className='terms-policy_container'>
+            <p onClick={handleOpenTermsModel}>Terms of Use</p>
+            <p><a href='https://www.ferroglobe.com/privacy-policy' target='blank'>Privacy Policy</a></p>
+            </div>
           </div>
         </div>
       </section>
-      {/* <ModalPlantSelection showModal={openModel} closeModel={closeModel} onContinue={onContinue} /> */}
+      <ModalPlantSelection showModal={openModel} closeModel={closeModel} onContinue={onContinue} />
+      <ModalTermsOfUse showModal={openTermsModel} closeModel={closeTermsModel}/>
     </>
   );
 };

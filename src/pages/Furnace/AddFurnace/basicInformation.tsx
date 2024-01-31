@@ -9,6 +9,9 @@ import PlantFooter from 'components/common/PlantFooter';
 import ToggleButton from 'components/common/ToggleButton';
 import InputField from 'components/common/InputWithIcon';
 import { useNavigate } from 'react-router-dom';
+
+
+
 const formValidationSchema = yup.object({
   furnace_no: yup.string().required('Furnace No is required'),
   furnace_description: yup.string().required('Furnace Description is required'),

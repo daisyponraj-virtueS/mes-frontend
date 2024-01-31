@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useState } from 'react';
-import Header from 'components/common/MainHeader4';
+import Header from 'components/common/EmptyHeader';
 // import { filterSearch } from 'store/slices/additiveSlice';
 // import { useAppDispatch } from 'store';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ import React from 'react';
 import axios from 'axios';
 import { paths } from 'routes/paths';
 import Loader from 'components/Loader';
-
+import AlertModal from 'components/Modal/AlertModal';
 // const tableData = [
 //     { code: 'FCE02', quantity: 1, type: 'Arc', size: 10, price: 1000.0, material: 'Carbon (pre baked)' },
 //     { code: 'FCE01', quantity: 3, type: 'Arc', size: 14, price: 1500.0, material: 'Composite' },
@@ -39,11 +39,16 @@ const listingScreen = (props: any) => {
 
   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
-  
+
   const [isLoading, setIsLoading] = useState(true);
 
   const [isHovered, setIsHovered] = useState('');
-
+  const [action, setAction] = useState<any>(null);
+  const [modalTitle, setModalTitle] = useState<string>('');
+   const [modalContent, setModalContent] = useState<string>('');
+   const [actionButtonLabel, setActionButtonLabel] = useState<string>('');
+  const [selectedFurnaceId, setSelectedFurnaceId] = useState<number | null>(null);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
   const handleMouseEnter = (role: any) => {
     setIsHovered(role);
   };
@@ -60,8 +65,13 @@ const listingScreen = (props: any) => {
     event.stopPropagation();
     navigate(`/system-admin/furnace-configuration/view/${furnaceId}`);
   };
+  // const handleTableRowClick = (furnaceId: number) => {
+  //   navigate(`${paths.furnaceConfig.view}/${furnaceId}`);
+  // };
+
   const handleTableRowClick = (furnaceId: number) => {
-    navigate(`${paths.furnaceConfig.view}/${furnaceId}`);
+    // console.log('Clicked furnace ID:', furnaceId);
+    setSelectedFurnaceId(furnaceId);
   };
 
   //   const fetchSearchList = async (inputData: any) => {
@@ -69,7 +79,22 @@ const listingScreen = (props: any) => {
   //     return response;
   //   };
 
-  useEffect(() => {
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/?plant_id=${local_plant_id}`);
+  //       const data = response.data;
+  //       setFurnaceData({ furnace: data });
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //       // Handle the error, e.g., set an error state or show a message to the user
+  //     }
+  //   };
+
+  //   fetchData();
+    // }, []);
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/?plant_id=${local_plant_id}`);
@@ -81,8 +106,10 @@ const listingScreen = (props: any) => {
       }
     };
 
-    fetchData();
-  }, []);
+    useEffect(() => {
+         fetchData();
+    }, []);
+
   useEffect(() => {
     // Simulate data loading
     setTimeout(() => {
@@ -104,6 +131,44 @@ const listingScreen = (props: any) => {
     appmasterData();
   }, []);
   //this below code is used for map electrodeData
+  const userStatusChangeAPI = async (furnaceId: any, request: any) => {
+    httpClient
+      // .patch(`/api/users/${actionUserId}/`, { data: request })
+      .post(`/api/plant/furnace-config-deactivate/${furnaceId}/`, { data: request })
+      .then((response: any) => {
+        if (response.status === 200) {
+          const statusMessage = request?.record_status ? 'Activated the Furnace' : 'Deactivated the Furnace';
+          if (response.data) {
+            fetchData()
+            notify('success', statusMessage);
+            setShowAlert(false);
+          }
+        } else if (response.status === 400) {
+          notify('error', response.data.error);
+          setShowAlert(false);
+        }
+      })
+      .catch((err) => {
+        notify('error', 'Failed to change user status');
+        console.log('errored -->', err);
+        setShowAlert(false);
+      });
+  };
+const handleAction = () => {
+    if (action === 'Deactivate') {
+      if (selectedFurnaceId !== null) {
+        const selectedFurnace = furnaceData.furnace.find(f => f.id === selectedFurnaceId);
+        if (selectedFurnace && selectedFurnace.record_status) {
+          // Call the API to update the record status
+          userStatusChangeAPI(selectedFurnace.id, { record_status: false });
+        } else {
+          console.log('Cannot deactivate when record_status is false or undefined.');
+        }
+      } else {
+        console.log('No furnace selected. Cannot deactivate.');
+      }
+    }
+  };
 
   return (
     <>
@@ -111,12 +176,9 @@ const listingScreen = (props: any) => {
         title='Furnace Configuration'
         buttonText='Add New Furnace'
         onButtonClick={() => navigate(paths.furnaceConfig.create)}
-        placeholder='Search'
+        // placeholder='Search'
         // hasPermission={hasAddUserPermission}
-        onSearchChange={(value) => {
-          setSearchValue(value);
-          setInputData({ ...inputData, search: searchValue });
-        }}
+        
         // sort_filter_click={(inputValue: any, fromFilterSerach: boolean) =>
         //   onSort_Filter(inputValue, fromFilterSerach)
         // }
@@ -152,7 +214,7 @@ const listingScreen = (props: any) => {
                           onMouseEnter={() => handleMouseEnter(index)}
                           onMouseLeave={handleMouseLeave}
                           // key={furnace.id}
-                          onClick={() => !furnace.record_status && handleTableRowClick(furnace.id)}
+                          onClick={() =>  handleTableRowClick(furnace.id)}
                         >
                           <td>{furnace.furnace_no}</td>
                           <td> {furnace.workshop_value}</td>
@@ -196,13 +258,30 @@ const listingScreen = (props: any) => {
                                   >
                                     <img src={editIcon} alt='edit' className='icon mr-2' />
                                   </Link>
-                                  <Link to={`/deactivate/${furnace?.id}`} data-tip='Deactivate'>
+                                  <Link to='#' data-tip='Deactivate'>
+                                      <img
+                                         onClick={() => {
+                                       
+                                            // Set the action and show the alert
+                                            setAction('Deactivate');
+                                            setShowAlert(true);
+                                            setModalTitle('Alert');
+                                            setActionButtonLabel('Deactivate');
+                                            setModalContent(`Do you want to deactivate this Furnace?`);
+                                          }}
+                                        src={deactivateIcon}
+                                        alt='deactivate'
+                                        className='icon mr-10'
+                                        style={{ fill: '#04436B', width: '17px', height: '17px' }}
+                                      />
+                                    </Link>
+                                  {/* <Link to={`/deactivate/${furnace?.id}`} data-tip='Deactivate'>
                                     <img
                                       src={deactivateIcon}
                                       alt='deactivate'
                                       className='icon mr-2'
                                     />
-                                  </Link>
+                                  </Link> */}
                                 </>
                               )}
                               {isHovered === index && !furnace.record_status && (
@@ -215,7 +294,7 @@ const listingScreen = (props: any) => {
                                       id={`switch-${furnace.id}`}
                                       type='checkbox'
                                       className='switch-input'
-                                      checked={!furnace.record_status}
+                                      checked={furnace.record_status}
                                       onChange={(e: any) => handleOnchangeStatus(e, furnace)}
                                     />
                                     <label
@@ -236,6 +315,16 @@ const listingScreen = (props: any) => {
             {/* </div> */}
           </div>
         )}
+        <AlertModal
+        showModal={showAlert}
+        closeModal={() => {
+          setShowAlert(false);
+        }}
+        onConfirmClick={handleAction}
+        title={modalTitle}
+        content={modalContent}
+        confirmButtonText={actionButtonLabel}
+      />
       </div>
     </>
   );

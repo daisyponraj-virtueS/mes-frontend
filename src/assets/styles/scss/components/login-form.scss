@@ -1,0 +1,38 @@
+.auth-module__main__container{
+    box-shadow: 1px 1px 2px 3px rgb(240, 240, 240);
+    padding: 25px !important;
+    width: 65%;
+    margin-top: 35px;
+    background-color: #ffffff;
+
+}
+
+.sso-button{
+    background-color: #EBF4FA !important;
+    color:#0D659E !important;
+    border:1px solid #0D659E !important;
+}
+.sso-button:hover{
+    background-color: #EBF4FA !important;
+}
+.divider{
+    display: flex;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    color:#606466;
+    justify-content: center;
+    align-items: center;
+}
+.divider > p{
+    width: 100%;
+    margin: 10px;
+    border-top: 1px solid #CDD0D1;
+}
+.divider > span{
+    font-size: 14px;
+}
+.color-secondary-text{
+    font-size: 14px;
+    color:#606466 !important;
+    letter-spacing: 0.5px;
+}

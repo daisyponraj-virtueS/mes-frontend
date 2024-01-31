@@ -131,7 +131,11 @@ export const validatePermissions = (module: string, subModule: string, type: str
   const userInfo: any = getLocalStorage('userData');
   if (userInfo) {
     const { permission_list: permissions } = userInfo;
-    return permissions[module][subModule][type];
+    try {
+      return permissions[module][subModule][type];
+    } catch (error) {
+      return false;
+    }
   } else {
     console.log('failed to fetch user info.');
   }

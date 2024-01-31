@@ -78,11 +78,10 @@ const RefiningSteps = ({setTab, viewId}: any) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config-steps/${viewId}/`);
-        const responseData = response.data;
+        const responseData = response.data
   
         if (Array.isArray(responseData.data)) {
-          const data = responseData.data;
-  console.log("praveen123",data)
+          const data = responseData.data.reverse();
           const stepDataMapping = {};
           const additiveData = {};
   

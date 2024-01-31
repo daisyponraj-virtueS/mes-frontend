@@ -90,8 +90,8 @@ const DashboardSideMenu: FC = () => {
       setPermissions(userInfo.permission_list);
       setIsSuperUser(userInfo.is_superuser);
     }
-    const plant = getLocalStorage('plantName');
-    plant && setPlantName(plant?.split(' ')[1]);
+    const plant = getLocalStorage('plantData');
+    plant && setPlantName(plant?.plant_name);
   }, []);
 
   useEffect(() => {
