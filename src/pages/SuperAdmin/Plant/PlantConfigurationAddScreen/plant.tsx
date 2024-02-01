@@ -863,6 +863,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift1?.from && touched.shift1?.from ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -885,6 +886,8 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
+                        
                       />
                       {errors.shift1?.to && touched.shift1?.to ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -909,6 +912,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift2?.from && touched.shift2?.from ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -931,6 +935,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift2?.to && touched.shift2?.to ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -955,6 +960,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift3?.from && touched.shift3?.from ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -977,6 +983,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift3?.to && touched.shift3?.to ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>

@@ -513,7 +513,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                           className='control_parameters__container'
                           style={{
                             width:
-                              val.type !== 'select' && val.type !== 'input' ? '150px' : '255px',
+                              val.type !== 'select' && val.type !== 'input' ? '180px' : '255px',
                           }}
                         >
                           {val.type === 'input' && (

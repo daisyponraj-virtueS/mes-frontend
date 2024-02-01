@@ -140,13 +140,13 @@ const RolesList = () => {
   const roleStatusChangeAPI = async (request: any) => {
     httpClient
       // .post(`/api/users/deactivate_role/`, { data: request })
-      .post(`/api/account/deactivate_role/`, { data: request })
+      .patch(`/api/account/roles/${deleteRoleId}/`, { data: request })
       .then((response: any) => {
         if (response.status === 200) {
           if (response.data) {
             setRoles((prevData: any) =>
               prevData.map((role: any) =>
-                role.id === deleteRoleId ? { ...response.data?.role } : role
+                role.id === deleteRoleId ? { ...role, is_delete: !role.is_delete } : role
               )
             );
             notify('success', response.data.message);

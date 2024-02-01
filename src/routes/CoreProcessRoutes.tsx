@@ -38,11 +38,9 @@ const AddEditProductionSchedule = lazy(
 );
 
 // Bin Contents
-// const MixSystemList = lazy(() => import('pages/Furnace/furnace'));
-const MixSystemList = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
-// const MixSystemList = lazy(() => import('pages/CoreProcess/BinContents/MixSystemList'));
-const MixSystemView = lazy(() => import('pages/SuperAdmin/Plant/PlantConfiguration/PlantView'));
-const EditBinContents = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
+const MixSystemList = lazy(() => import('pages/CoreProcess/BinContents/MixSystemList'));
+const MixSystemView = lazy(() => import('pages/CoreProcess/BinContents/MixSystemView'));
+const EditBinContents = lazy(() => import('pages/CoreProcess/BinContents/EditBinContents'));
 
 export const CoreProcessRoutes = [
   //production schedule
@@ -70,5 +68,5 @@ export const CoreProcessRoutes = [
   { path: paths.binContenets.list, element: getRouteElement(MixSystemList, true) },
   { path: paths.binContenets.view, element: getRouteElement(MixSystemView, true) },
   // { path: paths.binContenets.edit, element: getRouteElement(EditBinContents, true) },
-  { path: `${paths.binContenets.detailView}`, element: getRouteElement(EditBinContents, true) },
+  { path: paths.binContenets.detailView, element: getRouteElement(EditBinContents, true) },
 ];

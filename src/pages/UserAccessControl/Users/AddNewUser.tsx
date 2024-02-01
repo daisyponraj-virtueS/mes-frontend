@@ -262,7 +262,9 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
   const validateEmail = (value: any) => {
     if (!value) {
-      // return 'Email is required';
+      if(selectedLoginType == 0){
+      return 'Email is required';
+      }
       return '';
     } else if (!/^\S+@\S+\.\S+$/.test(value)) {
       return 'Invalid email format';
@@ -357,7 +359,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
     for (const key in formData) {
       if (formData.hasOwnProperty(key)) {
-        if (key !== 'phone' && key !== 'email') {
+        if (key !== 'phone' && key !== 'email' && key !== 'department') {
           if (Array.isArray(formData[key]) && formData[key].length === 0) {
             return false;
           } else if (formData[key] === '') {
@@ -374,7 +376,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
       if (formData.hasOwnProperty(key) && key !== 'confirmPassword') {
         if (Array.isArray(formData[key]) && formData[key].length === 0) {
           return false;
-        } else if (formData[key] === '' && key !== 'phone' && key !== 'email') {
+        } else if (formData[key] === '' && key !== 'phone' && key !== 'email' && key !== 'department') {
           return false;
         }
       }
@@ -485,7 +487,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
                   <div className='col-4 px-2 mb-6'>
                     <div className='col-wrapper'>
-                      <label className='input-field-label font-semibold'>Email</label>
+                      <label className='input-field-label font-semibold'>{selectedLoginType == 0 ? 'Email*':'Email'}</label>
                       <input
                         type='text'
                         placeholder='Enter Email'
@@ -536,9 +538,13 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                               option: role.role_name,
                             }))}
                             index={0}
-                            onChange={handleDropdown}
+                            onChange={(id:any)=>{
+                             
+                              handleRoleClick(id)
+                              // handleDropdown()
+                            }}
                           ></CustomSelect>
-                          <ul
+                          {/* <ul
                             className={`select-dropdown-menu ${openDropdown ? 'open' : ''}`}
                             style={{ maxHeight: 140, overflow: 'auto' }}
                           >
@@ -563,7 +569,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                                 No records found
                               </li>
                             )}
-                          </ul>
+                          </ul> */}
                         </div>
                       </div>
                     </OutsideClickHandler>
@@ -733,6 +739,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
               }`}
               onClick={handleSubmit}
             >
+              {console.log("gokul",isUserFormFilled(formData) , isUserFormValid(formData))}
               Save Changes
             </button>
           </div>
