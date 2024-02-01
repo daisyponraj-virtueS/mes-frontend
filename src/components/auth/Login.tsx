@@ -43,6 +43,36 @@ const Login: FC<LoginProps> = ({ state }) => {
     return '';
   };
 
+  function validatePasswordField(password) {
+    // Check length
+    if (password.length < 8) {
+        return false;
+    }
+    
+    // Check for special character
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)) {
+        return false;
+    }
+    
+    // Check for uppercase letter
+    if (!/[A-Z]+/.test(password)) {
+        return false;
+    }
+    
+    // Check for lowercase letter
+    if (!/[a-z]+/.test(password)) {
+        return false;
+    }
+    
+    // Check for numeric digit
+    if (!/[0-9]+/.test(password)) {
+        return false;
+    }
+    
+    // If all conditions pass, return true
+    return true;
+}
+
   const validatePassword = (value: any) => {
     if (!value) {
       return 'Password is required';
@@ -57,6 +87,11 @@ const Login: FC<LoginProps> = ({ state }) => {
     }
     if (!password.trim()) {
       errors.password = 'Password is required';
+    }else if(password.length < 8){
+      errors.password = 'Password must contain atleast 8 characters'
+    }
+    else if(!validatePasswordField(password)){
+      errors.password = 'Password must contain 1 Special character, 1 Upper case, 1 Lower case and 1 Numeric'
     }
     setFormErrors(errors);
     return Object.values(errors).every((error) => error === '');
