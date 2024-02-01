@@ -1033,7 +1033,7 @@ useEffect(()=>{
                           setEnabled(!enabled);
                           setFieldValue(val.name, value);
                         }}
-                        text={enabled ? 'Mandatory' : 'Not Mandatory'}
+                        text={enabled ? 'Enabled' : 'Disabled'}
                         isChecked={values.default_moisture}
                         style={{ alignItems: 'center' }}
                       />
