@@ -15,7 +15,7 @@ interface HeaderProps {
   placeholder?: string;
   onSearchChange?: (value: string) => void;
   onButtonClick?: () => void;
-  sort_filter_click?: (e: object, i: boolean) => void; // Add sort_filter_click and onFilterClick props
+  sort_filter_click?: (e: object) => void; // Add sort_filter_click and onFilterClick props
   onFilterClick?: () => void;
   onReset?: () => void;
   filteredData?: any;
@@ -41,18 +41,13 @@ const Header: React.FC<HeaderProps> = ({
     { id: 2, label: 'Descending' },
   ];
   const statusTypeList = [
-    { id: 1, label: 'Active', value: true },
-    { id: 2, label: 'Inactive', value: false },
+    { id: 1, label: 'Enabled', value: true },
+    { id: 2, label: 'Disabled', value: false },
   ];
 
   const { pathname } = useLocation();
   const [searchValue, setSearchValue] = useState('');
-  const [filtersearchValue, setFilterSearchValue]: any = useState({
-    materialNameList: '',
-    materialNoList: '',
-    customerNameList: '',
-    shipToList: '',
-  });
+  const [filtersearchValue, setFilterSearchValue]: any = useState('');
   const [isSortApplied, setIsSortApplied] = useState(false);
   const [searchedResponse, setSearchedResponse] = useState<any>();
   const [openSortList, setOpenSortList] = useState(false);
@@ -112,96 +107,20 @@ const Header: React.FC<HeaderProps> = ({
       : onSort_filterClick({ fromFilterSearch: false }, value);
   };
 
-  const handleFilterSearchChange = (value: string, key: string) => {
-    const temp = { ...filtersearchValue };
-    temp[key] = value.replace(/(\s{2,})|[^a-zA-Z0-9_@.!$%*()/#&+-]/g, ' ').replace(/^\s+/g, '');
-    setFilterSearchValue(temp);
-    setDisableFilter(
-      temp[key]
-        ? searchedResponse[key]?.filter((res: any) =>
-            key === 'materialNameList'
-              ? res.material_name.toString().toLowerCase()?.includes(temp[key].toLowerCase())
-              : res.toString().toLowerCase()?.includes(temp[key].toLowerCase())
-          ).length > 0
-          ? false
-          : true
-        : true
-    );
+  const handleFilterSearchChange = (value: string) => {
+    setFilterSearchValue(value);
+    setDisableFilter(false);
   };
 
-  const handleCheckboxChange = (index: number, key: string) => {
-    const temp = { ...selectedCheckboxes };
-    if (temp[key]?.includes(index)) {
-      const tempSelected = temp[key].filter((selectedIndex: number) => selectedIndex !== index);
-      const tempValue = {
-        ...temp,
-      };
-      tempValue[key] = tempSelected;
-      setSelectedCheckboxes(tempValue); // uncheck the checkbox if already selected
-      !isFilterApplied && setSelectedDummyCheckboxes(tempValue);
-      setDisableFilter(isEmpty(tempValue[key]));
-    } else {
-      temp[key] = [...temp[key], index];
-      setSelectedCheckboxes(temp);
-      !isFilterApplied && setSelectedDummyCheckboxes(temp);
-      setDisableFilter(false);
-    }
-  };
 
-  useEffect(() => {
-    const temp: any = defaultCheckbox;
-    if (isEmpty(filteredData)) {
-      setActiveStatus({ label: '', value: '' });
-      setSelectedCheckboxes(defaultCheckbox);
-      setSelectedDummyCheckboxes(defaultCheckbox);
-      setIsFilterApplied(false);
-    } else {
-      if (!filteredData?.hasOwnProperty('is_active')) {
-        setActiveStatus({ label: '', value: '' });
-      }
-      setIsFilterApplied(true);
-      // setActiveStatus({ label: '', value: '' });
-      Object.keys(searchedResponse).map((key) => {
-        searchedResponse[key].forEach((res: any, index: number) => {
-          if (key === 'materialNameList') {
-            filteredData['material_name']?.forEach((data: any) => {
-              if (res.id === data.id) {
-                temp[key].push(index);
-              }
-            });
-          } else {
-            filteredData[
-              key === 'customerNameList'
-                ? 'customer_name'
-                : key === 'materialNoList'
-                  ? 'material_no'
-                  : 'ship_to'
-            ]?.forEach((data: any) => {
-              if (res === data) {
-                temp[key].push(index);
-              }
-            });
-          }
-        });
-      });
-      setSelectedCheckboxes(temp);
-      setSelectedDummyCheckboxes(temp);
-    }
-  }, [filteredData]);
+
 
   const checkAllStates = () => {
     let allStatesEmpty = false;
     if (
       isEmpty(selectedSortType) &&
-      isEmpty(filtersearchValue.materialNameList) &&
-      isEmpty(filtersearchValue.materialNoList) &&
-      isEmpty(filtersearchValue.customerNameList) &&
-      isEmpty(filtersearchValue.shipToList) &&
-      isEmpty(activeStatus.label) &&
-      isEmpty(selectedCheckboxes.materialNameList) &&
-      isEmpty(selectedCheckboxes.materialNoList) &&
-      isEmpty(selectedCheckboxes.customerNameList) &&
-      isEmpty(selectedCheckboxes.shipToList)
+      isEmpty(filtersearchValue) &&
+      isEmpty(activeStatus.label) 
     ) {
       return (allStatesEmpty = true);
     }
@@ -212,12 +131,7 @@ const Header: React.FC<HeaderProps> = ({
     setSearchValue('');
     onSearchChange && onSearchChange('');
     setOpenFilter(false);
-    setFilterSearchValue({
-      materialNameList: '',
-      materialNoList: '',
-      customerNameList: '',
-      shipToList: '',
-    });
+    setFilterSearchValue('');
     setActiveStatus({ label: '', value: '' });
     setSelectedCheckboxes(defaultCheckbox);
     setSelectedDummyCheckboxes(defaultCheckbox);
@@ -236,6 +150,8 @@ const Header: React.FC<HeaderProps> = ({
     setCustomerNameDropdown(false);
     setShipToDropdown(false);
     setDisableFilter(true);
+    sort_filter_click && sort_filter_click('');
+    setFilterSearchValue('');
   };
 
   const closeDropDown = () => {
@@ -260,74 +176,17 @@ const Header: React.FC<HeaderProps> = ({
     onSearchAPI('');
   }, []);
 
-  const onSort_filterClick = ({ fromFilterSearch = true } = {}, searchText?: string) => {
-    let selectedSearchedList: any = {
-      materialNameList: [],
-      materialNoList: [],
-      customerNameList: [],
-      shipToList: [],
-    };
-    const temp = selectedCheckboxes;
+  const onSort_filterClick = ( fromFilterSearch?:string, searchText?: string) => {
 
-    Object.keys(selectedCheckboxes).map((item: any) => {
-      if (!isEmpty(searchedResponse)) {
-        selectedSearchedList[item] = selectedCheckboxes[item].map(
-          (i: any) => searchedResponse[item][i]
-        );
-      }
-    });
-    Object.keys(selectedCheckboxes).map((item: any) => {
-      if (selectedCheckboxes[item].length === 0 && filtersearchValue[item]) {
-        searchedResponse[item].forEach((res: any, index: number) => {
-          if (item === 'materialNameList') {
-            if (
-              res.material_name
-                .toString()
-                .toLowerCase()
-                .includes(filtersearchValue[item]?.toLowerCase())
-            ) {
-              temp[item].push(index);
-            }
-          } else {
-            if (
-              res
-                .toString()
-                .toLowerCase()
-                ?.includes(filtersearchValue[item]?.toLowerCase())
-            ) {
-              temp[item].push(index);
-            }
-          }
-        });
-        selectedSearchedList[item] = searchedResponse[item].filter((res: any) =>
-          item === 'materialNameList'
-            ? res.material_name
-                .toString()
-                .toLowerCase()
-                ?.includes(filtersearchValue[item]?.toLowerCase())
-            : res
-                .toString()
-                .toLowerCase()
-                ?.includes(filtersearchValue[item]?.toLowerCase())
-        );
-      }
-    });
-    setSelectedCheckboxes(temp);
-    setSelectedDummyCheckboxes(temp);
     const inputData = {
       search: searchText?.replace(/^\s+/g, ''),
-      material_name: selectedSearchedList.materialNameList,
-      material_no: selectedSearchedList.materialNoList,
-      customer_name: selectedSearchedList.customerNameList,
-      ship_to: selectedSearchedList.shipToList,
       is_active: activeStatus?.value,
       ordering: sortStore,
     };
-    sort_filter_click && sort_filter_click(inputData, fromFilterSearch);
+    sort_filter_click && sort_filter_click(inputData);
     setOpenFilter(false);
     setOpenSort(false);
     closeDropDown();
-    resetSearchValue();
   };
 
   const closeDropdown = (dropDownName: any) => {
@@ -378,69 +237,24 @@ const Header: React.FC<HeaderProps> = ({
           <div className='filters-sort-dropdown-menu__list__content'>
             <div className='pt-3'>
               <input
-                type={`${
-                  dropDownName === 'Material No' || dropDownName === 'Ship To' ? 'number' : 'text'
-                }`}
+                type={ 'text'}
                 className='input-field input-field--search input-field--md input-field--h32 w-full'
                 placeholder='Search'
-                value={filtersearchValue[key]}
-                onChange={(e: any) => handleFilterSearchChange(e.target.value, key)}
+                value={filtersearchValue}
+                onChange={(e: any) => handleFilterSearchChange(e.target.value)}
                 onPaste={(event) => event.preventDefault()}
                 onKeyDown={(event) => {
-                  if (dropDownName === 'Material No' || dropDownName === 'Ship To') {
+              
                     if (
                       event.key === '.' ||
                       event.key === '+' ||
-                      event.key === '-' ||
-                      event.key === 'e' ||
-                      event.key === 'E'
+                      event.key === '-' 
                     ) {
                       event.preventDefault();
                     }
-                  }
+                  
                 }}
               />
-              <div className='flex flex-col overflow-auto' style={{ maxHeight: '150px' }}>
-                {!isEmpty(response)
-                  ? response
-                      ?.filter((res: any) =>
-                        dropDownName === 'Material Name'
-                          ? res.material_name
-                              .toString()
-                              .toLowerCase()
-                              ?.includes(filtersearchValue[key]?.toLowerCase())
-                          : res
-                              .toString()
-                              .toLowerCase()
-                              ?.includes(filtersearchValue[key]?.toLowerCase())
-                      )
-                      .map((item: any, index: number) => {
-                        const isChecked =
-                          !isEmpty(selectedCheckboxes) &&
-                          selectedCheckboxes[key].includes(response.indexOf(item));
-                        return (
-                          <div className='custom-checkbox custom-checkbox--md '>
-                            <input
-                              type='checkbox'
-                              id={`${key}-${index}`}
-                              className='custom-checkbox__input'
-                              checked={isChecked} // Set the checked state based on whether it matches the selected status
-                              onChange={() => handleCheckboxChange(response.indexOf(item), key)}
-                            />
-                            <label htmlFor={`${key}-${index}`} className='custom-checkbox__label'>
-                              <code className='custom-checkbox__label__box'></code>
-                              <span
-                                className='custom-checkbox__label__text font-semibold'
-                                style={{ color: '#001f33' }}
-                              >
-                                {dropDownName === 'Material Name' ? item.material_name : item}
-                              </span>
-                            </label>
-                          </div>
-                        );
-                      })
-                  : null}
-              </div>
             </div>
           </div>
         </div>
@@ -559,12 +373,8 @@ const Header: React.FC<HeaderProps> = ({
               className={`btn btn--primary btn--h36 w-full ${
                 openStatusList === true ? 'mt-18' : ''
               }  ${
-                (isEmpty(selectedCheckboxes.materialNameList) &&
-                  isEmpty(selectedCheckboxes.materialNoList) &&
-                  isEmpty(selectedCheckboxes.customerNameList) &&
-                  isEmpty(selectedCheckboxes.shipToList) &&
-                  filtersearchValue === '') ||
-                disableFilter
+                
+                  (filtersearchValue === '' && activeStatus?.label == '') 
                   ? 'disabled'
                   : ''
               }`}
@@ -574,7 +384,7 @@ const Header: React.FC<HeaderProps> = ({
                 setStatusDropdown(false);
                 setCustomerNameDropdown(false);
                 setShipToDropdown(false);
-                onSort_filterClick({}, searchValue);
+                onSort_filterClick('', filtersearchValue);
                 event.stopPropagation();
               }}
             >
@@ -755,14 +565,7 @@ const Header: React.FC<HeaderProps> = ({
   const isFilterSortAllowed = !noFilterNeededPathNames.includes(pathname);
   const isSearchFieldAllowed = !noSearchNeededPathName.includes(pathname);
 
-  const resetSearchValue = () => {
-    setFilterSearchValue({
-      materialNameList: '',
-      materialNoList: '',
-      customerNameList: '',
-      shipToList: '',
-    });
-  };
+
 
   return (
     <div className='dashboard__main__header'>
@@ -773,7 +576,7 @@ const Header: React.FC<HeaderProps> = ({
             <div className='search-bar-contaienr label'>
               <input
                 style={{width: "300px"}}
-                type='number'
+                type='text'
                 className='input-field input-field--search input-field--md input-field--h36'
                 placeholder={placeholder || 'Search by Material No'}
                 min='0'
@@ -783,9 +586,7 @@ const Header: React.FC<HeaderProps> = ({
                   if (
                     event.key === '.' ||
                     event.key === '+' ||
-                    event.key === '-' ||
-                    event.key === 'e' ||
-                    event.key === 'E'
+                    event.key === '-' 
                   ) {
                     event.preventDefault();
                   }

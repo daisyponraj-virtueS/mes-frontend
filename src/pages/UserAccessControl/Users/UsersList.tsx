@@ -42,6 +42,7 @@ const UsersList = () => {
   const [loggedInUser, setLoggedInUser] = useState<any>({});
   const [allRoles, setAllRoles] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [usersDataToSearch, setUsersDataToSearch] = useState([]);
 
   const [searchValue, setSearchValue] = useState<string | number>('');
   const [additiveDeleted, setAdditiveDeleted] = useState(false);
@@ -79,6 +80,7 @@ const UsersList = () => {
             showModal: false,
           }));
           setUsers(userData);
+          setUsersDataToSearch(userData)
           setCount(response.data.count);
           setPrevious(response.data.previous);
           setNext(response.data.next);
@@ -91,6 +93,7 @@ const UsersList = () => {
         console.log('errored -->', err);
       });
   };
+
 
   useEffect(() => {
     const getRolesAPI = async () => {
@@ -257,9 +260,56 @@ const UsersList = () => {
       setModalTitle('Message');
     }
   };
+  useEffect(()=>{
+    if(searchValue){
+      const filteredUser = usersDataToSearch.filter((item: any) => {
+        // Convert searchValue to string for consistent comparison
+        const searchString = searchValue.toString().toLowerCase();
+      
+        // Check if any field matches the search value
+        return (
+          item.id.toString().toLowerCase().includes(searchString) || 
+          item.first_name.toLowerCase().includes(searchString) || 
+          item.username.toLowerCase().includes(searchString) || 
+          item.last_name.toLowerCase().includes(searchString)
+        );
+      });
+      
+    setUsers(filteredUser)
+    }else{
+      setUsers(usersDataToSearch)
+    }
+  },[searchValue])
+  
+  useEffect(()=>{
+    if(filteredData){
+      const filteredUser = usersDataToSearch.filter((item: any) => {
+        // Convert searchValue to string for consistent comparison
+        const searchString = filteredData?.search?.toString().toLowerCase();
+        const filterSelect = filteredData?.is_active ? 'sso' : 'simple'
+      
+        // Check if any field matches the search value
+        return (
+          item.role
+            ?.map((roleId: any) => {
+              const role = allRoles.find((r: any) => r.id === roleId);
+              return role ? role.role_name : null;
+            })
+            .join(', ').toString().toLowerCase().includes(searchString) && 
+          item.login_type.toLowerCase().includes(filterSelect) 
+        );
+      });
+      
+    setUsers(filteredUser)
+    }else{
+      setUsers(usersDataToSearch)
+    }
+  },[filteredData])
+  
 
   if (loading) return <Loading />;
 
+ 
   return (
     <main className='dashboard'>
       <section className='dashboard__main'>
@@ -293,11 +343,9 @@ const UsersList = () => {
             setSearchValue(value);
             setInputData({ ...inputData, search: searchValue });
           }}
-          // sort_filter_click={(inputValue: any, fromFilterSerach: boolean) =>
-          //   onSort_Filter(inputValue, fromFilterSerach)
-          // }
-          filteredData={filteredData}
-          fetchSearchList={fetchSearchList}
+          sort_filter_click={(filterValue: any) =>
+            setFilteredData(filterValue)
+          }
         />
         <div className='dashboard__main__body px-8 pt-6 scroll-0 overflow-y-hidden'>
           {!isEmpty(users) ? (

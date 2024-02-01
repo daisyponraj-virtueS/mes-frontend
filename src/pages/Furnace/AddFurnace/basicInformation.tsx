@@ -10,8 +10,6 @@ import ToggleButton from 'components/common/ToggleButton';
 import InputField from 'components/common/InputWithIcon';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const formValidationSchema = yup.object({
   furnace_no: yup.string().required('Furnace No is required'),
   furnace_description: yup.string().required('Furnace Description is required'),
@@ -22,7 +20,7 @@ const formValidationSchema = yup.object({
   products: yup.array().min(1, 'Products is required'),
 });
 const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [electrode, setElectrode] = useState([]);
   const [enabled, setEnabled] = useState(false);
   const [productSelected, setProductSelected] = useState({
@@ -35,7 +33,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
   const [product, setProduct] = useState({ productState: '', productType: '', productCode: '' });
   const [masterData, setMasterData] = useState([]);
   const [workshopDropdownData, setWorkshopDropdownData] = useState([]);
-  const [isEdit, setIsEdit] = useState(edit_Id?true : false);
+  const [isEdit, setIsEdit] = useState(edit_Id ? true : false);
   const [editData, setEditData] = useState<any>(null);
   const [editId, setEditId] = useState<any>(edit_Id);
   const [isTouched, setIsTouched] = useState<any>({
@@ -75,7 +73,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
   ]);
   const plantData: any = JSON.parse(localStorage.getItem('plantData'));
 
-  const local_plant_id : any = plantData.plant_id;
+  const local_plant_id: any = plantData.plant_id;
 
   const initialValues = {
     furnace_no: '',
@@ -104,41 +102,45 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
     skull_id: '',
   };
 
+
+
   const { handleSubmit, values, handleBlur, handleChange, setFieldValue, touched, errors } =
     useFormik({
       initialValues: editData || initialValues,
       validationSchema: formValidationSchema,
       enableReinitialize: true,
       onSubmit: async (values, { resetForm }) => {
-
         const myObject: { [key: string]: any } = {
-          ...values
+          ...values,
         };
-        
+
         const filteredObject: { [key: string]: any } = {};
-        
+
         Object.entries(myObject).forEach(([key, value]) => {
           if (value || value === false) {
             filteredObject[key] = value;
           }
         });
-        
+
         if (!isEdit) {
           const response = await axios.post('http://127.0.0.1:8000/api/plant/furnace-config/', {
             ...filteredObject,
             plant_id: local_plant_id,
             created_by: '10',
           });
-        
+
           console.log(response);
-          setAddId(response.data.id)
-          setTab(2)
+          setAddId(response.data.id);
+          setTab(2);
         } else {
-          const response = await axios.put(`http://127.0.0.1:8000/api/plant/furnace-config/${editId}/`, {
-            ...filteredObject,
-          });
+          const response = await axios.put(
+            `http://127.0.0.1:8000/api/plant/furnace-config/${editId}/`,
+            {
+              ...filteredObject,
+            }
+          );
           console.log(response);
-          setTab(2)
+          setTab(2);
         }
         setElectrode([]);
         setProductList([]);
@@ -153,8 +155,6 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
         `http://127.0.0.1:8000/api/plant/furnace-config/${editId}/`
       );
 
-      
-console.log("furnaceConfigResponse",furnaceConfigResponse)
       const transformData = (inputData) => {
         const result = inputData.reduce((acc, item) => {
           const productState = {
@@ -182,7 +182,7 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
             id: item.id,
             productType,
             productCode,
-            record_status:item.record_status
+            record_status: item.record_status,
           };
 
           const existingProductState = acc.find(
@@ -211,12 +211,12 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
           const transformedItem = {
             id: item.id,
             type: item.type_name,
-            core: item.core,
-            coreMassLength: item.core_mass_length,
-            paste: item.paste,
-            pasteMassLength: item.paste_mass_length,
-            casing: item.casing,
-            casingMassLength: item.casing_mass_length,
+            core: item.core || '',
+            coreMassLength: Number(item.core_mass_length) || '',
+            paste: item.paste || '',
+            pasteMassLength: Number(item.paste_mass_length) || '',
+            casing: item.casing || '',
+            casingMassLength: Number(item.casing_mass_length) || '',
           };
           return transformedItem;
         });
@@ -232,16 +232,16 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
         ...furnaceConfigResponse.data,
         products: transformedData,
         electrodes: transformedElectrodeData,
-        power_delivery_id:furnaceConfigResponse.data.power_delivery,
-        electrode_type_id:furnaceConfigResponse.data.electrode_type,
-        silica_fume_default_material_id:furnaceConfigResponse.data.silica_fume_default_material,
-        slag_product_default_material_id:furnaceConfigResponse.data.slag_product_default_material,
-        remelt_id:furnaceConfigResponse.data.remelt,
-        sand_id:furnaceConfigResponse.data.sand,
-        ai_id:furnaceConfigResponse.data.ai,
-        lime_id:furnaceConfigResponse.data.lime,
-        slag_id:furnaceConfigResponse.data.slag,
-        skull_id:furnaceConfigResponse.data.skull,
+        power_delivery_id: furnaceConfigResponse.data.power_delivery,
+        electrode_type_id: furnaceConfigResponse.data.electrode_type,
+        silica_fume_default_material_id: furnaceConfigResponse.data.silica_fume_default_material,
+        slag_product_default_material_id: furnaceConfigResponse.data.slag_product_default_material,
+        remelt_id: furnaceConfigResponse.data.remelt,
+        sand_id: furnaceConfigResponse.data.sand,
+        ai_id: furnaceConfigResponse.data.ai,
+        lime_id: furnaceConfigResponse.data.lime,
+        slag_id: furnaceConfigResponse.data.slag,
+        skull_id: furnaceConfigResponse.data.skull,
       };
       delete editObj.furnace_electrodes;
       delete editObj.ai;
@@ -257,7 +257,6 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
       delete editObj.workshop_value;
       delete editObj.step2;
 
-      console.log("editObj",editObj)
 
       setEditData(editObj);
     };
@@ -343,7 +342,11 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
   ];
 
   const ladleAdditions = [
-    { label: 'Remelt', option: createOptionsByTypeForLadle(masterData, 'REMELT'), name: 'remelt_id' },
+    {
+      label: 'Remelt',
+      option: createOptionsByTypeForLadle(masterData, 'REMELT'),
+      name: 'remelt_id',
+    },
     { label: 'Sand', option: createOptionsByTypeForLadle(masterData, 'SAND'), name: 'sand_id' },
     { label: 'AI', option: createOptionsByTypeForLadle(masterData, 'AI'), name: 'ai_id' },
     { label: 'Lime', option: createOptionsByTypeForLadle(masterData, 'LIME'), name: 'lime_id' },
@@ -355,7 +358,11 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
   ];
 
   const recoveries = [
-    { label: 'Slag', option: createOptionsByTypeForRecoveries(masterData, 'SLAG'), name: 'slag_id' },
+    {
+      label: 'Slag',
+      option: createOptionsByTypeForRecoveries(masterData, 'SLAG'),
+      name: 'slag_id',
+    },
     {
       label: 'Skull',
       option: createOptionsByTypeForRecoveries(masterData, 'SKULL'),
@@ -412,6 +419,19 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
     }
 
     setFieldValue('electrode_type_id', value);
+
+    if(isEdit){
+    const emptyElectrodesList = electrodesList.forEach((obj) => {
+      // Iterate over each property in the object and set it to an empty string
+      for (let key in obj) {
+
+        if(key !== 'id')
+        obj[key] = '';
+      }
+    });
+    setElectrodesList(emptyElectrodesList);
+    setElectrode([])
+  }
   };
 
   const handleProductChange = (value: any, index: any, option: any) => {
@@ -501,25 +521,36 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
     setProductSelected({ productState: '', productType: '', productCode: '' });
   };
 
-  const handleRemoveProduct = (index: any, state: any, status=false) => {
+  const handleRemoveProduct = (index: any, state: any, status = false) => {
     const arrayToRemove = [...productList];
 
-    if(!isEdit){
+    if (!isEdit) {
       const check = arrayToRemove?.some(
-      (item) => item.productState?.option == state && item.products.length == 1
-    );
+        (item) => item.productState?.option == state && item.products.length == 1
+      );
 
-    if (check) {
-      const newArr = arrayToRemove.filter((value) => {
-        return value.productState?.option !== state;
-      });
+      if (check) {
+        const newArr = arrayToRemove.filter((value) => {
+          return value.productState?.option !== state;
+        });
 
-      setProductList(newArr);
-      setFieldValue('products', newArr);
+        setProductList(newArr);
+        setFieldValue('products', newArr);
+      } else {
+        arrayToRemove.map((value) => {
+          if (value.productState?.option == state) {
+            const removedArr = value.products?.splice(index, 1);
+            return removedArr;
+          }
+          return value;
+        });
+        setFieldValue('products', arrayToRemove);
+        setProductList(arrayToRemove);
+      }
     } else {
       arrayToRemove.map((value) => {
         if (value.productState?.option == state) {
-          const removedArr = value.products?.splice(index, 1);
+          const removedArr = (value.products[index].record_status = status);
           return removedArr;
         }
         return value;
@@ -527,24 +558,15 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
       setFieldValue('products', arrayToRemove);
       setProductList(arrayToRemove);
     }
-  }else{
-    arrayToRemove.map((value) => {
-      if (value.productState?.option == state) {
-        const removedArr = (value.products[index].record_status =status)
-        return removedArr;
-      }
-      return value;
-    });
-    setFieldValue('products', arrayToRemove);
-    setProductList(arrayToRemove);
-  }
   };
 
   const fetchData = async () => {
     try {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
 
-      const workshopResponse = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}/`);
+      const workshopResponse = await axios.get(
+        `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}/`
+      );
 
       const masterResponseList = masterResponse?.data?.map((val: any) => {
         const list = {
@@ -562,7 +584,7 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
         };
         return list;
       });
-      
+
       setMasterData(masterResponseList);
       setWorkshopDropdownData(workshopResponseList);
     } catch (error) {
@@ -608,13 +630,13 @@ console.log("furnaceConfigResponse",furnaceConfigResponse)
       setElectrodesList(values.electrodes);
     }
   }, [values]);
-  
-useEffect(()=>{
-  if(edit_Id){
-    setIsEdit(true)
-    setEditId(edit_Id)
-  }
-},[])
+
+  useEffect(() => {
+    if (edit_Id) {
+      setIsEdit(true);
+      setEditId(edit_Id);
+    }
+  }, []);
   return (
     <form onSubmit={handleSubmit}>
       <div className='container mt-3 mb-3'>
@@ -665,7 +687,7 @@ useEffect(()=>{
                 backgroundColor: '#C1D3DF40',
                 cursor: 'pointer',
               }}
-            //   onClick={() => setTab(2)}
+              // onClick={() => setTab(2)}
             >
               <p
                 style={{
@@ -823,7 +845,12 @@ useEffect(()=>{
                                   className='electrode_accordion__input form-control'
                                   placeholder='Enter Value'
                                   onChange={(e) => {
-                                    handleElectrodesFieldChange(value, val.name, e.target.value);
+                                    const inputValue = e.target.value;
+                                    // Regular expression to match numbers with optional up to three decimal places
+                                    const regex = /^\d*\.?\d{0,3}$/;
+                                    if (regex.test(inputValue) || inputValue === '') {
+                                      handleElectrodesFieldChange(value, val.name, inputValue);
+                                    }
                                   }}
                                   value={
                                     values?.electrodes?.filter((item) => item.type == value)?.[0]?.[
@@ -943,9 +970,9 @@ useEffect(()=>{
                               <tr className='products__table_data'>
                                 <td>{val?.productType?.option}</td>
                                 <td>{val?.productCode?.option}</td>
-                                
-                                  <td>
-                                    {!isEdit?
+
+                                <td>
+                                  {!isEdit ? (
                                     <div
                                       onClick={() =>
                                         handleRemoveProduct(index, value?.productState?.option)
@@ -972,20 +999,27 @@ useEffect(()=>{
                           ''
                         )} */}
                                     </div>
-                                  :
+                                  ) : (
                                     <div>
-                                    <ToggleButton
-                        onChange={() => {
-                          handleRemoveProduct(index,value?.productState?.option, !val.record_status)
-                        }}
-                        text={val.record_status? 'Activated' : 'Deactivated'}
-                        isChecked={val.hasOwnProperty('record_status')?val.record_status: true}
-                        style={{ alignItems: 'center' }}
-                      />
+                                      <ToggleButton
+                                        onChange={() => {
+                                          handleRemoveProduct(
+                                            index,
+                                            value?.productState?.option,
+                                            !val.record_status
+                                          );
+                                        }}
+                                        text={val.record_status ? 'Activated' : 'Deactivated'}
+                                        isChecked={
+                                          val.hasOwnProperty('record_status')
+                                            ? val.record_status
+                                            : true
+                                        }
+                                        style={{ alignItems: 'center' }}
+                                      />
                                     </div>
-}
-                                  </td>
-                                
+                                  )}
+                                </td>
                               </tr>
                             </tbody>
                           ))}
@@ -1092,7 +1126,7 @@ useEffect(()=>{
           </div>
         </div>
       </div>
-      <PlantFooter currentTab={1} onback={() => navigate(-1)}/>
+      <PlantFooter currentTab={1} onback={() => navigate(-1)} />
     </form>
   );
 };

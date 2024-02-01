@@ -71,7 +71,7 @@ const CustomSelect = ({
           borderRadius: '4px',
           borderBottomLeftRadius: isOpen ? '0px' : '4px',
           borderBottomRightRadius: isOpen ? '0px' : '4px',
-          color: selectedName == 'Select' ? '#757E85' : 'black',
+          color: selectedName == 'Select' || selectedName == 'Select ' ? '#757E85' : 'black',
         }}
         onMouseOver={() => setShowTooltip(index)}
         onMouseOut={() => setShowTooltip('')}

@@ -35,6 +35,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   const [openCloneModal, setOpenCloneModal] = useState<boolean>(false);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [selectedLoginType, setSelectedLoginType] = useState<Number>(1);
+  const [selectedValue, setSelectedValue] = useState('Select');
   const [formData, setFormData] = useState<any>({
     firstname: '',
     lastname: '',
@@ -46,7 +47,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     role: [],
     department: '',
   });
-  console.log(selectedLoginType);
 
   const [existingRoles, setExistingRoles] = useState<any>([]);
   const [allRoles, setAllRoles] = useState<any>([]);
@@ -70,7 +70,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     getRolesAPI();
   }, []);
 
-  console.log(allRoles);
 
   const [errors, setErrors] = useState<any>({});
 
@@ -113,7 +112,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   function onValueChange(event: any) {
-    console.log('event', event.target.value);
     setSelectedLoginType(event.target.value);
   }
   const handleConfirmPasswordChange = (value: any) => {
@@ -537,9 +535,10 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                               value: role.id,
                               option: role.role_name,
                             }))}
+                            value={selectedValue === 'Select'?'Select' + ' ':'Select'}
                             index={0}
                             onChange={(id:any)=>{
-                             
+                              setSelectedValue(selectedValue === 'Select'?'Select' + ' ':'Select');
                               handleRoleClick(id)
                               // handleDropdown()
                             }}
