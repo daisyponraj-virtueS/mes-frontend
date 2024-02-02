@@ -93,7 +93,7 @@ const RolesList = () => {
   }, [callApi]);
 
   const onPageChange = (newPage: any) => {
-    if(newPage !== 0 && newPage <= itemsPerPage){
+    if(newPage !== 0 ){
     setCurrentPage(newPage);
     const filterData = rolesList.filter((val:any,index:any)=>{
       if(index >= (newPage * itemsPerPage - itemsPerPage)  && index < newPage * itemsPerPage){

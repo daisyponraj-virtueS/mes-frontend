@@ -13,6 +13,8 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import { Link } from 'react-router-dom';
 import AlertModal from 'components/Modal/AlertModal';
 import httpClient from 'http/httpClient';
+import GeneratePasswordModal from 'components/Modal/GeneratePasswordModel';
+import copy from '../../../assets/icons/copy.svg'
 const TableUsersList = (props: any) => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>('');
@@ -21,6 +23,8 @@ const TableUsersList = (props: any) => {
   const [action, setAction] = useState<any>(null);
   const [singleUser, setSingleUser] = useState<any>(null);
   const [isHovered, setIsHovered] = useState('');
+  const [generateModelOpen, setGenerateModelOpen] = useState(false);
+  const [generatePasswordData, setGeneratePasswordData] = useState('');
   const {
     users,
     setUsers,
@@ -100,8 +104,35 @@ const TableUsersList = (props: any) => {
       });
   };
 
+  // const userResetPasswordChangeAPI = async (request: any) => {
+  //   httpClient
+  //     // .patch(`/api/users/${actionUserId}/`, { data: request })
+  //     .patch(`/api/account/users/${singleUser.id}/`, { data: request })
+  //     .then((response: any) => {console.log('response',response) })
+  //     .catch((err) => {
+  //       notify('error', 'Failed to change user Password');
+  //       console.log('errored -->', err);
+  //     });
+  // };
+
+  const generatePassword = () => {
+    // const randomstring = Math.random().toString(36).slice(-8);
+    // console.log(randomstring);
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?/{}[]';
+    let password = '';
+    for (let i = 0; i < 9; i++) {
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        password += chars.charAt(randomIndex);
+    }
+    return password
+  };
+
   const handleAction = () => {
     if (action == 'Resetpassword') {
+      setShowAlert(false);
+      const password = generatePassword()
+      setGeneratePasswordData(password)
+      setGenerateModelOpen(true)
     } else {
       if (action == 'Deactivate') {
         if (!hasEditPermission) {
@@ -311,6 +342,56 @@ const TableUsersList = (props: any) => {
         content={modalContent}
         confirmButtonText={actionButtonLabel}
       />
+      <GeneratePasswordModal
+        showModal={generateModelOpen}
+        closeModal={() => {
+          setGenerateModelOpen(false);
+        }}
+        title={'Alert'}
+      >
+        <div className='col-4 px-2 mb-6 flex' style={{width:'fit-content'}}>
+                                  <div className='col-wrapper'>
+                                    <label className='input-field-label font-semibold'>
+                                      Password Generated
+                                    </label>
+                                    <input
+                                      type='password'
+                                      disabled
+                                      placeholder=''
+                                      name='password'
+                                      value={generatePasswordData}
+                                      // onChange={(e) => handlePasswordChange(e.target.value)}
+                                      className='input-field input-field--md input-field--h40 w-full'
+                                      style={{ minWidth: '222px' }}
+                                    />
+                                    {/* {errors.password && <div className='error-message'>{errors.password}</div>} */}
+                                  </div>
+                                  {/* <div > */}
+                                  <img
+                                    src={copy}
+                                    alt='copy-icon'
+                                    style={{
+                                      cursor: 'pointer',
+                                      width: '30px',
+                                      marginLeft: '10px',
+                                      marginTop: '22px',
+                                    }}
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(generatePasswordData);
+                                    }}
+                                    data-toggle='tooltip'
+                                    data-placement='bottom'
+                                    // onMouseOver={() => setShowTooltip(true)}
+                                    // onMouseOut={() => setShowTooltip(false)}
+                                  />
+                                  {/* {showTooltip ? (
+                                    <span className='workshop__tooltip'>Copy Password</span>
+                                  ) : (
+                                    ''
+                                  )} */}
+                                  {/* </div> */}
+                                </div>
+      </GeneratePasswordModal>
     </>
   );
 };
