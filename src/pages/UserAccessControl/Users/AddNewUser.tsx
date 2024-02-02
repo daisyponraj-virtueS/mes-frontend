@@ -46,7 +46,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     role: [],
     department: '',
   });
-  console.log(selectedLoginType);
+  
 
   const [existingRoles, setExistingRoles] = useState<any>([]);
   const [allRoles, setAllRoles] = useState<any>([]);
@@ -113,8 +113,13 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   function onValueChange(event: any) {
-    console.log('event', event.target.value);
-    setSelectedLoginType(event.target.value);
+    console.log('validateForm', validateForm());
+    
+    setSelectedLoginType(event.target.value); 
+    if (event.target.value == 0) {
+      setFormData({ ...formData, username: '', password: '' })
+      setIsPasswordVisible(false)
+    }
   }
   const handleConfirmPasswordChange = (value: any) => {
     setFormData({ ...formData, confirmPassword: value });
@@ -135,7 +140,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     }
     setFormData({ ...formData, password: password });
     setIsPasswordVisible(true);
-    console.log('randomstring', password);
   };
   const handleDepartmentChange = (value: any) => {
     setFormData({ ...formData, department: value });
@@ -233,10 +237,11 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const validateUsername = (value: any) => {
-    if (!value) {
-      return 'Username is required';
+    if(selectedLoginType == 1){
+      if (!value) {
+        return 'Username is required';
+      }
     }
-
     let errorMessage = '';
     if (
       value.length < 4 ||
@@ -252,8 +257,8 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
   const validatePhone = (value: any) => {
     if (!value) {
-      // return 'Phone number is required';
-      return '';
+      return 'Phone number is required';
+      // return '';
     } else if (!/^[0-9]{10}$/g.test(value)) {
       return 'Invalid phone format';
     }
@@ -298,6 +303,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const addUserAPI = async (request: any) => {
+    console.log("request", request)
     httpClient
       // .post('/api/users/', { data: request })
       .post('/api/account/users/', { data: request })
@@ -334,6 +340,9 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
         login_type: selectedLoginType == 1 ? 'simple' : 'SSO',
         department:formData.department
       };
+      if (selectedLoginType != 1) {
+        request['username'] = formData.email
+      }
       addUserAPI(request);
     }
   };
@@ -355,17 +364,30 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const isUserFormFilled = (formData: any) => {
-    console.log(formData);
+    // console.log('formdata',formData);
 
     for (const key in formData) {
       if (formData.hasOwnProperty(key)) {
-        if (key !== 'phone' && key !== 'email' && key !== 'department') {
+        console.log("isUserFormFilled", selectedLoginType)
+        if( selectedLoginType == 1){
+          if (key !== 'email' && key !== 'department') {
           if (Array.isArray(formData[key]) && formData[key].length === 0) {
             return false;
           } else if (formData[key] === '') {
             return false;
           }
+          }
         }
+        else {
+          if (key !== 'username' && key !== 'department' && key !== 'password') {
+            if (Array.isArray(formData[key]) && formData[key].length === 0) {
+              return false;
+            } else if (formData[key] === '') {
+              return false;
+            }
+            }
+        }
+
       }
     }
     return true;
@@ -720,8 +742,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
             </div>
           </div>
         </div>
-        {console.log(isUserFormFilled(formData))}
-        {console.log(isUserFormValid(formData))}
         <div className='dashboard__main__footer'>
           <div className='dashboard__main__footer__container'>
             <button
@@ -739,7 +759,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
               }`}
               onClick={handleSubmit}
             >
-              {console.log("gokul",isUserFormFilled(formData) , isUserFormValid(formData))}
+              
               Save Changes
             </button>
           </div>
