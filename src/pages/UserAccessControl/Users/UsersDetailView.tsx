@@ -213,10 +213,10 @@ const UsersListView = () => {
                     <label className='input-field-label'>Roles</label>
                     <p className='input-field-text'>
                       {/* {getCommaSeparatedRoles(allRoles.find((role: any) => role.id === userDetails?.role))} */}
-                      {userDetails?.role
+                      {userDetails?.roles
                         ?.map((roleId: any) => {
-                          const role = allRoles.find((r: any) => r.id === roleId);
-                          return role ? role.role_name : null;
+                          const roles = allRoles.find((r: any) => r.id === roleId);
+                          return roles ? roles.role_name : null;
                         })
                         .join(', ')}
                     </p>

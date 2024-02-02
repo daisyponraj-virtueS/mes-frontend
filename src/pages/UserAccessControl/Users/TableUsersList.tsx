@@ -156,9 +156,10 @@ const TableUsersList = (props: any) => {
                   <td style={{ width: '150px', padding: '14px', height: '54px' }}>{user.login_type=="sso" ? "Enabled" : "Disabled"}</td>
                   {/* <td style={{ width: '230px', padding: "14px",height: "54px"  }}>{getCommaSeparatedRoles(user.roles)}</td> */}
                   <td style={{ width: '230px', padding: '14px', height: '54px' }}>
-                    {user?.role
+                    {user?.roles
                       ?.map((roleId: any) => {
                         const role = allRoles.find((r: any) => r.id === roleId);
+                        console.log(role,"rolesss")
                         return role ? role.role_name : null;
                       })
                       .join(', ')}

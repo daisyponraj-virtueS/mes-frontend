@@ -163,16 +163,15 @@ const shiftTimes = [
     { label: 'Shift 2', from: shift2_from, to: shift2_to },
     { label: 'Shift 3', from: shift3_from, to: shift3_to },
   ];
-  const uniqueModules = Array.from(new Set(plantData?.function_json?.map(item => item.module_id)));
+  const uniqueModules = Array.from(new Set(plantData?.function_json?.map(item => item.module)));
 
   const uniqueModulesWithFunctions = uniqueModules?.map(moduleId => {
     return {
       moduleId: moduleId,
-      functions: plantData?.function_json.filter(item => item.module_id === moduleId),
+      functions: plantData?.function_json.filter(item => item.module === moduleId),
     };
   });
   
-  console.log("uniqueModulesWithFunctions",shiftTimes, plantData);
   
   
   return (
@@ -339,7 +338,7 @@ const shiftTimes = [
                       }}
                     >
                       {functionList?.map((item: any, itemIndex: any) => (
-                        value.functions.some((val:any)=>val.function_id == item.id ) ?
+                        value.functions.some((val:any)=>val.function == item.id ) ?
                         <div
                           key={itemIndex}
                           style={{

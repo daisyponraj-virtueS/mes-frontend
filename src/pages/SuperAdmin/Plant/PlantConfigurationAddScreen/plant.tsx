@@ -9,6 +9,9 @@ import CustomSelect from 'components/common/SelectField';
 import deactiveIcon from '../../../../assets/icons/deactivate.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import AlertModal from 'components/Modal/AlertModal';
+import { clearLocalStorage } from 'utils/utils';
+import { paths } from 'routes/paths';
 
 const formValidationSchema = yup.object({
   timezone_id: yup.string().required('Select the Time zone'),
@@ -57,6 +60,8 @@ const AddPlant = () => {
     labAbalysis: [],
     reports: [],
   });
+  const [openAlertModal, setOpenAlertModal] = useState<boolean>(false);
+
   const [modelList, setModelList] = useState<any>([]);
   const [editData, setEditData] = useState<any>(null);
   const [showTooltip, setShowTooltip] = useState<any>('');
@@ -111,6 +116,8 @@ const AddPlant = () => {
       validationSchema: formValidationSchema,
       enableReinitialize: true,
       onSubmit: async (values: any, { resetForm }: any) => {
+        console.log('submit', values);
+        
         const data = {
           ...values,
           ...{
@@ -159,8 +166,9 @@ const AddPlant = () => {
           console.log(response);
         }
         setWorkshopList([]);
-        navigate('/system-admin/plant-configuration/view');
+        // navigate('/system-admin/plant-configuration/view');
         resetForm();
+        setOpenAlertModal(true)
       },
     });
   useEffect(() => {
@@ -993,7 +1001,19 @@ const AddPlant = () => {
           </div>
         </div>
       </div>
-
+      {openAlertModal && (
+            <AlertModal
+              showModal={openAlertModal}
+              title={"LogOut"}
+              content={"Plant COnfiguration Changed. You Need to Login again"}
+              confirmButtonText='Proceed'
+              onConfirmClick={()=>{
+                clearLocalStorage(['authToken', 'userData', 'plantId', 'plantName']);
+                navigate(`${paths.login}`);
+              }}
+              closeModal={()=>{setOpenAlertModal(true)}}
+            />
+          )}
       <PlantFooter />
     </form>
   );
