@@ -505,7 +505,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
               {values.step ? (
                 <>
                   <div className='control_parameters'>
-                    <p className='control_parameters__title mb-4'>Control parameters</p>
+                    <p className='control_parameters__title mb-4'>Control Parameters</p>
 
                     <div className='control_parameters__parameter_container'>
                       {control_parameters.map((val, index) => (
@@ -513,7 +513,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                           className='control_parameters__container'
                           style={{
                             width:
-                              val.type !== 'select' && val.type !== 'input' ? '150px' : '255px',
+                              val.type !== 'select' && val.type !== 'input' ? '170px' : '255px',
                           }}
                         >
                           {val.type === 'input' && (
@@ -552,6 +552,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                               }}
                               text={enabled ? 'Mandatory' : 'Not Mandatory'}
                               isChecked={enabled}
+                              style={{color: '#757E85'}}
                             />
                           )}
                           {val.type === 'add-button' ? (
@@ -579,7 +580,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                       {controlParametersList?.length > 0 && (
                         <table className='control_parameters__table'>
                           <tr>
-                            <th className='control_parameters__table_head '>Control parameters</th>
+                            <th className='control_parameters__table_head '>Control Parameters</th>
                             <th className='control_parameters__table_head'>Value</th>
                             <th></th>
                             <th></th>
@@ -948,7 +949,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                                 style={{
                                                   width:
                                                     val.type !== 'select' && val.type !== 'input'
-                                                      ? '150px'
+                                                      ? '170px'
                                                       : '255px',
                                                 }}
                                               >
@@ -1027,7 +1028,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                               <table className='control_parameters__table'>
                                                 <tr>
                                                   <th className='control_parameters__table_head '>
-                                                    Control parameters
+                                                    Control Parameters
                                                   </th>
                                                   <th className='control_parameters__table_head'>
                                                     Value
@@ -1327,7 +1328,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                                     fontWeight: 600,
                                                   }}
                                                 >
-                                                  {console.log("gokul", item.step == values.step)}
+                                                 
                                                   {
                                                     control_parameters[0].option.filter(
                                                       (item: any) =>

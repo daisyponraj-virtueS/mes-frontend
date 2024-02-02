@@ -2,19 +2,22 @@ import { useState } from 'react';
 import 'assets/styles/scss/components/table-general.scss';
 import { paths } from 'routes/paths';
 import { useNavigate } from 'react-router-dom';
-import { isEmpty } from 'utils/utils';
+import { isEmpty, notify } from 'utils/utils';
 import RoleOptionModal from 'components/Modal/RoleOptionModal';
 import OutsideClickHandler from 'react-outside-click-handler';
 import editIcon from 'assets/icons/edit1.svg';
 import viewIcon from 'assets/icons/eye1.svg';
 import deactivateIcon from 'assets/icons/deactivate.svg';
 import { Link } from 'react-router-dom';
+import httpClient from 'http/httpClient';
+import AlertModal from 'components/Modal/AlertModal';
 
 // import { useHistory } from 'react-router-dom';
 
 // import DotsSvg from 'components/common/DotsSvg';
 
 const TableRolesList = (props: any) => {
+  
   const {
     roles,
     setRoles,
@@ -30,7 +33,12 @@ const TableRolesList = (props: any) => {
 //     history.push(`/edit/${role.id}`);
 //   };
 
- 
+const [showAlert, setShowAlert] = useState<boolean>(false);
+const [modalTitle, setModalTitle] = useState<string>('');
+const [modalContent, setModalContent] = useState<string>('');
+const [actionButtonLabel, setActionButtonLabel] = useState<string>('');
+const [action, setAction] = useState<any>(null);
+const [singleRole, setSingleRole] = useState<any>(null);
   const [isHovered, setIsHovered] = useState("");
 
   const handleMouseEnter = (role: any) => {
@@ -66,7 +74,49 @@ const TableRolesList = (props: any) => {
     }
   };
 
+
+  const userStatusChangeAPI = async (request: any) => {
+    httpClient
+      // .patch(`/api/users/${actionUserId}/`, { data: request })
+      .patch(`/api/account/roles/${singleRole.id}/`, { data: request })
+      .then((response: any) => {
+        if (response.status === 200) {
+          const statusMessage = !request?.is_delete ? 'Activated the Role' : 'Deactivated the Role';
+          if (response.data) {
+            setRoles((prevData: any) =>
+              prevData.map((role: any) =>
+              role.id === singleRole.id ? { ...role, is_delete: !role.is_delete } : role
+              )
+            );
+            notify('success', statusMessage);
+            setShowAlert(false);
+          }
+        } else if (response.status === 400) {
+          notify('error', response.data.error);
+          setShowAlert(false);
+        }
+      })
+      .catch((err) => {
+        notify('error', 'Failed to change user status');
+        console.log('errored -->', err);
+        setShowAlert(false);
+      });
+  };
+
+  const handleAction = () => {
+
+      if (action == 'Deactivate') {
+        if (!hasEditPermission) {
+          notify('warning', 'No permission to do this operation');
+          return;
+        }
+        setShowAlert(false);
+        userStatusChangeAPI({ is_delete: !singleRole.status});
+    }
+  };
+
   return (
+    <>
     <div className='table-general-wrapper'>
       <table className='table-general' style={{ width: '100%' }}>
         <thead>
@@ -165,14 +215,23 @@ const TableRolesList = (props: any) => {
                                 <Link to="#" onClick={(e) => handleEditClick(e, role.id)} data-tip='Edit'>
                                   <img src={editIcon} alt='edit' className='icon mr-10' />
                                 </Link>
-                                <Link to={`/deactivate/${role.id}`} data-tip='Deactivate'>
+                                {/* <Link to={`/deactivate/${role.id}`} data-tip='Deactivate'> */}
                                   <img
+                                  onClick={() => {
+                                    setSingleRole(role)
+                                    setAction('Deactivate');
+                                    setShowAlert(true);
+                                    setModalTitle('Alert');
+                                    setActionButtonLabel('Deactivate');
+                                    setModalContent(`Do you want to deactivate this user?`);
+                                  }}
                                     src={deactivateIcon}
                                     alt='deactivate'
                                     className='icon mr-6'
                                     style={{ fill: '#04436B'}}
+                                    
                                   />
-                                </Link>
+                                {/* </Link> */}
                               </div>
                             )}
                        
@@ -210,6 +269,17 @@ const TableRolesList = (props: any) => {
         </tbody>
       </table>
     </div>
+    <AlertModal
+        showModal={showAlert}
+        closeModal={() => {
+          setShowAlert(false);
+        }}
+        onConfirmClick={handleAction}
+        title={modalTitle}
+        content={modalContent}
+        confirmButtonText={actionButtonLabel}
+      />
+      </>
   );
 };
 

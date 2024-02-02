@@ -35,6 +35,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   const [openCloneModal, setOpenCloneModal] = useState<boolean>(false);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [selectedLoginType, setSelectedLoginType] = useState<Number>(1);
+  const [selectedValue, setSelectedValue] = useState('Select');
   const [formData, setFormData] = useState<any>({
     firstname: '',
     lastname: '',
@@ -46,7 +47,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     role: [],
     department: '',
   });
-  console.log(selectedLoginType);
 
   const [existingRoles, setExistingRoles] = useState<any>([]);
   const [allRoles, setAllRoles] = useState<any>([]);
@@ -70,7 +70,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     getRolesAPI();
   }, []);
 
-  console.log(allRoles);
 
   const [errors, setErrors] = useState<any>({});
 
@@ -113,8 +112,13 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   function onValueChange(event: any) {
-    console.log('event', event.target.value);
-    setSelectedLoginType(event.target.value);
+    console.log('validateForm', validateForm());
+    
+    setSelectedLoginType(event.target.value); 
+    if (event.target.value == 0) {
+      setFormData({ ...formData, username: '', password: '' })
+      setIsPasswordVisible(false)
+    }
   }
   const handleConfirmPasswordChange = (value: any) => {
     setFormData({ ...formData, confirmPassword: value });
@@ -135,7 +139,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     }
     setFormData({ ...formData, password: password });
     setIsPasswordVisible(true);
-    console.log('randomstring', password);
   };
   const handleDepartmentChange = (value: any) => {
     setFormData({ ...formData, department: value });
@@ -233,10 +236,11 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const validateUsername = (value: any) => {
-    if (!value) {
-      return 'Username is required';
+    if(selectedLoginType == 1){
+      if (!value) {
+        return 'Username is required';
+      }
     }
-
     let errorMessage = '';
     if (
       value.length < 4 ||
@@ -252,8 +256,8 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
   const validatePhone = (value: any) => {
     if (!value) {
-      // return 'Phone number is required';
-      return '';
+      return 'Phone number is required';
+      // return '';
     } else if (!/^[0-9]{10}$/g.test(value)) {
       return 'Invalid phone format';
     }
@@ -262,7 +266,9 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
   const validateEmail = (value: any) => {
     if (!value) {
-      // return 'Email is required';
+      if(selectedLoginType == 0){
+      return 'Email is required';
+      }
       return '';
     } else if (!/^\S+@\S+\.\S+$/.test(value)) {
       return 'Invalid email format';
@@ -296,6 +302,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const addUserAPI = async (request: any) => {
+    console.log("request", request)
     httpClient
       // .post('/api/users/', { data: request })
       .post('/api/account/users/', { data: request })
@@ -332,6 +339,9 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
         login_type: selectedLoginType == 1 ? 'simple' : 'SSO',
         department:formData.department
       };
+      if (selectedLoginType != 1) {
+        request['username'] = formData.email
+      }
       addUserAPI(request);
     }
   };
@@ -353,17 +363,30 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const isUserFormFilled = (formData: any) => {
-    console.log(formData);
+    // console.log('formdata',formData);
 
     for (const key in formData) {
       if (formData.hasOwnProperty(key)) {
-        if (key !== 'phone' && key !== 'email') {
+        console.log("isUserFormFilled", selectedLoginType)
+        if( selectedLoginType == 1){
+          if (key !== 'email' && key !== 'department') {
           if (Array.isArray(formData[key]) && formData[key].length === 0) {
             return false;
           } else if (formData[key] === '') {
             return false;
           }
+          }
         }
+        else {
+          if (key !== 'username' && key !== 'department' && key !== 'password') {
+            if (Array.isArray(formData[key]) && formData[key].length === 0) {
+              return false;
+            } else if (formData[key] === '') {
+              return false;
+            }
+            }
+        }
+
       }
     }
     return true;
@@ -374,7 +397,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
       if (formData.hasOwnProperty(key) && key !== 'confirmPassword') {
         if (Array.isArray(formData[key]) && formData[key].length === 0) {
           return false;
-        } else if (formData[key] === '' && key !== 'phone' && key !== 'email') {
+        } else if (formData[key] === '' && key !== 'phone' && key !== 'email' && key !== 'department') {
           return false;
         }
       }
@@ -485,7 +508,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
                   <div className='col-4 px-2 mb-6'>
                     <div className='col-wrapper'>
-                      <label className='input-field-label font-semibold'>Email</label>
+                      <label className='input-field-label font-semibold'>{selectedLoginType == 0 ? 'Email*':'Email'}</label>
                       <input
                         type='text'
                         placeholder='Enter Email'
@@ -535,10 +558,15 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                               value: role.id,
                               option: role.role_name,
                             }))}
+                            value={selectedValue === 'Select'?'Select' + ' ':'Select'}
                             index={0}
-                            onChange={handleDropdown}
+                            onChange={(id:any)=>{
+                              setSelectedValue(selectedValue === 'Select'?'Select' + ' ':'Select');
+                              handleRoleClick(id)
+                              // handleDropdown()
+                            }}
                           ></CustomSelect>
-                          <ul
+                          {/* <ul
                             className={`select-dropdown-menu ${openDropdown ? 'open' : ''}`}
                             style={{ maxHeight: 140, overflow: 'auto' }}
                           >
@@ -563,7 +591,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                                 No records found
                               </li>
                             )}
-                          </ul>
+                          </ul> */}
                         </div>
                       </div>
                     </OutsideClickHandler>
@@ -714,8 +742,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
             </div>
           </div>
         </div>
-        {console.log(isUserFormFilled(formData))}
-        {console.log(isUserFormValid(formData))}
         <div className='dashboard__main__footer'>
           <div className='dashboard__main__footer__container'>
             <button
@@ -733,6 +759,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
               }`}
               onClick={handleSubmit}
             >
+              
               Save Changes
             </button>
           </div>

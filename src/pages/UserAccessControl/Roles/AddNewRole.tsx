@@ -63,6 +63,7 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
     setInitialData(response.data.permission_list);
   };
 
+  console.log('setInitialData',initialData)
   const getRoleDetails = async () => {
     const requestData: any = {
       role_id: selectedRole,

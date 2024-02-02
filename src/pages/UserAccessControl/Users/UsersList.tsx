@@ -25,7 +25,7 @@ const UsersList = () => {
   // const [searchValue, setSearchValue] = useState<string | number>('');
 
   const [users, setUsers] = useState<any>([]);
-  const itemsPerPage = 10;
+  const itemsPerPage = 2;
   const [count, setCount] = useState(null);
   const [previous, setPrevious] = useState(null);
   const [next, setNext] = useState(null);
@@ -42,6 +42,8 @@ const UsersList = () => {
   const [loggedInUser, setLoggedInUser] = useState<any>({});
   const [allRoles, setAllRoles] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [usersDataToSearch, setUsersDataToSearch] = useState([]);
+  const [usersList, setUsersList] = useState([]);
 
   const [searchValue, setSearchValue] = useState<string | number>('');
   const [additiveDeleted, setAdditiveDeleted] = useState(false);
@@ -78,10 +80,11 @@ const UsersList = () => {
             ...user,
             showModal: false,
           }));
-          setUsers(userData);
-          setCount(response.data.count);
-          setPrevious(response.data.previous);
-          setNext(response.data.next);
+          setUsersList(userData)
+          setUsersDataToSearch(userData)
+          setCount(response.data.results.length);
+          setPrevious(response.data.results);
+          setNext(response.data.results);
           setCallApi(false);
           setLoading(false);
         }
@@ -91,6 +94,7 @@ const UsersList = () => {
         console.log('errored -->', err);
       });
   };
+
 
   useEffect(() => {
     const getRolesAPI = async () => {
@@ -139,7 +143,15 @@ const UsersList = () => {
 
   const onPageChange = (newPage: any) => {
     setCurrentPage(newPage);
-    getUsers(newPage);
+    if(newPage !== 0 && newPage <= itemsPerPage){
+    const filterData = usersList.filter((val:any,index:any)=>{
+      if(index >= (newPage * itemsPerPage - itemsPerPage)  && index < newPage * itemsPerPage){
+        return val
+      }
+    })
+    
+        setUsers(filterData);
+  }
   };
 
   const { pathname } = useLocation();
@@ -257,9 +269,74 @@ const UsersList = () => {
       setModalTitle('Message');
     }
   };
+  useEffect(()=>{
+    if(searchValue){
+      const filteredUser = usersDataToSearch.filter((item: any) => {
+        // Convert searchValue to string for consistent comparison
+        const searchString = searchValue.toString().toLowerCase();
+      
+        // Check if any field matches the search value
+        return (
+          item.id.toString().toLowerCase().includes(searchString) || 
+          item.first_name.toLowerCase().includes(searchString) || 
+          item.username.toLowerCase().includes(searchString) || 
+          item.last_name.toLowerCase().includes(searchString)
+        );
+      });
+      
+    setUsers(filteredUser)
+    setUsersList(filteredUser)
+    setCount(filteredUser.length);
+    setPrevious(filteredUser);
+    setNext(filteredUser);
+    }else{
+      getUsers(1)
+    }
+  },[searchValue])
+  
+  useEffect(()=>{
+    if(filteredData){
+      const filteredUser = usersDataToSearch.filter((item: any) => {
+        // Convert searchValue to string for consistent comparison
+        const searchString = filteredData?.search?.toString().toLowerCase();
+        const filterSelect = filteredData?.is_active ? 'sso' : 'simple'
+      
+        // Check if any field matches the search value
+        return (
+          item.role
+            ?.map((roleId: any) => {
+              const role = allRoles.find((r: any) => r.id === roleId);
+              return role ? role.role_name : null;
+            })
+            .join(', ').toString().toLowerCase().includes(searchString) && 
+          item.login_type.toLowerCase().includes(filterSelect) 
+        );
+      });
+      
+    setUsers(filteredUser)
+    setUsersList(filteredUser)
+    setCount(filteredUser.length);
+    setPrevious(filteredUser);
+    setNext(filteredUser);
+    }else{
+      getUsers(1)
+    }
+  },[filteredData])
+
+  useEffect(()=>{
+    const filterData = usersList.filter((val:any,index:any)=>{
+      if(index >= (1 * itemsPerPage - itemsPerPage)  && index < 1 * itemsPerPage){
+        return val
+      }
+    })
+    
+        setUsers(filterData);
+      },[usersList])
+  
 
   if (loading) return <Loading />;
 
+ 
   return (
     <main className='dashboard'>
       <section className='dashboard__main'>
@@ -293,11 +370,9 @@ const UsersList = () => {
             setSearchValue(value);
             setInputData({ ...inputData, search: searchValue });
           }}
-          // sort_filter_click={(inputValue: any, fromFilterSerach: boolean) =>
-          //   onSort_Filter(inputValue, fromFilterSerach)
-          // }
-          filteredData={filteredData}
-          fetchSearchList={fetchSearchList}
+          sort_filter_click={(filterValue: any) =>
+            setFilteredData(filterValue)
+          }
         />
         <div className='dashboard__main__body px-8 pt-6 scroll-0 overflow-y-hidden'>
           {!isEmpty(users) ? (

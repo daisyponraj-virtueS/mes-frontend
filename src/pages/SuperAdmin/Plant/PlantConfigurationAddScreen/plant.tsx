@@ -59,6 +59,7 @@ const AddPlant = () => {
     coreProcess: [],
     labAbalysis: [],
     reports: [],
+    systemAdmin:[],
   });
   const [openAlertModal, setOpenAlertModal] = useState<boolean>(false);
 
@@ -319,10 +320,10 @@ const AddPlant = () => {
 
   const labAbalysis = [...functionList.labAbalysis];
   const reports = [...functionList.reports];
+  const systemAdmin = [...functionList.systemAdmin];
 
 
   const handleFunctinAndModules = (value: any, index: any) => {
-    console.log("index", index, value)
     if (index === 0) {
       setModulesAndFunctionList(userControlAccess);
       setFunctionCategory(value);
@@ -336,6 +337,9 @@ const AddPlant = () => {
       setModulesAndFunctionList(labAbalysis);
       setFunctionCategory(value);
     } else if (index === 4) {
+      setModulesAndFunctionList(systemAdmin);
+      setFunctionCategory(value);
+    }else if (index === 5) {
       setModulesAndFunctionList(reports);
       setFunctionCategory(value);
     }
@@ -451,6 +455,7 @@ const AddPlant = () => {
         coreProcess: [],
         labAbalysis: [],
         reports: [],
+        systemAdmin: [],
       };
       functionResponseData.forEach((module:any) => {
         const functionNameValuePairs :any = module.module_functions.map((func:any) => ({
@@ -474,9 +479,11 @@ const AddPlant = () => {
             case "Reports":
                 functions.reports.push(...functionNameValuePairs);
                 break;
+            case "System Admin":
+                functions.systemAdmin.push(...functionNameValuePairs);
+                break;
         }
     });
-    console.log("functions", functions)
 
       setFunctionList(functions);
     } catch (error) {
@@ -871,6 +878,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift1?.from && touched.shift1?.from ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -893,6 +901,8 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
+                        
                       />
                       {errors.shift1?.to && touched.shift1?.to ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -917,6 +927,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift2?.from && touched.shift2?.from ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -939,6 +950,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift2?.to && touched.shift2?.to ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -963,6 +975,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift3?.from && touched.shift3?.from ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>
@@ -985,6 +998,7 @@ const AddPlant = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onKeyPress={validateNumberInput}
+                        maxLength={5}
                       />
                       {errors.shift3?.to && touched.shift3?.to ? (
                         <p style={{ fontSize: '12px', color: '#ff0000', position: 'absolute' }}>

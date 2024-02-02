@@ -17,7 +17,7 @@ const RolesList = () => {
 
   // const [searchValue, setSearchValue] = useState<string | number>('');
   const [roles, setRoles] = useState<any>([]);
-  const itemsPerPage = 10;
+  const itemsPerPage = 2;
   const [count, setCount] = useState(null);
   const [previous, setPrevious] = useState(null);
   const [next, setNext] = useState(null);
@@ -27,6 +27,7 @@ const RolesList = () => {
   const [modalContent, setModalContent] = useState('');
   const [deleteRoleId, setDeleteRoleId] = useState<any>(-1);
   const [loading, setLoading] = useState(true);
+  const [rolesList, setRolesList] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -42,14 +43,14 @@ const RolesList = () => {
       .get(url)
       .then((response: any) => {
         if (response.data) {
-          const roleData: any = [...response.data?.results]?.map((role: any) => ({
+          const roleData: any = [...response.data?.results].map((role: any) => ({
             ...role,
             showModal: false,
           }));
-          setRoles(roleData);
-          setCount(response.data.count);
-          setPrevious(response.data.previous);
-          setNext(response.data.next);
+          setRolesList(roleData)
+          setCount(response.data.results.length);
+          setPrevious(response.data.results);
+          setNext(response.data.results);
           setCallApi(false);
           setLoading(false);
         }
@@ -92,8 +93,16 @@ const RolesList = () => {
   }, [callApi]);
 
   const onPageChange = (newPage: any) => {
+    if(newPage !== 0 ){
     setCurrentPage(newPage);
-    getRoles(newPage);
+    const filterData = rolesList.filter((val:any,index:any)=>{
+      if(index >= (newPage * itemsPerPage - itemsPerPage)  && index < newPage * itemsPerPage){
+        return val
+      }
+    })
+    
+    setRoles(filterData);
+  }
   };
 
   const { pathname } = useLocation();
@@ -140,13 +149,13 @@ const RolesList = () => {
   const roleStatusChangeAPI = async (request: any) => {
     httpClient
       // .post(`/api/users/deactivate_role/`, { data: request })
-      .post(`/api/account/deactivate_role/`, { data: request })
+      .patch(`/api/account/roles/${deleteRoleId}/`, { data: request })
       .then((response: any) => {
         if (response.status === 200) {
           if (response.data) {
             setRoles((prevData: any) =>
               prevData.map((role: any) =>
-                role.id === deleteRoleId ? { ...response.data?.role } : role
+                role.id === deleteRoleId ? { ...role, is_delete: !role.is_delete } : role
               )
             );
             notify('success', response.data.message);
@@ -202,6 +211,16 @@ const RolesList = () => {
       setModalTitle('Message');
     }
   };
+
+  useEffect(()=>{
+const filterData = rolesList.filter((val:any,index:any)=>{
+  if(index >= (1 * itemsPerPage - itemsPerPage)  && index < 1 * itemsPerPage){
+    return val
+  }
+})
+
+    setRoles(filterData);
+  },[rolesList])
 
   if (loading) return <Loading />;
 
