@@ -25,7 +25,7 @@ const UsersList = () => {
   // const [searchValue, setSearchValue] = useState<string | number>('');
 
   const [users, setUsers] = useState<any>([]);
-  const itemsPerPage = 10;
+  const itemsPerPage = 2;
   const [count, setCount] = useState(null);
   const [previous, setPrevious] = useState(null);
   const [next, setNext] = useState(null);
@@ -43,6 +43,7 @@ const UsersList = () => {
   const [allRoles, setAllRoles] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [usersDataToSearch, setUsersDataToSearch] = useState([]);
+  const [usersList, setUsersList] = useState([]);
 
   const [searchValue, setSearchValue] = useState<string | number>('');
   const [additiveDeleted, setAdditiveDeleted] = useState(false);
@@ -79,11 +80,11 @@ const UsersList = () => {
             ...user,
             showModal: false,
           }));
-          setUsers(userData);
+          setUsersList(userData)
           setUsersDataToSearch(userData)
-          setCount(response.data.count);
-          setPrevious(response.data.previous);
-          setNext(response.data.next);
+          setCount(response.data.results.length);
+          setPrevious(response.data.results);
+          setNext(response.data.results);
           setCallApi(false);
           setLoading(false);
         }
@@ -142,7 +143,15 @@ const UsersList = () => {
 
   const onPageChange = (newPage: any) => {
     setCurrentPage(newPage);
-    getUsers(newPage);
+    if(newPage !== 0 && newPage <= itemsPerPage){
+    const filterData = usersList.filter((val:any,index:any)=>{
+      if(index >= (newPage * itemsPerPage - itemsPerPage)  && index < newPage * itemsPerPage){
+        return val
+      }
+    })
+    
+        setUsers(filterData);
+  }
   };
 
   const { pathname } = useLocation();
@@ -276,8 +285,12 @@ const UsersList = () => {
       });
       
     setUsers(filteredUser)
+    setUsersList(filteredUser)
+    setCount(filteredUser.length);
+    setPrevious(filteredUser);
+    setNext(filteredUser);
     }else{
-      setUsers(usersDataToSearch)
+      getUsers(1)
     }
   },[searchValue])
   
@@ -301,10 +314,24 @@ const UsersList = () => {
       });
       
     setUsers(filteredUser)
+    setUsersList(filteredUser)
+    setCount(filteredUser.length);
+    setPrevious(filteredUser);
+    setNext(filteredUser);
     }else{
-      setUsers(usersDataToSearch)
+      getUsers(1)
     }
   },[filteredData])
+
+  useEffect(()=>{
+    const filterData = usersList.filter((val:any,index:any)=>{
+      if(index >= (1 * itemsPerPage - itemsPerPage)  && index < 1 * itemsPerPage){
+        return val
+      }
+    })
+    
+        setUsers(filterData);
+      },[usersList])
   
 
   if (loading) return <Loading />;
