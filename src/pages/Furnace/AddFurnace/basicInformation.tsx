@@ -211,12 +211,12 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
           const transformedItem = {
             id: item.id,
             type: item.type_name,
-            core: item.core || '',
-            coreMassLength: Number(item.core_mass_length) || '',
-            paste: item.paste || '',
-            pasteMassLength: Number(item.paste_mass_length) || '',
-            casing: item.casing || '',
-            casingMassLength: Number(item.casing_mass_length) || '',
+            core: item.core || null,
+            coreMassLength: Number(item.core_mass_length) || null,
+            paste: item.paste || null,
+            pasteMassLength: Number(item.paste_mass_length) || null,
+            casing: item.casing || null,
+            casingMassLength: Number(item.casing_mass_length) || null,
           };
           return transformedItem;
         });
@@ -257,7 +257,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
       delete editObj.workshop_value;
       delete editObj.step2;
 
-
+      setElectrodesList(editObj.electrodes);
       setEditData(editObj);
     };
 
@@ -419,19 +419,24 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
     }
 
     setFieldValue('electrode_type_id', value);
+if(isEdit){
 
-    if(isEdit){
-    const emptyElectrodesList = electrodesList.forEach((obj) => {
-      // Iterate over each property in the object and set it to an empty string
-      for (let key in obj) {
+    const result = electrodesList?.map(item => {
+      const newItem = { id: item.id,type:item.type }; // Start with id
+      // Set all other keys to null
+      Object.keys(item).forEach(key => {
+          if (key !== 'id' && key !== 'type') {
+              newItem[key] = null;
+          }
+      });
+      return newItem;
+  });
 
-        if(key !== 'id')
-        obj[key] = '';
-      }
-    });
-    setElectrodesList(emptyElectrodesList);
-    setElectrode([])
-  }
+    setElectrodesList(result as any[])
+    setFieldValue('electrodes', []);
+
+}
+
   };
 
   const handleProductChange = (value: any, index: any, option: any) => {
@@ -597,15 +602,17 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
   }, []);
 
   const handleElectrodesFieldChange = (label: any, fieldName: any, value: any) => {
+
     const updatedElectrodes = electrodesList.map((electrode) => {
       if (electrode.type === label) {
-        return { ...electrode, type: label, [fieldName]: value || '' };
+        return { ...electrode, type: label, [fieldName]: value || null };
       }
       return electrode;
     });
 
     setElectrodesList(updatedElectrodes);
     setFieldValue('electrodes', updatedElectrodes);
+  
   };
 
   useEffect(() => {
@@ -627,7 +634,6 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
         setElectrode(composite);
       }
       setProductList(values.products);
-      setElectrodesList(values.electrodes);
     }
   }, [values]);
 
@@ -637,6 +643,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
       setEditId(edit_Id);
     }
   }, []);
+
   return (
     <form onSubmit={handleSubmit}>
       <div className='container mt-3 mb-3'>
@@ -841,7 +848,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
                             {val.type === 'input' && (
                               <div className='electrode_accordion__input_container input-group mb-3'>
                                 <input
-                                  type='text'
+                                  type='number'
                                   className='electrode_accordion__input form-control'
                                   placeholder='Enter Value'
                                   onChange={(e) => {

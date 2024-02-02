@@ -12,7 +12,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   position: relative;
-  overflow-y: scroll;
+  overflow: hidden;
   scrollbar-width: none;
   &::-webkit-scrollbar {
     width: 0;
