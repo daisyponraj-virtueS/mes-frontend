@@ -247,20 +247,22 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
   const validateUsername = (value: any) => {
     console.log("validateUsername", selectedLoginType)
+    let errorMessage = '';
     if (!value) {
       if(selectedLoginType == 1){
         return 'Username is required';
       }
     }
-    let errorMessage = '';
-    if (
-      value.length < 4 ||
-      value.length > 20 ||
-      /^\d/.test(value) ||
-      !/^[a-zA-Z0-9]+$/.test(value)
-    ) {
-      errorMessage =
-        'Invalid username. Username should be between 4 and 20 characters, can only contains alphabets and numbers, should not start with a number';
+    if (selectedLoginType == 1) {
+      if (
+        value.length < 4 ||
+        value.length > 20 ||
+        /^\d/.test(value) ||
+        !/^[a-zA-Z0-9]+$/.test(value)
+      ) {
+        errorMessage =
+          'Invalid username. Username should be between 4 and 20 characters, can only contains alphabets and numbers, should not start with a number';
+      }
     }
     return errorMessage.trim();
   };
@@ -313,7 +315,6 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const addUserAPI = async (request: any) => {
-    console.log("request", request)
     httpClient
       // .post('/api/users/', { data: request })
       .post('/api/account/users/', { data: request })
@@ -353,6 +354,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
       if (selectedLoginType != 1) {
         console.log("selectedLoginType", selectedLoginType)
         request['username'] = formData.email
+        request['password'] = formData.firstname
       }
       addUserAPI(request);
     }
@@ -549,7 +551,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                     </div>
                   </div>
 
-                  <div className='col-4 px-2 mb-6'>
+                  <div className='col-12 px-2 mb-6'>
                     <OutsideClickHandler onOutsideClick={() => setOpenDropdown(false)}>
                       <div className='col-wrapper'>
                         <label className='input-field-label font-semibold'>Roles*</label>
@@ -671,7 +673,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                                 </div>
                               </div>
                               {selectedLoginType == 1 && isPasswordVisible && (
-                                <div className='col-4 px-2 mb-6 flex'>
+                                <div className='col-4 px-2 mb-6 flex' style={{position: 'relative'}}>
                                   <div className='col-wrapper'>
                                     <label className='input-field-label font-semibold'>
                                       Password Generated
@@ -704,7 +706,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                                     data-toggle='tooltip'
                                     data-placement='bottom'
                                     onMouseOver={() => setShowTooltip(true)}
-                                    onMouseOut={() => setShowTooltip(false)}
+                                    onMouseOut={() => setShowTooltip(true)}
                                   />
                                   {showTooltip ? (
                                     <span className='workshop__tooltip'>Copy Password</span>
