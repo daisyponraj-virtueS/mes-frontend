@@ -133,11 +133,21 @@
 }
 .workshop__tooltip {
   position: absolute;
-  bottom: 71px;
-  left: 593px;
+  bottom: -1rem;
+  left: 16rem;
   background-color: #022549;
   padding: 5px;
   color: #fff;
   font-size: 14px;
   border-radius: 4px;
+  min-width: 120px;
+}
+.Manufacturing{
+  color: #fff;
+  text-align: center;
+  padding-top: 50px;
+  padding-left: 30px;
+}
+.Manufacturing > p, .Manufacturing > p > b{
+  font-size: 27px;
 }

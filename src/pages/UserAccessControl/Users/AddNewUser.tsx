@@ -111,13 +111,23 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     }
   };
 
-  function onValueChange(event: any) {
-    console.log('validateForm', validateForm());
-    
-    setSelectedLoginType(event.target.value); 
-    if (event.target.value == 0) {
-      setFormData({ ...formData, username: '', password: '' })
-      setIsPasswordVisible(false)
+//  async function onValueChange(event: any) {
+//   await setSelectedLoginType(event.target.value);
+//     if (event.target.value == 0) {
+//       setFormData({ ...formData, username: '', password: '' })
+//       setIsPasswordVisible(false)
+//       console.log('validateForm', validateForm());
+//     }
+  //   }
+  async function onValueChange(event: any) {
+    try {
+      await setSelectedLoginType(event.target.value);
+      if (event.target.value === 0) {
+        setFormData({ ...formData, username: '', password: '' });
+        setIsPasswordVisible(false);
+      }
+    } catch (error) {
+      console.error('Error in onValueChange:', error);
     }
   }
   const handleConfirmPasswordChange = (value: any) => {
@@ -236,8 +246,9 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const validateUsername = (value: any) => {
-    if(selectedLoginType == 1){
-      if (!value) {
+    console.log("validateUsername", selectedLoginType)
+    if (!value) {
+      if(selectedLoginType == 1){
         return 'Username is required';
       }
     }
@@ -340,6 +351,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
         department:formData.department
       };
       if (selectedLoginType != 1) {
+        console.log("selectedLoginType", selectedLoginType)
         request['username'] = formData.email
       }
       addUserAPI(request);
@@ -751,11 +763,12 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
             >
               Cancel
             </button>
+            {/* {console.log("dsfadsf", isUserFormFilled(formData), isUserFormValid(formData))} */}
             <button
               // type="submit"
               type='button'
               className={`btn btn--primary btn--h36 px-8 py-2 ml-4 ${
-                isUserFormFilled(formData) && isUserFormValid(formData) ? '' : 'disabled'
+                (isUserFormFilled(formData) || isUserFormValid(formData)) ? '' : 'disabled'
               }`}
               onClick={handleSubmit}
             >

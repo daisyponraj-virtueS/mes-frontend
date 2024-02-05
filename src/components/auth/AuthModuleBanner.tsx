@@ -5,7 +5,7 @@ import logo from '../../assets/img/globe-logo-white.svg';
 const AuthModuleBanner: FC = () => {
 	return (
 		<div className="auth-module__banner-section">
-            <div className="">
+            <div className="text-center">
                 <img src={logo} alt="logo" />
             </div>
             <div className="content-container">
