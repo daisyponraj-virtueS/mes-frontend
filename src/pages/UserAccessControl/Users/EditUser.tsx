@@ -14,6 +14,7 @@ import Loading from 'components/common/Loading';
 import CustomSelect from 'components/common/SelectField';
 import OutsideClickHandler from 'react-outside-click-handler';
 import copy from 'assets/icons/copy.svg';
+import axios from 'axios';
 const EditUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
@@ -23,6 +24,7 @@ const EditUser = () => {
   const [allRoles, setAllRoles] = useState<any>([]);
   const [selectedLoginType, setSelectedLoginType] = useState<Number>(0);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [newPassword, setNewPassword] = useState<any>('');
 
   useEffect(() => {
     const getRolesAPI = async () => {
@@ -294,7 +296,7 @@ const EditUser = () => {
       editUserAPI(request);
     }
   };
-  const generatePassword = () => {
+  const generatePassword = async () => {
     // const randomstring = Math.random().toString(36).slice(-8);
     const chars =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?/{}[]';
@@ -303,11 +305,20 @@ const EditUser = () => {
       const randomIndex = Math.floor(Math.random() * chars?.length);
       password += chars.charAt(randomIndex);
     }
-    console.log('newpassword', password);
-
-    setFormData({ ...formData, password: password });
+    // setFormData({ ...formData, password: password });
+    if(password){
+      const data = {password:password}
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/account/reset-password/${userId}/`,
+        data
+      );
+      if(response.status == 200){
+    notify('success','Password reset successfully');
+    setNewPassword(password)
     setIsPasswordVisible(true);
-    console.log('randomstring', password);
+      }
+    }
+
   };
   const isUserFormFilled = (formData: any) => {
     for (const key in formData) {
@@ -625,7 +636,7 @@ const EditUser = () => {
                                       disabled
                                       placeholder=''
                                       name='password'
-                                      value={formData.password}
+                                      value={newPassword}
                                       // onChange={(e) => handlePasswordChange(e.target.value)}
                                       className='input-field input-field--md input-field--h40 w-full'
                                       style={{ minWidth: '222px' }}
@@ -644,7 +655,7 @@ const EditUser = () => {
                                       marginTop: '22px',
                                     }}
                                     onClick={() => {
-                                      navigator.clipboard.writeText(formData.password);
+                                      navigator.clipboard.writeText(newPassword);
                                     }}
                                     data-toggle='tooltip'
                                     data-placement='bottom'

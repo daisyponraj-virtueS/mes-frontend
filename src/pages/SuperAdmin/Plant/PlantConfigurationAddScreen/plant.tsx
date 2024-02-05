@@ -374,21 +374,26 @@ const AddPlant = () => {
     setFieldValue('function', updatedFunctions);
   };
 
-  const validateNumberInput = (e: any) => {
-    const keyCode = e.charCode || e.keyCode;
+  const validateNumberInput = (event: any) => {
+    const { key, target } = event;
+  const { value } = target;
+  const digitCount = (value.match(/\d/g) || []).length; // Count the number of digits
+  const colonExists = value.includes(':');
 
-    // Allow only numeric input (0-9) and colon (:)
- 
-      if
-      ((keyCode <
-      48
-      || keyCode >
-      57
-      ) && keyCode !==
-      58
-      ) {     e.
-      preventDefault
-      ();   }
+  // Allow only numbers and a single colon key
+  if (!(key >= '0' && key <= '9') && key !== ':') {
+    event.preventDefault();
+  }
+
+  // If colon is pressed and it's already present or not enough digits, prevent adding colon
+  if (key === ':' && (colonExists || digitCount < 2)) {
+    event.preventDefault();
+  }
+
+  // If two digits are entered and a colon doesn't exist yet, allow entering colon
+  if (digitCount === 2 && key !== ':' && !colonExists) {
+    target.value = value + ':';
+  }
   };
   const fetchData = async () => {
     try {

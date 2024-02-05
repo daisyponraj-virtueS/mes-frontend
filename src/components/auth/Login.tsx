@@ -129,6 +129,7 @@ const Login: FC<LoginProps> = ({ state }) => {
       onContinue(data);
       setPassword('');
     } else {
+      notify('error', data?.payload.data.message);
       setError({
         toastType: 'error',
         text: data.payload.data.message,
