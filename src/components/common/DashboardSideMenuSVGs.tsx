@@ -1,5 +1,5 @@
 import { paths } from 'routes/paths';
-import axios from 'axios'
+// import axios from 'axios'
 import systemAdminIcon from '../../assets/icons/system-admin.svg'
 export const getSvg = (key: string) => {
   let svg;
@@ -159,11 +159,11 @@ export const arrowDownSvg = (
   </svg>
 );
 
-export const getPath = (subModule: string) => {
+export const getPath =  (subModule: string) => {
   let pathname;
-  const plantData: any = JSON.parse(localStorage.getItem('plantData'));
-  const plant_id : any = plantData.plant_id;
-  // const response = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${plant_id}/`);
+  // const plantData: any = JSON.parse(localStorage.getItem('plantData'));
+  // const plant_id : any = plantData.plant_id;
+  // const response = axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${plant_id}/`);
   switch (subModule) {
     // core process
     case 'Heat Maintenance':
@@ -248,7 +248,7 @@ export const getPath = (subModule: string) => {
 
     // Plant config
      case 'Plant Configuration':
-      // pathname = response?.data.plant_id ? paths.plantScreen.view : paths.plantScreen.create;
+      // pathname = response?.data?.plant_id ? paths.plantScreen.view : paths.plantScreen.create;
       pathname = paths.plantScreen.create;
       break;
 

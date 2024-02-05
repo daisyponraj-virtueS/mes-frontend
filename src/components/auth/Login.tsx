@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { paths } from 'routes/paths';
 import LoginForm from 'components/common/LoginForm';
 import ModalTermsOfUse from 'components/Modal/TermsModel/ModelTerms';
+import Loading from 'components/common/Loading';
 
 interface LoginProps {
   state: {
@@ -29,6 +30,7 @@ const Login: FC<LoginProps> = ({ state }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState(state ? state.user.email : '');
   const [formErrors, setFormErrors] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
   // const closeModel = () => setOpenModel(false);
   const [openTermsModel, setOpenTermsModel] = useState(false);
@@ -112,10 +114,13 @@ const Login: FC<LoginProps> = ({ state }) => {
 		setOpenTermsModel(true)
  }
   const userLoginAPI = async () => {
+    setLoading(true)
     const data = await dispatch(userLogin(inputData));
     console.log('data', data);
     // setResponse(data);
+    setLoading(false)
     if (data?.payload.status === 200 && data.payload.data?.token) {
+      
       setError({
         toastType: 'success',
         text: data.payload.data.message,
@@ -161,6 +166,7 @@ const Login: FC<LoginProps> = ({ state }) => {
     setFormErrors({ ...formErrors, password: validatePassword(value) });
   };
 
+  if (loading) return <Loading />;
   return (
     <>
       <section className='auth-module-wrapper auth-module--login'>
