@@ -20,6 +20,7 @@ const UsersListView = () => {
   const [userDetails, setUserDetails] = useState<any>({});
   const [isLoggedInUser, setIsLoggedInUser] = useState(false);
   const [allRoles, setAllRoles] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (userId) {
@@ -76,6 +77,7 @@ const UsersListView = () => {
             console.log(response.data);
 
             setUserDetails(response.data);
+            setLoading(false)
           }
         })
         .catch((err) => {
@@ -144,6 +146,8 @@ const UsersListView = () => {
 
   // if (isEmpty(userDetails)) return <Loading />;
   console.log(userDetails);
+
+  if (loading) return <Loading />;
   
   return (
     <main className='dashboard'>

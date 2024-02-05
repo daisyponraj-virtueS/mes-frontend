@@ -25,7 +25,7 @@ const UsersList = () => {
   // const [searchValue, setSearchValue] = useState<string | number>('');
 
   const [users, setUsers] = useState<any>([]);
-  const itemsPerPage = 2;
+  const itemsPerPage = 5;
   const [count, setCount] = useState(null);
   const [previous, setPrevious] = useState(null);
   const [next, setNext] = useState(null);
@@ -287,20 +287,23 @@ const handleSearch =(searchValue)=>{
   }
   
   const handleFilter = (filteredData)=>{
+
     if(filteredData){
       const filteredUser = usersDataToSearch.filter((item: any) => {
         // Convert searchValue to string for consistent comparison
         const searchString = filteredData?.search?.toString().toLowerCase();
         const filterSelect = filteredData?.is_active ? 'sso' : 'simple'
+        
       
         // Check if any field matches the search value
         return (
-          item.role
+          item.roles
             ?.map((roleId: any) => {
               const role = allRoles.find((r: any) => r.id === roleId);
+              
               return role ? role.role_name : null;
             })
-            .join(', ').toString().toLowerCase().includes(searchString) && 
+            .some(element => element.toLowerCase().includes(searchString)) && 
           item.login_type.toLowerCase().includes(filterSelect) 
         );
       });
