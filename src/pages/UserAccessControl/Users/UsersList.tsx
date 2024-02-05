@@ -45,14 +45,7 @@ const UsersList = () => {
   const [usersDataToSearch, setUsersDataToSearch] = useState([]);
   const [usersList, setUsersList] = useState([]);
 
-  const [searchValue, setSearchValue] = useState<string | number>('');
   const [additiveDeleted, setAdditiveDeleted] = useState(false);
-  const [inputData, setInputData] = useState<any>({
-    page_size: itemsPerPage,
-    material_no: searchValue,
-    page: currentPage,
-  });
-  const [filteredData, setFilteredData] = useState<any>();
   const fetchSearchList = async (inputData: any) => {
     const response = await dispatch(filterSearch(inputData));
     return response;
@@ -247,7 +240,6 @@ const UsersList = () => {
   };
 
   const handleOnchangeStatus = (event: any, user: any) => {
-    console.log("called");
     
     event.stopPropagation();
     if (!hasEditPermission) {
@@ -269,7 +261,7 @@ const UsersList = () => {
       setModalTitle('Message');
     }
   };
-  useEffect(()=>{
+const handleSearch =(searchValue)=>{
     if(searchValue){
       const filteredUser = usersDataToSearch.filter((item: any) => {
         // Convert searchValue to string for consistent comparison
@@ -292,9 +284,9 @@ const UsersList = () => {
     }else{
       getUsers(1)
     }
-  },[searchValue])
+  }
   
-  useEffect(()=>{
+  const handleFilter = (filteredData)=>{
     if(filteredData){
       const filteredUser = usersDataToSearch.filter((item: any) => {
         // Convert searchValue to string for consistent comparison
@@ -321,7 +313,7 @@ const UsersList = () => {
     }else{
       getUsers(1)
     }
-  },[filteredData])
+  }
 
   useEffect(()=>{
     const filterData = usersList.filter((val:any,index:any)=>{
@@ -367,11 +359,10 @@ const UsersList = () => {
           placeholder='Search'
           // hasPermission={hasAddUserPermission}
           onSearchChange={(value) => {
-            setSearchValue(value);
-            setInputData({ ...inputData, search: searchValue });
+            handleSearch(value);
           }}
           sort_filter_click={(filterValue: any) =>
-            setFilteredData(filterValue)
+            handleFilter(filterValue)
           }
         />
         <div className='dashboard__main__body px-8 pt-6 scroll-0 overflow-y-hidden'>

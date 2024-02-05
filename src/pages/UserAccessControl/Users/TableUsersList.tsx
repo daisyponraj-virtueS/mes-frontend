@@ -15,6 +15,8 @@ import AlertModal from 'components/Modal/AlertModal';
 import httpClient from 'http/httpClient';
 import GeneratePasswordModal from 'components/Modal/GeneratePasswordModel';
 import copy from '../../../assets/icons/copy.svg'
+import axios from 'axios';
+import Loading from 'components/common/Loading';
 const TableUsersList = (props: any) => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>('');
@@ -25,6 +27,7 @@ const TableUsersList = (props: any) => {
   const [isHovered, setIsHovered] = useState('');
   const [generateModelOpen, setGenerateModelOpen] = useState(false);
   const [generatePasswordData, setGeneratePasswordData] = useState('');
+  const [loading, setLoading] = useState(false)
   const {
     users,
     setUsers,
@@ -127,12 +130,25 @@ const TableUsersList = (props: any) => {
     return password
   };
 
-  const handleAction = () => {
+
+  const handleAction = async () => {
     if (action == 'Resetpassword') {
       setShowAlert(false);
       const password = generatePassword()
+      setLoading(true)
+      if(password){
+        const data = {password:password}
+        const response = await axios.post(
+          `http://127.0.0.1:8000/api/account/reset-password/${singleUser.id}/`,
+          data
+        );
+        if(response.status == 200){
+          setLoading(false)
+      notify('success','Password reset successfully');
       setGeneratePasswordData(password)
       setGenerateModelOpen(true)
+        }
+      }
     } else {
       if (action == 'Deactivate') {
         if (!hasEditPermission) {
@@ -153,6 +169,7 @@ const TableUsersList = (props: any) => {
     event.stopPropagation();
     navigate(`${paths.userListView}/${userId}`);
   };
+
   return (
     <>
       <div className='table-general-wrapper'>
@@ -343,6 +360,9 @@ const TableUsersList = (props: any) => {
         content={modalContent}
         confirmButtonText={actionButtonLabel}
       />
+
+      {  loading ? <Loading />
+      :
       <GeneratePasswordModal
         showModal={generateModelOpen}
         closeModal={() => {
@@ -393,6 +413,7 @@ const TableUsersList = (props: any) => {
                                   {/* </div> */}
                                 </div>
       </GeneratePasswordModal>
+}
     </>
   );
 };
