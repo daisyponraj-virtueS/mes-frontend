@@ -17,7 +17,7 @@ const RolesList = () => {
 
   // const [searchValue, setSearchValue] = useState<string | number>('');
   const [roles, setRoles] = useState<any>([]);
-  const itemsPerPage = 2;
+  const itemsPerPage = 5;
   const [count, setCount] = useState(null);
   const [previous, setPrevious] = useState(null);
   const [next, setNext] = useState(null);
