@@ -44,7 +44,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     email: '',
     password: '',
     // confirmPassword: '',
-    role: [],
+    roles: [],
     department: '',
   });
 
@@ -146,26 +146,26 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const getRoleById = (roleId: any) => {
-    return allRoles.find((role: any) => role.id === roleId);
+    return allRoles.find((roles: any) => roles.id === roleId);
   };
 
   const handleRoleClick = (roleId: any) => {    
     setOpenDropdown(false);
-    if (formData.role.includes(roleId)) {
-      // Deselect the role if it's already selected
+    if (formData.roles.includes(roleId)) {
+      // Deselect the roles if it's already selected
       setFormData({
         ...formData,
-        role: formData.role.filter((selectedRoleId: any) => selectedRoleId !== roleId),
+        roles: formData.roles.filter((selectedRoleId: any) => selectedRoleId !== roleId),
       });
-      // Add the role back to existingRoles
+      // Add the roles back to existingRoles
       setExistingRoles([...existingRoles, getRoleById(roleId)]);
     } else {
-      // Select the role if it's not selected
+      // Select the roles if it's not selected
       setFormData({
         ...formData,
-        role: [...formData.role, roleId],
+        roles: [...formData.roles, roleId],
       });
-      setExistingRoles(existingRoles.filter((role: any) => role.id !== roleId));
+      setExistingRoles(existingRoles.filter((roles: any) => roles.id !== roleId));
     }
   };
 
@@ -193,20 +193,20 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const deleteRole = (roleId: any) => {
-    if (formData.role.includes(roleId)) {
-      // Deselect the role if it's already selected
+    if (formData.roles.includes(roleId)) {
+      // Deselect the roles if it's already selected
       setFormData({
         ...formData,
-        role: formData.role.filter((selectedRoleId: any) => selectedRoleId !== roleId),
+        roles: formData.roles.filter((selectedRoleId: any) => selectedRoleId !== roleId),
       });
-      // Add the role back to existingRoles
+      // Add the roles back to existingRoles
       setExistingRoles([...existingRoles, getRoleById(roleId)]);
     }
   };
 
   const getRoleNameById = (roleId: any) => {
-    const role = allRoles.find((role: any) => role.id === roleId);
-    return role ? role.role_name : 'Role Not Found';
+    const roles = allRoles.find((roles: any) => roles.id === roleId);
+    return roles ? roles.role_name : 'Role Not Found';
   };
 
   const validateFirstname = (value: any) => {
@@ -335,7 +335,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
         phone: formData.phone,
         email: formData.email.trim(),
         password: formData.password.trim(),
-        role: formData.role,
+        roles: formData.roles,
         login_type: selectedLoginType == 1 ? 'simple' : 'SSO',
         department:formData.department
       };
@@ -352,7 +352,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
 
   const handleCloneUser = (selectedUser: any) => {
     closeCloneModal();
-    setFormData({ ...formData, roles: [...selectedUser.roles.map((role: any) => role.id)] });
+    setFormData({ ...formData, roles: [...selectedUser.roles.map((roles: any) => roles.id)] });
 
     // change existing roles according to added roles from clone
     const remaningRoles = [...allRoles].filter(
@@ -554,9 +554,9 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                             />
                           </div> */}
                           <CustomSelect
-                            options={existingRoles.map((role: any) => ({
-                              value: role.id,
-                              option: role.role_name,
+                            options={existingRoles.map((roles: any) => ({
+                              value: roles.id,
+                              option: roles.role_name,
                             }))}
                             value={selectedValue === 'Select'?'Select' + ' ':'Select'}
                             index={0}
@@ -571,13 +571,13 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                             style={{ maxHeight: 140, overflow: 'auto' }}
                           >
                             {existingRoles.length > 0 ? (
-                              existingRoles?.map((role: any) => (
+                              existingRoles?.map((roles: any) => (
                                 <li
-                                  key={role.id}
+                                  key={roles.id}
                                   className='select-dropdown-menu__list sm'
-                                  onClick={() => handleRoleClick(role.id)}
+                                  onClick={() => handleRoleClick(roles.id)}
                                 >
-                                  {role.role_name}
+                                  {roles.role_name}
                                 </li>
                               ))
                             ) : (
@@ -596,7 +596,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
                       </div>
                     </OutsideClickHandler>
                     <div className='pills-box-wrapper mt-3'>
-                      {formData.role.map((roleId: any) => (
+                      {formData.roles.map((roleId: any) => (
                         <div className='pills-box'>
                           {getRoleNameById(roleId)}
                           <img

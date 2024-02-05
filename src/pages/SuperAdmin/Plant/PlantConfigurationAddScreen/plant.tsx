@@ -54,7 +54,7 @@ const AddPlant = () => {
   const [currencyList, setCurrencyList] = useState<any>([]);
   const [productList, setProductList] = useState<any>([]);
   const [functionList, setFunctionList] = useState<any>({
-    userControlAccess: [],
+    userAccessControl: [],
     masterData: [],
     coreProcess: [],
     labAbalysis: [],
@@ -117,6 +117,7 @@ const AddPlant = () => {
       validationSchema: formValidationSchema,
       enableReinitialize: true,
       onSubmit: async (values: any, { resetForm }: any) => {
+
         console.log('submit', values);
         
         const data = {
@@ -312,7 +313,7 @@ const AddPlant = () => {
   const Products = [...productList];
   const moduleFunction = [...modelList];
 
-  const userControlAccess = [...functionList.userControlAccess];
+  const userAccessControl = [...functionList.userAccessControl];
 
   const masterData = [...functionList.masterData];
 
@@ -325,7 +326,7 @@ const AddPlant = () => {
 
   const handleFunctinAndModules = (value: any, index: any) => {
     if (index === 0) {
-      setModulesAndFunctionList(userControlAccess);
+      setModulesAndFunctionList(userAccessControl);
       setFunctionCategory(value);
     } else if (index === 1) {
       setModulesAndFunctionList(masterData);
@@ -450,7 +451,7 @@ const AddPlant = () => {
       
 
       let functions = {
-        userControlAccess: [],
+        userAccessControl: [],
         masterData: [],
         coreProcess: [],
         labAbalysis: [],
@@ -464,8 +465,8 @@ const AddPlant = () => {
         }));
     
         switch (module.module_name) {
-            case "User Control Access":
-                functions.userControlAccess.push(...functionNameValuePairs);
+            case "User Access Control":
+                functions.userAccessControl.push(...functionNameValuePairs);
                 break;
             case "Master Data":
                 functions.masterData.push(...functionNameValuePairs);
@@ -503,7 +504,7 @@ const AddPlant = () => {
 
   useEffect(() => {
     setModulesAndFunctionList(coreProcess);
-  }, [functionList.userControlAccess]);
+  }, [functionList.userAccessControl]);
 
   return (
     <form onSubmit={handleSubmit}>
