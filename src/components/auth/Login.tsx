@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { paths } from 'routes/paths';
 import LoginForm from 'components/common/LoginForm';
 import ModalTermsOfUse from 'components/Modal/TermsModel/ModelTerms';
+import Loading from 'components/common/Loading';
 
 interface LoginProps {
   state: {
@@ -29,6 +30,7 @@ const Login: FC<LoginProps> = ({ state }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState(state ? state.user.email : '');
   const [formErrors, setFormErrors] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
   // const closeModel = () => setOpenModel(false);
   const [openTermsModel, setOpenTermsModel] = useState(false);
@@ -112,10 +114,13 @@ const Login: FC<LoginProps> = ({ state }) => {
 		setOpenTermsModel(true)
  }
   const userLoginAPI = async () => {
+    setLoading(true)
     const data = await dispatch(userLogin(inputData));
     console.log('data', data);
     // setResponse(data);
+    setLoading(false)
     if (data?.payload.status === 200 && data.payload.data?.token) {
+      
       setError({
         toastType: 'success',
         text: data.payload.data.message,
@@ -132,158 +137,7 @@ const Login: FC<LoginProps> = ({ state }) => {
   };
 
   const onContinue = (response:any) => {
-    let userdata:any={
-      "id": 44,
-      "first_name": "Daisy",
-      "last_name": "Ponraj",
-      "url": "http://72.181.13.50:7050/api/users/44/",
-      "username": "daisyponraj",
-      "role": [
-        {
-          "role_name": "Super Admin",
-          "url": "http://72.181.13.50:7050/api/roles/16/",
-          "id": 16,
-          "total_functions": 19,
-          "total_users": { "active_user_count": 18, "inactive_user_count": 0 },
-          "is_delete": false,
-          "is_superuser": true
-        }
-      ],
-      "phone": "1111122222",
-      "email": "test@gmail1.com",
-      "is_delete": false,
-      "permission_list": {
-        "Core Process": {
-          "Heat Maintenance": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Bin Contents": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Production Schedule": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Silicon Grade Heat Maintenance": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          }
-        },
-        "Master Data": {
-          "Additive Maintenance": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Standard BOM": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Customer Specifications": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Active Furnace List": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Furnace Material Maintenance": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Material Maintenance": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Silicon Grade Material Maintenance": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          }
-        },
-        "Lab Analysis": {
-          "Additive Analysis": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Ladle (Heat) Analysis": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Furnace Mix Analysis": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Spout (Tap) Analysis": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          }
-        },
-        "Reports": {
-          "Primary Heat Report": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Production Schedule Analysis Report": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          }
-        },
-        "User Access Control": {
-          "Users": { "view": true, "create": true, "edit": true, "delete": true },
-          "Roles": { "view": true, "create": true, "edit": true, "delete": true }
-        },
-        "System Admin": {
-          "Plant Configuration": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          },
-          "Furnace Configuration": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
-          }
-        }
-      },
-      "is_superuser": true
-    }
+
     notify('success', 'Login Successful');
     // setLocalStorage('userData', userdata);
     setLocalStorage('userData', response.payload.data?.user);
@@ -312,6 +166,7 @@ const Login: FC<LoginProps> = ({ state }) => {
     setFormErrors({ ...formErrors, password: validatePassword(value) });
   };
 
+  if (loading) return <Loading />;
   return (
     <>
       <section className='auth-module-wrapper auth-module--login'>

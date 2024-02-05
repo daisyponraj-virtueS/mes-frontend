@@ -9,6 +9,9 @@ import CustomSelect from 'components/common/SelectField';
 import deactiveIcon from '../../../../assets/icons/deactivate.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import AlertModal from 'components/Modal/AlertModal';
+import { clearLocalStorage } from 'utils/utils';
+import { paths } from 'routes/paths';
 
 const formValidationSchema = yup.object({
   timezone_id: yup.string().required('Select the Time zone'),
@@ -51,13 +54,15 @@ const AddPlant = () => {
   const [currencyList, setCurrencyList] = useState<any>([]);
   const [productList, setProductList] = useState<any>([]);
   const [functionList, setFunctionList] = useState<any>({
-    userControlAccess: [],
+    userAccessControl: [],
     masterData: [],
     coreProcess: [],
     labAbalysis: [],
     reports: [],
     systemAdmin:[],
   });
+  const [openAlertModal, setOpenAlertModal] = useState<boolean>(false);
+
   const [modelList, setModelList] = useState<any>([]);
   const [editData, setEditData] = useState<any>(null);
   const [showTooltip, setShowTooltip] = useState<any>('');
@@ -112,6 +117,9 @@ const AddPlant = () => {
       validationSchema: formValidationSchema,
       enableReinitialize: true,
       onSubmit: async (values: any, { resetForm }: any) => {
+
+        console.log('submit', values);
+        
         const data = {
           ...values,
           ...{
@@ -160,8 +168,9 @@ const AddPlant = () => {
           console.log(response);
         }
         setWorkshopList([]);
-        navigate('/system-admin/plant-configuration/view');
+        // navigate('/system-admin/plant-configuration/view');
         resetForm();
+        setOpenAlertModal(true)
       },
     });
   useEffect(() => {
@@ -304,7 +313,7 @@ const AddPlant = () => {
   const Products = [...productList];
   const moduleFunction = [...modelList];
 
-  const userControlAccess = [...functionList.userControlAccess];
+  const userAccessControl = [...functionList.userAccessControl];
 
   const masterData = [...functionList.masterData];
 
@@ -317,7 +326,7 @@ const AddPlant = () => {
 
   const handleFunctinAndModules = (value: any, index: any) => {
     if (index === 0) {
-      setModulesAndFunctionList(userControlAccess);
+      setModulesAndFunctionList(userAccessControl);
       setFunctionCategory(value);
     } else if (index === 1) {
       setModulesAndFunctionList(masterData);
@@ -442,7 +451,7 @@ const AddPlant = () => {
       
 
       let functions = {
-        userControlAccess: [],
+        userAccessControl: [],
         masterData: [],
         coreProcess: [],
         labAbalysis: [],
@@ -456,8 +465,8 @@ const AddPlant = () => {
         }));
     
         switch (module.module_name) {
-            case "User Control Access":
-                functions.userControlAccess.push(...functionNameValuePairs);
+            case "User Access Control":
+                functions.userAccessControl.push(...functionNameValuePairs);
                 break;
             case "Master Data":
                 functions.masterData.push(...functionNameValuePairs);
@@ -495,7 +504,7 @@ const AddPlant = () => {
 
   useEffect(() => {
     setModulesAndFunctionList(coreProcess);
-  }, [functionList.userControlAccess]);
+  }, [functionList.userAccessControl]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -1007,7 +1016,19 @@ const AddPlant = () => {
           </div>
         </div>
       </div>
-
+      {openAlertModal && (
+            <AlertModal
+              showModal={openAlertModal}
+              title={"LogOut"}
+              content={"Plant COnfiguration Changed. You Need to Login again"}
+              confirmButtonText='Proceed'
+              onConfirmClick={()=>{
+                clearLocalStorage(['authToken', 'userData', 'plantId', 'plantName']);
+                navigate(`${paths.login}`);
+              }}
+              closeModal={()=>{setOpenAlertModal(true)}}
+            />
+          )}
       <PlantFooter />
     </form>
   );

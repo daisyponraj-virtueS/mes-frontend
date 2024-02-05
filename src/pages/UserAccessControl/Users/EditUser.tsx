@@ -63,7 +63,7 @@ const EditUser = () => {
               phone: user?.phone,
               email: user?.email,
               department: user?.department,
-              roles: user?.role.length ? [...user.role.map((role: any) => role)] : [],
+              roles: user?.roles.length ? [...user.roles.map((roles: any) => roles)] : [],
             });
             user.login_type == '' ? setSelectedLoginType(1) : user.login_type=="simple" ? setSelectedLoginType(1) : setSelectedLoginType(0);
           }
@@ -131,20 +131,20 @@ const EditUser = () => {
   const handleRoleClick = (roleId: any) => {
     setOpenDropdown(false);
     if (formData.roles.includes(roleId)) {
-      // Deselect the role if it's already selected
+      // Deselect the roles if it's already selected
       setFormData({
         ...formData,
         roles: formData.roles.filter((selectedRoleId: any) => selectedRoleId !== roleId),
       });
-      // Add the role back to existingRoles
+      // Add the roles back to existingRoles
       setExistingRoles([...existingRoles, getRoleById(roleId)]);
     } else {
-      // Select the role if it's not selected
+      // Select the roles if it's not selected
       setFormData({
         ...formData,
         roles: [...formData.roles, roleId],
       });
-      setExistingRoles(existingRoles.filter((role: any) => role.id !== roleId));
+      setExistingRoles(existingRoles.filter((roles: any) => roles.id !== roleId));
     }
   };
 
@@ -165,23 +165,23 @@ const EditUser = () => {
   };
 
   const getRoleById = (roleId: any) => {
-    return allRoles.find((role: any) => role.id === roleId);
+    return allRoles.find((roles: any) => roles.id === roleId);
   };
 
   const deleteRole = (roleId: any) => {
-    if (formData.roles?.map((role: any) => role === roleId)) {
+    if (formData.roles?.map((roles: any) => roles === roleId)) {
       setFormData({
         ...formData,
         roles: formData.roles.filter((selectedRoleId: any) => selectedRoleId !== roleId),
       });
-      // Add the role back to existingRoles
+      // Add the roles back to existingRoles
       setExistingRoles([...existingRoles, getRoleById(roleId)]);
     }
   };
 
   const getRoleNameById = (roleId: any) => {
-    const role = allRoles.find((role: any) => role.id === roleId);
-    return role ? role.role_name : 'Role Not Found';
+    const roles = allRoles.find((roles: any) => roles.id === roleId);
+    return roles ? roles.role_name : 'Role Not Found';
   };
 
   const validateFirstname = (value: any) => {
@@ -218,8 +218,8 @@ const EditUser = () => {
 
     let errorMessage = '';
     if (
-      value.length < 4 ||
-      value.length > 20 ||
+      value?.length < 4 ||
+      value?.length > 20 ||
       /^\d/.test(value) ||
       !/^[a-zA-Z0-9]+$/.test(value)
     ) {
@@ -286,7 +286,7 @@ const EditUser = () => {
         // username: formData.username,
         phone: formData.phone,
         email: formData.email?.trim(),
-        role: [...formData.roles],
+        roles: [...formData.roles],
         department: formData.department,
       };
       console.log(request);
@@ -300,7 +300,7 @@ const EditUser = () => {
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?/{}[]';
     let password = '';
     for (let i = 0; i < 9; i++) {
-      const randomIndex = Math.floor(Math.random() * chars.length);
+      const randomIndex = Math.floor(Math.random() * chars?.length);
       password += chars.charAt(randomIndex);
     }
     console.log('newpassword', password);
@@ -313,7 +313,7 @@ const EditUser = () => {
     for (const key in formData) {
       if (formData.hasOwnProperty(key)) {
         if ( key !== 'email' && key!=='department') {
-          if (Array.isArray(formData[key]) && formData[key].length === 0) {
+          if (Array.isArray(formData[key]) && formData[key]?.length === 0) {
             return false;
           } else if (formData[key] === '' || formData[key] === undefined || formData[key] === null) {
             return false;
@@ -327,7 +327,7 @@ const EditUser = () => {
   const isUserFormValid = (formData: any) => {
     for (const key in formData) {
       if (formData.hasOwnProperty(key) && key !== 'confirmPassword') {
-        if (Array.isArray(formData[key]) && formData[key].length === 0) {
+        if (Array.isArray(formData[key]) && formData[key]?.length === 0) {
           return false;
         } else if (formData[key] === '' && key !== 'phone' && key !== 'email' && key!=='department') {
           return false;
@@ -478,13 +478,13 @@ const EditUser = () => {
                               }}
                             >
                               {existingRoles.length > 0 ? (
-                                existingRoles.map((role: any) => (
+                                existingRoles.map((roles: any) => (
                                   <li
-                                    key={role.id}
+                                    key={roles.id}
                                     className='select-dropdown-menu__list sm'
-                                    onClick={() => handleRoleClick(role.id)}
+                                    onClick={() => handleRoleClick(roles.id)}
                                   >
-                                    {role.role_name}
+                                    {roles.role_name}
                                   </li>
                                 ))
                               ) : (
@@ -513,9 +513,9 @@ const EditUser = () => {
                             />
                           </div> */}
                             <CustomSelect
-                              options={existingRoles.map((role: any) => ({
-                                value: role.id,
-                                option: role.role_name,
+                              options={existingRoles.map((roles: any) => ({
+                                value: roles.id,
+                                option: roles.role_name,
                               }))}
                               index={0}
                               onChange={handleDropdown}
@@ -524,14 +524,14 @@ const EditUser = () => {
                               className={`select-dropdown-menu ${openDropdown ? 'open' : ''}`}
                               style={{ maxHeight: 140, overflow: 'auto' }}
                             >
-                              {existingRoles.length > 0 ? (
-                                existingRoles?.map((role: any) => (
+                              {existingRoles?.length > 0 ? (
+                                existingRoles?.map((roles: any) => (
                                   <li
-                                    key={role.id}
+                                    key={roles.id}
                                     className='select-dropdown-menu__list sm'
-                                    onClick={() => handleRoleClick(role.id)}
+                                    onClick={() => handleRoleClick(roles.id)}
                                   >
-                                    {role.role_name}
+                                    {roles.role_name}
                                   </li>
                                 ))
                               ) : (
@@ -551,14 +551,14 @@ const EditUser = () => {
                       </OutsideClickHandler>
                                     
                       <div className='pills-box-wrapper mt-3'>
-                        {formData.roles?.map((role: any) => (
-                          <div key={role} className='pills-box'>
-                            {getRoleNameById(role)}
+                        {formData.roles?.map((roles: any) => (
+                          <div key={roles} className='pills-box'>
+                            {getRoleNameById(roles)}
                             <img
                               src={closeIcon}
                               alt='close-icon'
                               className='pills-box__close-btn'
-                              onClick={() => deleteRole(role)}
+                              onClick={() => deleteRole(roles)}
                             />
                           </div>
                         ))}
