@@ -4,7 +4,8 @@
   box-sizing: border-box;
 }
 .container {
-  height: 73.5vh;
+  height: 84vh;
+  overflow: auto;
 }
 
 .page__main__body {
@@ -18,7 +19,7 @@
     gap: 27px;
   }
   .child-container{
-      height: 73.5vh;
+      height: 100%;
       overflow: auto;
   }
 //   .child-container::-webkit-scrollbar {
@@ -829,7 +830,7 @@
         border-bottom-right-radius: 4px;
         border-bottom-left-radius: 0px;
         border-top-left-radius: 0px;
-        font-weight: bold;
+        font-weight: 600;
         font-size: 14px;
         color: #757E85;
       }

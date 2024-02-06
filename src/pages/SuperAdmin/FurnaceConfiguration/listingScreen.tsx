@@ -212,6 +212,7 @@ const listingScreen = (props: any) => {
                           onMouseLeave={handleMouseLeave}
                           // key={furnace.id}
                           onClick={() => handleTableRowClick(furnace.id)}
+                          style={{ height: '53px' }}
                         >
                           <td>{furnace.furnace_no}</td>
                           <td> {furnace.workshop_value}</td>
@@ -230,7 +231,7 @@ const listingScreen = (props: any) => {
                                 ?.value}
                           </td>
                           <td>
-                            <div style={{ minWidth: '120px', alignContent: 'center' }}>
+                            <div style={{ minWidth: '130px', alignContent: 'center' }}>
                               {isHovered === index && furnace.record_status && (
                                 <>
                                   <Link
@@ -271,7 +272,7 @@ const listingScreen = (props: any) => {
                                       }}
                                       src={deactivateIcon}
                                       alt='deactivate'
-                                      className='icon mr-10'
+                                      className='icon mr-5'
                                       style={{ fill: '#04436B', width: '15px', height: '15px' }}
                                     />
                                   </Link>
