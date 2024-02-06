@@ -286,8 +286,8 @@ const handleSearch =(searchValue)=>{
     }
   }
   
-  const handleFilter = (filteredData)=>{
-
+  const handleFilter = (filteredData:any)=>{
+   
     if(filteredData){
       const filteredUser = usersDataToSearch.filter((item: any) => {
         // Convert searchValue to string for consistent comparison
@@ -303,11 +303,10 @@ const handleSearch =(searchValue)=>{
               
               return role ? role.role_name : null;
             })
-            .some(element => element.toLowerCase().includes(searchString)) && 
-          item.login_type.toLowerCase().includes(filterSelect) 
+            .some(element => element?.toLowerCase().includes(searchString)) && 
+          item?.login_type?.toLowerCase()?.includes(filterSelect) 
         );
       });
-      
     setUsers(filteredUser)
     setUsersList(filteredUser)
     setCount(filteredUser.length);

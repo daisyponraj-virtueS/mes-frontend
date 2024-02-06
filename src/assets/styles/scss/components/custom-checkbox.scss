@@ -54,6 +54,14 @@
         visibility: visible;
       }
     }
+    &:checked + label .custom-checkbox__label__box__disabled {
+      background-color: #d3d2d2;
+      border: 2px solid transparent;
+      &::after {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
   }
   &--sm {
     .custom-checkbox__label {
