@@ -309,18 +309,31 @@ const EditUser = () => {
     clearLocalStorage(['authToken', 'userData', 'plantId', 'plantName']);
     navigate(`${paths.login}`);
   };
+
   const generatePassword = async () => {
-    // const randomstring = Math.random().toString(36).slice(-8);
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?/{}[]';
-    let password = '';
-    for (let i = 0; i < 9; i++) {
-      const randomIndex = Math.floor(Math.random() * chars?.length);
-      password += chars.charAt(randomIndex);
+    const symbols = '!@#$%^&*';
+    const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+
+    let generatedPassword = '';
+    let charset = lowercaseLetters + uppercaseLetters + numbers + symbols;
+
+    for (let i = 0; i < 8; i++) {
+      generatedPassword += charset.charAt(Math.floor(Math.random() * charset.length));
     }
-    // setFormData({ ...formData, password: password });
-    if (password) {
-      const data = { password: password };
+
+    // Ensure the password contains at least one uppercase letter, one number, and one symbol
+    const hasUppercase = /[A-Z]/.test(generatedPassword);
+    const hasNumber = /[0-9]/.test(generatedPassword);
+    const hasSymbol = /[!@#$%^&*]/.test(generatedPassword);
+
+    if (!hasUppercase || !hasNumber || !hasSymbol) {
+      // If any requirement is not met, recursively call generatePassword function again
+      return generatePassword();
+    }
+    if (generatedPassword) {
+      const data = { password: generatedPassword };
       setLoading(true)
       const response = await axios.post(
         `http://127.0.0.1:8000/api/account/reset-password/${userId}/`,
@@ -333,7 +346,7 @@ const EditUser = () => {
           `Password reset successfully, 
     copy the password`
         );
-        setNewPassword(password);
+        setNewPassword(generatedPassword);
         setIsPasswordVisible(true);
       }
     }

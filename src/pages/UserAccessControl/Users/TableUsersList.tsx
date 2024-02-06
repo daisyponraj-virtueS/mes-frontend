@@ -118,7 +118,7 @@ const TableUsersList = (props: any) => {
   //     });
   // };
 
-  const generatePassword = () => {
+  const generatePassword_old = () => {
     // const randomstring = Math.random().toString(36).slice(-8);
     // console.log(randomstring);
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?/{}[]';
@@ -129,7 +129,31 @@ const TableUsersList = (props: any) => {
     }
     return password
   };
+  const generatePassword = () => {
+    const symbols = '!@#$%^&*';
+    const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';  
+    const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
 
+    let generatedPassword = '';
+    let charset = lowercaseLetters + uppercaseLetters + numbers + symbols;
+
+    for (let i = 0; i < 8; i++) {
+      generatedPassword += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+
+    // Ensure the password contains at least one uppercase letter, one number, and one symbol
+    const hasUppercase = /[A-Z]/.test(generatedPassword);
+    const hasNumber = /[0-9]/.test(generatedPassword);
+    const hasSymbol = /[!@#$%^&*]/.test(generatedPassword);
+
+    if (!hasUppercase || !hasNumber || !hasSymbol) {
+      // If any requirement is not met, recursively call generatePassword function again
+      return generatePassword();
+    }
+    return generatedPassword
+  };
+  
   const onLogout = () => {
     clearLocalStorage(['authToken', 'userData', 'plantId', 'plantName']);
     navigate(`${paths.login}`);
