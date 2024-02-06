@@ -322,6 +322,7 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
                             <div className='custom-checkbox'>
                               <input
                                 type='checkbox'
+                                disabled={category == 'System Admin'}
                                 id={`create-${key}`}
                                 className='custom-checkbox__input'
                                 checked={initialData[category]?.[key]?.create || false}
@@ -346,6 +347,7 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
                           <div className='custom-checkbox'>
                             <input
                               type='checkbox'
+                              disabled={category == 'System Admin'}
                               id={`edit-${key}`}
                               className='custom-checkbox__input'
                               checked={initialData[category]?.[key]?.edit || false}
@@ -368,6 +370,7 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
                             <div className='custom-checkbox'>
                               <input
                                 type='checkbox'
+                                disabled={category == 'System Admin'}
                                 id={`delete-${key}`}
                                 className='custom-checkbox__input'
                                 checked={initialData[category]?.[key]?.delete || false}

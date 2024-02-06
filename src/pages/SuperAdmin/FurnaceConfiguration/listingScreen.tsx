@@ -35,7 +35,7 @@ const listingScreen = (props: any) => {
 
   const plantData: any = JSON.parse(localStorage.getItem('plantData'));
 
-  const local_plant_id : any = plantData.plant_id;
+  const local_plant_id: any = plantData.plant_id;
 
   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
@@ -45,8 +45,8 @@ const listingScreen = (props: any) => {
   const [isHovered, setIsHovered] = useState('');
   const [action, setAction] = useState<any>(null);
   const [modalTitle, setModalTitle] = useState<string>('');
-   const [modalContent, setModalContent] = useState<string>('');
-   const [actionButtonLabel, setActionButtonLabel] = useState<string>('');
+  const [modalContent, setModalContent] = useState<string>('');
+  const [actionButtonLabel, setActionButtonLabel] = useState<string>('');
   const [selectedFurnaceId, setSelectedFurnaceId] = useState<number | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const handleMouseEnter = (role: any) => {
@@ -60,7 +60,7 @@ const listingScreen = (props: any) => {
     event.stopPropagation();
     navigate(`/system-admin/furnace-configuration/edit/${furnaceId}/1`);
   };
-  
+
   const handleViewClick = (event: any, furnaceId: number) => {
     event.stopPropagation();
     navigate(`/system-admin/furnace-configuration/view/${furnaceId}`);
@@ -79,8 +79,6 @@ const listingScreen = (props: any) => {
   //     return response;
   //   };
 
-
-
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -94,28 +92,25 @@ const listingScreen = (props: any) => {
   //   };
 
   //   fetchData();
-    // }, []);
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/?plant_id=${local_plant_id}`);
-        const data = response.data;
-        setFurnaceData({ furnace: data });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        // Handle the error, e.g., set an error state or show a message to the user
-      }
-    };
-
-    useEffect(() => {
-         fetchData();
-    }, []);
+  // }, []);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/plant/furnace-config/?plant_id=${local_plant_id}`
+      );
+      const data = response.data;
+      setIsLoading(false);
+      setFurnaceData({ furnace: data });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      // Handle the error, e.g., set an error state or show a message to the user
+    }
+  };
 
   useEffect(() => {
-    // Simulate data loading
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    fetchData();
   }, []);
+
   const appmasterData = async () => {
     try {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
@@ -137,9 +132,11 @@ const listingScreen = (props: any) => {
       .post(`/api/plant/furnace-config-deactivate/${furnaceId}/`, { data: request })
       .then((response: any) => {
         if (response.status === 200) {
-          const statusMessage = request?.record_status ? 'Activated the Furnace' : 'Deactivated the Furnace';
+          const statusMessage = request?.record_status
+            ? 'Activated the Furnace'
+            : 'Deactivated the Furnace';
           if (response.data) {
-            fetchData()
+            fetchData();
             notify('success', statusMessage);
             setShowAlert(false);
           }
@@ -154,10 +151,10 @@ const listingScreen = (props: any) => {
         setShowAlert(false);
       });
   };
-const handleAction = () => {
+  const handleAction = () => {
     if (action === 'Deactivate') {
       if (selectedFurnaceId !== null) {
-        const selectedFurnace = furnaceData.furnace.find(f => f.id === selectedFurnaceId);
+        const selectedFurnace = furnaceData.furnace.find((f) => f.id === selectedFurnaceId);
         if (selectedFurnace && selectedFurnace.record_status) {
           // Call the API to update the record status
           userStatusChangeAPI(selectedFurnace.id, { record_status: false });
@@ -178,7 +175,7 @@ const handleAction = () => {
         onButtonClick={() => navigate(paths.furnaceConfig.create)}
         // placeholder='Search'
         // hasPermission={hasAddUserPermission}
-        
+
         // sort_filter_click={(inputValue: any, fromFilterSerach: boolean) =>
         //   onSort_Filter(inputValue, fromFilterSerach)
         // }
@@ -214,7 +211,7 @@ const handleAction = () => {
                           onMouseEnter={() => handleMouseEnter(index)}
                           onMouseLeave={handleMouseLeave}
                           // key={furnace.id}
-                          onClick={() =>  handleTableRowClick(furnace.id)}
+                          onClick={() => handleTableRowClick(furnace.id)}
                         >
                           <td>{furnace.furnace_no}</td>
                           <td> {furnace.workshop_value}</td>
@@ -229,12 +226,11 @@ const handleAction = () => {
                           <td>
                             {/* {masterData.filter((val) => val.id === electrodeDataArray[index])?.[0]?.value} */}
                             {furnace.furnace_electrodes &&
-                              masterData.filter(
-                                (val) => val.id === furnace.furnace_electrodes[0]?.electrode_type_id
-                              )?.[0]?.value}
+                              masterData.filter((val) => val.id === furnace.electrode_type)?.[0]
+                                ?.value}
                           </td>
-                          <td style={{padding: '5px 12px'}}>
-                            <div style={{minWidth: '120px', alignContent: 'center' }}>
+                          <td>
+                            <div style={{ minWidth: '120px', alignContent: 'center' }}>
                               {isHovered === index && furnace.record_status && (
                                 <>
                                   <Link
@@ -247,7 +243,7 @@ const handleAction = () => {
                                       src={viewIcon}
                                       alt='View'
                                       className='icon mr-2'
-                                      style={{ width: '26px', height: '26px' }}
+                                      style={{ fill: '#04436B', width: '20px', height: '20px' }}
                                     />
                                   </Link>
                                   <Link
@@ -256,25 +252,29 @@ const handleAction = () => {
                                     data-tip='Edit'
                                     className='pr-2'
                                   >
-                                    <img src={editIcon} alt='edit' className='icon mr-2' />
+                                    <img
+                                      src={editIcon}
+                                      alt='edit'
+                                      className='icon mr-2'
+                                      style={{ fill: '#04436B', width: '15px', height: '15px' }}
+                                    />
                                   </Link>
                                   <Link to='#' data-tip='Deactivate'>
-                                      <img
-                                         onClick={() => {
-                                       
-                                            // Set the action and show the alert
-                                            setAction('Deactivate');
-                                            setShowAlert(true);
-                                            setModalTitle('Alert');
-                                            setActionButtonLabel('Deactivate');
-                                            setModalContent(`Do you want to deactivate this Furnace?`);
-                                          }}
-                                        src={deactivateIcon}
-                                        alt='deactivate'
-                                        className='icon mr-10'
-                                        style={{ fill: '#04436B', width: '17px', height: '17px' }}
-                                      />
-                                    </Link>
+                                    <img
+                                      onClick={() => {
+                                        // Set the action and show the alert
+                                        setAction('Deactivate');
+                                        setShowAlert(true);
+                                        setModalTitle('Alert');
+                                        setActionButtonLabel('Deactivate');
+                                        setModalContent(`Do you want to deactivate this Furnace?`);
+                                      }}
+                                      src={deactivateIcon}
+                                      alt='deactivate'
+                                      className='icon mr-10'
+                                      style={{ fill: '#04436B', width: '15px', height: '15px' }}
+                                    />
+                                  </Link>
                                   {/* <Link to={`/deactivate/${furnace?.id}`} data-tip='Deactivate'>
                                     <img
                                       src={deactivateIcon}
@@ -316,15 +316,15 @@ const handleAction = () => {
           </div>
         )}
         <AlertModal
-        showModal={showAlert}
-        closeModal={() => {
-          setShowAlert(false);
-        }}
-        onConfirmClick={handleAction}
-        title={modalTitle}
-        content={modalContent}
-        confirmButtonText={actionButtonLabel}
-      />
+          showModal={showAlert}
+          closeModal={() => {
+            setShowAlert(false);
+          }}
+          onConfirmClick={handleAction}
+          title={modalTitle}
+          content={modalContent}
+          confirmButtonText={actionButtonLabel}
+        />
       </div>
     </>
   );

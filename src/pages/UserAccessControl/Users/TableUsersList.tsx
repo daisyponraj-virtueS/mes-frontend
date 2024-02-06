@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import 'assets/styles/scss/components/table-general.scss';
 import { useNavigate } from 'react-router-dom';
-import { getCommaSeparatedRoles, isEmpty, notify } from 'utils/utils';
+import { clearLocalStorage, getCommaSeparatedRoles, isEmpty, notify } from 'utils/utils';
 import UserOptionModal from 'components/Modal/UserOptionModal';
 // import DotsSvg from 'components/common/DotsSvg';
 import { paths } from 'routes/paths';
@@ -130,6 +130,10 @@ const TableUsersList = (props: any) => {
     return password
   };
 
+  const onLogout = () => {
+    clearLocalStorage(['authToken', 'userData', 'plantId', 'plantName']);
+    navigate(`${paths.login}`);
+  };
 
   const handleAction = async () => {
     if (action == 'Resetpassword') {
@@ -143,6 +147,7 @@ const TableUsersList = (props: any) => {
           data
         );
         if(response.status == 200){
+         
           setLoading(false)
       notify('success','Password reset successfully');
       setGeneratePasswordData(password)
@@ -367,6 +372,10 @@ const TableUsersList = (props: any) => {
         showModal={generateModelOpen}
         closeModal={() => {
           setGenerateModelOpen(false);
+          const userData: any = JSON.parse(localStorage.getItem('userData'));
+          if(userData.id == singleUser.id){
+            onLogout()
+          }
         }}
         title={'Alert'}
       >

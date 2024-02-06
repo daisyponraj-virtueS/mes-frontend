@@ -9,6 +9,7 @@ import PlantFooter from 'components/common/PlantFooter';
 import ToggleButton from 'components/common/ToggleButton';
 import InputField from 'components/common/InputWithIcon';
 import { useNavigate } from 'react-router-dom';
+import Loading from 'components/common/Loading';
 
 const formValidationSchema = yup.object({
   furnace_no: yup.string().required('Furnace No is required'),
@@ -71,6 +72,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
       casingMassLength: '',
     },
   ]);
+  const [loading, setLoading] = useState(edit_Id ?true: false)
   const plantData: any = JSON.parse(localStorage.getItem('plantData'));
 
   const local_plant_id: any = plantData.plant_id;
@@ -121,6 +123,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
             filteredObject[key] = value;
           }
         });
+        setLoading(true)
 
         if (!isEdit) {
           const response = await axios.post('http://127.0.0.1:8000/api/plant/furnace-config/', {
@@ -142,6 +145,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
           console.log(response);
           setTab(2);
         }
+        setLoading(false)
         setElectrode([]);
         setProductList([]);
         setEnabled(false);
@@ -154,7 +158,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
       const furnaceConfigResponse = await axios.get(
         `http://127.0.0.1:8000/api/plant/furnace-config/${editId}/`
       );
-
+      setLoading(false)
       const transformData = (inputData) => {
         const result = inputData.reduce((acc, item) => {
           const productState = {
@@ -644,6 +648,8 @@ if(isEdit){
     }
   }, []);
 
+  if (loading) return <Loading />;
+
   return (
     <form onSubmit={handleSubmit}>
       <div className='container mt-3 mb-3'>
@@ -694,7 +700,7 @@ if(isEdit){
                 backgroundColor: '#C1D3DF40',
                 cursor: 'pointer',
               }}
-              // onClick={() => setTab(2)}
+              onClick={() => isEdit && setTab(2)}
             >
               <p
                 style={{
@@ -1050,7 +1056,13 @@ if(isEdit){
                       <InputField
                         icon={val.icon}
                         value={values[val.name]}
-                        onChange={(value: any) => setFieldValue(val.name, value)}
+                        onChange={(value: any) =>{
+                          const regex = /^\d*\.?\d{0,3}$/;
+                                    if (regex.test(value) || value === '') {
+                         setFieldValue(val.name, value)
+                                    }
+                         
+                        }}
                         name={val.name}
                         handleBlur={handleBlur}
                       />

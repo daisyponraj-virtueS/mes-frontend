@@ -15,6 +15,7 @@ import editIcon from '../../../assets/icons/edit1.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { notify } from 'utils/utils';
+import Loading from 'components/common/Loading';
 
 const formValidationSchema = yup.object({});
 
@@ -39,6 +40,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
   const [cardEdit, setCardEdit] = useState([]);
   const [masterData, setMasterData] = useState([]);
   const [editId, setEditId] = useState<any>(edit_Id);
+  const [loading, setLoading] = useState(isEdit || false)
 
   const navigate = useNavigate()
 
@@ -51,26 +53,28 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
       },
       validationSchema: formValidationSchema,
       onSubmit: async (values, { resetForm }) => {
-        console.log("praveen7676767", isSaved)
+        
         if (!isSaved) {
           setDataList([...dataList, values]);
-          console.log("praveen1115")
+          
         }
         if (isEdit) {
           if (!isSaved) {
             handleEditSubmit([...dataList, { ...values, order: dataList.length + 1 }]);
-            console.log("praveen1111")
+            
           } else {
             handleEditSubmit(dataList);
-            console.log("praveen1112")
+            
           }
         } else {
           if (isSaved) {
+            setLoading(true)
             const response = await axios.post(
               `http://127.0.0.1:8000/api/plant/furnace-config-steps/${addId}`,
               { step_data: dataList }
             );
             console.log(response);
+            setLoading(false)
             navigate(`/system-admin/furnace-configuration/list`)
             notify('success', 'Furnace Created successfully');
 
@@ -91,7 +95,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
       const refiningStepsResponse = await axios.get(
         `http://127.0.0.1:8000/api/plant/furnace-config-steps/${editId}/`
       );
-
+      setLoading(false)
       const convertedData = refiningStepsResponse.data.data.reverse().map((item) => ({
         step: parseInt(item.step),
         id: item.id,
@@ -325,11 +329,12 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
 
   const handleEditSubmit = async (values: any) => {
     console.log('values-values', values);
-
+    setLoading(true)
     const response = await axios.put(`http://127.0.0.1:8000/api/plant/furnace-config-steps/${editId}`, {
       step_data: values,
     });
     console.log(response);
+    setLoading(false)
     navigate(`/system-admin/furnace-configuration/list`)
     notify('success', 'Furnace Updated successfully');
     console.log("praveen4444")
@@ -402,6 +407,8 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
     }
   },[])
 
+  if (loading) return <Loading />;
+
   return (
     <form onSubmit={handleSubmit}>
       <div className='container mt-3 mb-3'>
@@ -417,7 +424,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                 backgroundColor: '#C1D3DF40',
                 cursor: 'pointer',
               }}
-              // onClick={() => setTab(1)}
+              onClick={() => isEdit && setTab(1)}
             >
               <p
                 style={{
@@ -991,6 +998,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                                 )}
                                                 
                                                 {val.type === 'toggle' && (
+                                                 
                                                   <ToggleButton
                                                     onChange={(val) => {
                                                       setEnabled(!enabled);
@@ -999,6 +1007,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                                     text={enabled ? 'Mandatory' : 'Not Mandatory'}
                                                     isChecked={enabled}
                                                   />
+                                                 
                                                 )}
                                                 {val.type === 'add-button' ? (
                                                   <div
@@ -1354,6 +1363,7 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                                           : 'Not Mandatory'
                                                       }
                                                       isChecked={val.isMandatory}
+                                                      switchTwo={true}
                                                     />
                                                   </div>
                                                 </div>

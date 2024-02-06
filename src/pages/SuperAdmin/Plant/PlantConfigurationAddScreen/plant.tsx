@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import AlertModal from 'components/Modal/AlertModal';
 import { clearLocalStorage } from 'utils/utils';
 import { paths } from 'routes/paths';
+import Loading from 'components/common/Loading';
 
 const formValidationSchema = yup.object({
   timezone_id: yup.string().required('Select the Time zone'),
@@ -63,6 +64,7 @@ const AddPlant = () => {
   });
   const [openAlertModal, setOpenAlertModal] = useState<boolean>(false);
 
+
   const [modelList, setModelList] = useState<any>([]);
   const [editData, setEditData] = useState<any>(null);
   const [showTooltip, setShowTooltip] = useState<any>('');
@@ -77,6 +79,8 @@ const AddPlant = () => {
     unitSystem: false,
     currency: false,
   });
+
+  const [loading, setLoading] = useState(isEdit || false)
 
   const plantData: any = JSON.parse(localStorage.getItem('plantData'));
 
@@ -155,10 +159,14 @@ const AddPlant = () => {
         modified_by:2,
         };
         if (isEdit) {
+          setLoading(true)
           const response = await axios.put(
             `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}/`,
             data
           );
+          if(response){
+            setLoading(false)
+          }
           console.log(response);
         } else {
           const response = await axios.post(
@@ -181,6 +189,7 @@ const AddPlant = () => {
         );
 
         const editData :any = plantConfigResponse.data
+        setLoading(false)
 
     
 
@@ -510,6 +519,8 @@ const AddPlant = () => {
   useEffect(() => {
     setModulesAndFunctionList(coreProcess);
   }, [functionList.userAccessControl]);
+
+  if (loading) return <Loading />;
 
   return (
     <form onSubmit={handleSubmit}>

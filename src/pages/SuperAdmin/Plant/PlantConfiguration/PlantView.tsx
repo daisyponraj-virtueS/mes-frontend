@@ -4,6 +4,7 @@ import Header from './plantHeader';
 import editIcon from 'assets/icons/edit-thick.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Loading from 'components/common/Loading';
 
 // interface Workshop {
 //   'Workshop ID': number;
@@ -48,6 +49,7 @@ const PlantView = () => {
   const [functionList, setFunctionList] = useState<any>([]);
   const [modelList, setModelList] = useState<any>([]);
   const [masterData, setMasterData] = useState<any>([]);
+  const [loading, setLoading] = useState(true)
 
   const plant: any = JSON.parse(localStorage.getItem('plantData'));
 
@@ -121,6 +123,7 @@ const PlantView = () => {
         const response = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${plant_id}/`);
 
         console.log("response",response)
+        setLoading(false)
 
         setPlantData(response.data);
 
@@ -172,7 +175,7 @@ const shiftTimes = [
     };
   });
   
-  
+  if (loading) return <Loading />;
   
   return (
     <>

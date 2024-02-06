@@ -19,8 +19,11 @@ const CustomSelect = ({
   const [filteredData, setFilteredData] = useState(options);
 
   const handleToggle = () => {
+
+    if(!disabled){
     setIsOpen(!isOpen);
     onClick(true);
+    }
   };
 
   const handleOptionClick = (value: any, valueName: any) => {
@@ -59,7 +62,8 @@ const CustomSelect = ({
       style={{
         height: '40px',
         overflow: 'visible',
-        backgroundColor: disabled ? '#CDD0D1' : 'white',
+        
+        
       }}
     >
       <div
@@ -67,11 +71,12 @@ const CustomSelect = ({
         style={{
           height: '40px',
           border: '1px solid #CDCDCD',
-          padding: '10.5px 12px 10.5px 12px',
+          padding: '8.5px 12px 8.5px 12px',
           borderRadius: '4px',
           borderBottomLeftRadius: isOpen ? '0px' : '4px',
           borderBottomRightRadius: isOpen ? '0px' : '4px',
           color: selectedName == 'Select' || selectedName == 'Select ' ? '#757E85' : 'black',
+          backgroundColor: disabled ? '#e3e9ea' : 'white',
         }}
         onMouseOver={() => setShowTooltip(index)}
         onMouseOut={() => setShowTooltip('')}
@@ -90,7 +95,7 @@ const CustomSelect = ({
         </div>
         <div style={{ position: 'relative' }}>
           <svg
-            style={{ position: 'absolute', bottom: '11px', left: '96%' }}
+            style={{ position: 'absolute', bottom: '8.5px', left: '96%' }}
             xmlns='http://www.w3.org/2000/svg'
             width='16'
             height='16'

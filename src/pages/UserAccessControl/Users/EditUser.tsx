@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { paths } from 'routes/paths';
 import httpClient from 'http/httpClient';
 import { useParams } from 'react-router-dom';
-import { notify } from 'utils/utils';
+import { clearLocalStorage, notify } from 'utils/utils';
 import { isEmpty } from 'utils/utils';
 import Loading from 'components/common/Loading';
 import CustomSelect from 'components/common/SelectField';
@@ -25,6 +25,7 @@ const EditUser = () => {
   const [selectedLoginType, setSelectedLoginType] = useState<Number>(0);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [newPassword, setNewPassword] = useState<any>('');
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getRolesAPI = async () => {
@@ -56,8 +57,9 @@ const EditUser = () => {
         .get(`/api/account/users/${userId}/?type=edit`)
         .then((response) => {
           if (response.data) {
+            setLoading(false)
             const user: any = response.data;
-                        setUserDetails(user);
+            setUserDetails(user);
             setFormData({
               firstname: user?.first_name,
               lastname: user?.last_name,
@@ -67,7 +69,11 @@ const EditUser = () => {
               department: user?.department,
               roles: user?.roles.length ? [...user.roles.map((roles: any) => roles)] : [],
             });
-            user.login_type == '' ? setSelectedLoginType(1) : user.login_type=="simple" ? setSelectedLoginType(1) : setSelectedLoginType(0);
+            user.login_type == ''
+              ? setSelectedLoginType(1)
+              : user.login_type == 'simple'
+                ? setSelectedLoginType(1)
+                : setSelectedLoginType(0);
           }
         })
         .catch((err) => {
@@ -78,14 +84,14 @@ const EditUser = () => {
 
   // filter user roles from existing roles
   useEffect(() => {
-        if (!isEmpty(userDetails) && !isEmpty(existingRoles)) {
-            const remainingRoles = [...existingRoles].filter(
+    if (!isEmpty(userDetails) && !isEmpty(existingRoles)) {
+      const remainingRoles = [...existingRoles].filter(
         (obj1) => ![...(userDetails?.roles ?? [])].some((obj2) => obj1.id === obj2.id)
       );
-        setExistingRoles(remainingRoles);
+      setExistingRoles(remainingRoles);
     }
   }, [userDetails]);
-  
+
   const [openDropdown, setOpenDropdown] = useState(false);
 
   const [formData, setFormData] = useState<any>({
@@ -255,11 +261,13 @@ const EditUser = () => {
   };
 
   const editUserAPI = async (request: any) => {
+    setLoading(true)
     httpClient
       // .put(`/api/users/${userId}/`, { data: request })
       .put(`/api/account/users/${userId}/`, { data: request })
       .then((response: any) => {
         if (response.status === 200 || response.status === 201) {
+          setLoading(false)
           if (response.data) {
             notify('success', 'User details edited successfully');
             navigate(`${paths.usersList}`);
@@ -292,9 +300,14 @@ const EditUser = () => {
         department: formData.department,
       };
       console.log(request);
-      
+
       editUserAPI(request);
     }
+  };
+
+  const onLogout = () => {
+    clearLocalStorage(['authToken', 'userData', 'plantId', 'plantName']);
+    navigate(`${paths.login}`);
   };
   const generatePassword = async () => {
     // const randomstring = Math.random().toString(36).slice(-8);
@@ -306,27 +319,36 @@ const EditUser = () => {
       password += chars.charAt(randomIndex);
     }
     // setFormData({ ...formData, password: password });
-    if(password){
-      const data = {password:password}
+    if (password) {
+      const data = { password: password };
+      setLoading(true)
       const response = await axios.post(
         `http://127.0.0.1:8000/api/account/reset-password/${userId}/`,
         data
       );
-      if(response.status == 200){
-    notify('success','Password reset successfully');
-    setNewPassword(password)
-    setIsPasswordVisible(true);
+      if (response.status == 200) {
+        setLoading(false)
+        notify(
+          'success',
+          `Password reset successfully, 
+    copy the password`
+        );
+        setNewPassword(password);
+        setIsPasswordVisible(true);
       }
     }
-
   };
   const isUserFormFilled = (formData: any) => {
     for (const key in formData) {
       if (formData.hasOwnProperty(key)) {
-        if ( key !== 'email' && key!=='department') {
+        if (key !== 'email' && key !== 'department') {
           if (Array.isArray(formData[key]) && formData[key]?.length === 0) {
             return false;
-          } else if (formData[key] === '' || formData[key] === undefined || formData[key] === null) {
+          } else if (
+            formData[key] === '' ||
+            formData[key] === undefined ||
+            formData[key] === null
+          ) {
             return false;
           }
         }
@@ -340,7 +362,12 @@ const EditUser = () => {
       if (formData.hasOwnProperty(key) && key !== 'confirmPassword') {
         if (Array.isArray(formData[key]) && formData[key]?.length === 0) {
           return false;
-        } else if (formData[key] === '' && key !== 'phone' && key !== 'email' && key!=='department') {
+        } else if (
+          formData[key] === '' &&
+          key !== 'phone' &&
+          key !== 'email' &&
+          key !== 'department'
+        ) {
           return false;
         }
       }
@@ -356,7 +383,7 @@ const EditUser = () => {
     return true;
   };
 
-  // if (isEmpty(userDetails)) return <Loading />;
+  if (loading) return <Loading />;
 
   return (
     <main className='dashboard'>
@@ -560,7 +587,7 @@ const EditUser = () => {
                           </div>
                         </div>
                       </OutsideClickHandler>
-                                    
+
                       <div className='pills-box-wrapper mt-3'>
                         {formData.roles?.map((roles: any) => (
                           <div key={roles} className='pills-box'>
@@ -656,6 +683,12 @@ const EditUser = () => {
                                     }}
                                     onClick={() => {
                                       navigator.clipboard.writeText(newPassword);
+                                      const userData: any = JSON.parse(
+                                        localStorage.getItem('userData')
+                                      );
+                                      if (userData.id == userId) {
+                                        onLogout();
+                                      }
                                     }}
                                     data-toggle='tooltip'
                                     data-placement='bottom'

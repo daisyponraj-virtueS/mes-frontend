@@ -157,6 +157,7 @@ const furnaceView = ({ setTab, viewId }: any) => {
         );
         const data = response?.data;
         console.log('praveen1', response);
+        setIsLoading(false)
         setFurnaceData({ furnace: [data] });
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -166,12 +167,7 @@ const furnaceView = ({ setTab, viewId }: any) => {
 
     fetchData();
   }, []);
-  useEffect(() => {
-    // Simulate data loading
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+
   const appmasterData = async () => {
     try {
       const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
@@ -423,7 +419,8 @@ const furnaceView = ({ setTab, viewId }: any) => {
                           className='mb-3'
                           style={{ fontWeight: 500, fontSize: '20px', color: '#041724' }}
                         >
-                          Electrodes (Composite)
+                          Electrodes ({masterData.filter((val) => val.id == furnace.electrode_type)?.[0]
+                                  ?.value})
                         </p>
                         {ProductData.map((val, index) => (
                           <div key={index} style={{ marginBottom: '20px' }}>

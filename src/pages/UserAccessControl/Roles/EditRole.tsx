@@ -275,6 +275,7 @@ const DashboardRolesEditView = () => {
                             <div className='custom-checkbox'>
                               <input
                                 type='checkbox'
+                                disabled={category == 'System Admin'}
                                 id={`create-${key}`}
                                 className='custom-checkbox__input'
                                 checked={rolePermissions[category]?.[key]?.create || false}
@@ -299,6 +300,7 @@ const DashboardRolesEditView = () => {
                           <div className='custom-checkbox'>
                             <input
                               type='checkbox'
+                              disabled={category == 'System Admin'}
                               id={`edit-${key}`}
                               className='custom-checkbox__input'
                               checked={rolePermissions[category]?.[key]?.edit || false}
@@ -321,6 +323,7 @@ const DashboardRolesEditView = () => {
                             <div className='custom-checkbox'>
                               <input
                                 type='checkbox'
+                                disabled={category == 'System Admin'}
                                 id={`delete-${key}`}
                                 className='custom-checkbox__input'
                                 checked={rolePermissions[category]?.[key]?.delete || false}

@@ -4,6 +4,7 @@ import editIcon from 'assets/icons/edit-thick.svg';
 import InfoBlock from './infoBlock';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Loader from 'components/Loader';
 
 
 // import { useState } from 'react';
@@ -72,6 +73,7 @@ const RefiningSteps = ({setTab, viewId}: any) => {
   const [additiveData, setAdditiveData] = useState({});
 //   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   
 
   useEffect(() => {
@@ -79,6 +81,7 @@ const RefiningSteps = ({setTab, viewId}: any) => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config-steps/${viewId}/`);
         const responseData = response.data
+        setIsLoading(false)
   
         if (Array.isArray(responseData.data)) {
           const data = responseData.data.reverse();
@@ -139,6 +142,9 @@ const RefiningSteps = ({setTab, viewId}: any) => {
 //   furnaceData?.furnace.map((furnace: any)=> titleId = furnace.furnace_no)
   return (
     <>
+    {isLoading ? (
+          <Loader />
+        ) : (
     <div className='container mt-3 mb-3' style={{ height: '560px', overflow: 'auto' }}>
       <div className='container card' style={{ height: '100%' }}>
       <div style={{ display: 'flex' }}>
@@ -304,6 +310,7 @@ const RefiningSteps = ({setTab, viewId}: any) => {
         </div>
       </div>
     </div>
+        )}
     </>
   );
 };

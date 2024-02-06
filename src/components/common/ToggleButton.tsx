@@ -1,12 +1,12 @@
 import '../../assets/styles/scss/components/toggleButton.scss'
-const ToggleButton =({text,isChecked,onChange,style}:any)=>{
+const ToggleButton =({text,isChecked,onChange,style, switchTwo=false}:any)=>{
     return(
-        <div className='toggle_button__switch_container' style={style}>
-                    <label className='toggle_button__switch'>
+        <div className={`${switchTwo?'toggle_button_two':'toggle_button'}__switch_container`} style={style}>
+                    <label className={`${switchTwo?'toggle_button_two':'toggle_button'}__switch`}>
                       <input type='checkbox' onChange={(e) => onChange(e.target.checked)} checked={isChecked}/>
-                      <span className='toggle_button__slider parameters__round'></span>
+                      <span className={`${switchTwo?'toggle_button_two':'toggle_button'}__slider parameters__round`}></span>
                     </label>
-                    <label className='toggle_button__switch_label' htmlFor='customSwitch1'>
+                    <label className={`${switchTwo?'toggle_button_two':'toggle_button'}__switch_label`} htmlFor='customSwitch1'>
                       {text}
                     </label>
                   </div>
