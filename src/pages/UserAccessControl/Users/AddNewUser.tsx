@@ -375,13 +375,13 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
         email: formData.email.trim(),
         password: formData.password.trim(),
         roles: formData.roles,
-        login_type: selectedLoginType == 1 ? 'simple' : 'SSO',
+        login_type: selectedLoginType == 1 ? 'simple' : 'sso',
         department:formData.department
       };
       if (selectedLoginType != 1) {
         console.log("selectedLoginType", selectedLoginType)
         request['username'] = formData.email
-        request['password'] = formData.firstname
+        delete request['password'];   
       }
       addUserAPI(request);
     }
