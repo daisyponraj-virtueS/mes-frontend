@@ -11,7 +11,6 @@ const ModalResetPassword = (props: any) => {
     confirmPassword: '',
   });
 
-  console.log('selected user -', selectedUser);
 
   const validatePassword = (value: any) => {
     let errorMessage = '';

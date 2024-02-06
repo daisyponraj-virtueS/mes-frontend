@@ -35,7 +35,6 @@ const DashboardSideMenu: FC = () => {
   const [isSuperUser, setIsSuperUser] = useState(false);
   const [plantName, setPlantName] = useState('');
 
-  console.log(isSuperUser);
   useEffect(() => {
     const UserInfo: any = getLocalStorage('userData');
     if (!isEmpty(UserInfo)) {

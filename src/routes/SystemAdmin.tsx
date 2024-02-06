@@ -34,7 +34,6 @@ const ViewFurance = lazy(() => import('pages/SuperAdmin/furnace'));
 const PlantEditScreen = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
 const AddPlant = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
 const ViewPlant= lazy(() => import('pages/SuperAdmin/Plant/PlantConfiguration/PlantView'));
-console.log("praveenram123",FurnaceListScreen)
 
 // const renderDashboard = <Navigate to={paths.dashboard} />;
 export const SystemAdminRoutes = [

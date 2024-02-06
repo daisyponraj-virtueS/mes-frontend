@@ -89,12 +89,13 @@ const Login: FC<LoginProps> = ({ state }) => {
     }
     if (!password.trim()) {
       errors.password = 'Password is required';
-    }else if(password.length < 8){
-      errors.password = 'Password must contain atleast 8 characters'
     }
-    else if(!validatePasswordField(password)){
-      errors.password = 'Password must contain 1 Special character, 1 Upper case, 1 Lower case and 1 Numeric'
-    }
+    // else if(password.length < 8){
+    //   errors.password = 'Password must contain atleast 8 characters'
+    // }
+    // else if(!validatePasswordField(password)){
+    //   errors.password = 'Password must contain 1 Special character, 1 Upper case, 1 Lower case and 1 Numeric'
+    // }
     setFormErrors(errors);
     return Object.values(errors).every((error) => error === '');
   };
@@ -116,7 +117,6 @@ const Login: FC<LoginProps> = ({ state }) => {
   const userLoginAPI = async () => {
     setLoading(true)
     const data = await dispatch(userLogin(inputData));
-    console.log('data', data);
     // setResponse(data);
     setLoading(false)
     if (data?.payload.status === 200 && data.payload.data?.token) {
