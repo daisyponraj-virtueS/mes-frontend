@@ -63,7 +63,6 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
     setInitialData(response.data.permission_list);
   };
 
-  console.log('setInitialData',initialData)
   const getRoleDetails = async () => {
     const requestData: any = {
       role_id: selectedRole,
@@ -191,15 +190,15 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
                   ? newSelectAllChecked
                   : updatedInitialData[category][key].view,
               create:
-                checkboxType === 'selectAll'
+                checkboxType === 'selectAll' && category !== 'System Admin'
                   ? newSelectAllChecked
                   : updatedInitialData[category][key].create,
               edit:
-                checkboxType === 'selectAll'
+                checkboxType === 'selectAll' && category !== 'System Admin'
                   ? newSelectAllChecked
                   : updatedInitialData[category][key].edit,
               delete:
-                checkboxType === 'selectAll'
+                checkboxType === 'selectAll' && category !== 'System Admin'
                   ? newSelectAllChecked
                   : updatedInitialData[category][key].delete,
             };
@@ -336,7 +335,7 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
                                 }
                               />
                               <label htmlFor={`create-${key}`} className='custom-checkbox__label'>
-                                <code className='custom-checkbox__label__box'></code>
+                              <code className={`custom-checkbox${category == 'System Admin'?'__label__box__disabled':'__label__box'}`} ></code>
                               </label>
                             </div>
                           ) : (
@@ -361,16 +360,17 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
                               }
                             />
                             <label htmlFor={`edit-${key}`} className='custom-checkbox__label'>
-                              <code className='custom-checkbox__label__box'></code>
+                            <code className={`custom-checkbox${category == 'System Admin'?'__label__box__disabled':'__label__box'}`} ></code>
                             </label>
                           </div>
                         </td>
                         <td>
                           {key !== 'Active Furnace List' && key !== 'Bin Contents' ? (
-                            <div className='custom-checkbox'>
+                            <div className='custom-checkbox' >
                               <input
                                 type='checkbox'
                                 disabled={category == 'System Admin'}
+                                
                                 id={`delete-${key}`}
                                 className='custom-checkbox__input'
                                 checked={initialData[category]?.[key]?.delete || false}
@@ -384,7 +384,7 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
                                 }
                               />
                               <label htmlFor={`delete-${key}`} className='custom-checkbox__label'>
-                                <code className='custom-checkbox__label__box'></code>
+                                <code className={`custom-checkbox${category == 'System Admin'?'__label__box__disabled':'__label__box'}`} ></code>
                               </label>
                             </div>
                           ) : (

@@ -374,7 +374,7 @@ const Header: React.FC<HeaderProps> = ({
                 openStatusList === true ? 'mt-18' : ''
               }  ${
                 
-                  (filtersearchValue === '' && activeStatus?.label == '') 
+                  (filtersearchValue === '' || activeStatus?.label == '') 
                   ? 'disabled'
                   : ''
               }`}

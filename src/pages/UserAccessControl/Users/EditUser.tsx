@@ -29,14 +29,12 @@ const EditUser = () => {
 
   useEffect(() => {
     const getRolesAPI = async () => {
-      console.log('Roles calling');
 
       httpClient
         // .get('/api/roles/?is_delete=false')
         .get('/api/account/roles/?is_delete=false')
         .then((response: any) => {
           if (response.data) {
-            console.log(response.data.results);
 
             setExistingRoles(response.data.results);
             setAllRoles(response.data.results);
@@ -47,7 +45,6 @@ const EditUser = () => {
         });
     };
     getRolesAPI();
-    console.log('Roles calling ended');
   }, []);
 
   useEffect(() => {
@@ -237,7 +234,6 @@ const EditUser = () => {
     return errorMessage.trim();
   };
   function onValueChange(event: any) {
-    console.log('event', event.target.value);
     setSelectedLoginType(event.target.value);
   }
   const validatePhone = (value: any) => {
@@ -299,7 +295,6 @@ const EditUser = () => {
         roles: [...formData.roles],
         department: formData.department,
       };
-      console.log(request);
 
       editUserAPI(request);
     }
@@ -401,7 +396,7 @@ const EditUser = () => {
   return (
     <main className='dashboard'>
       {/* {cloneModal ? <ModalClone /> : null} */}
-      <section className='dashboard__main'>
+      <section className='dashboard__main' style={{height:'90.5vh'}}>
         <div className='dashboard__main__header'>
           <div className='flex items-center justify-between h-full'>
             <div className='flex items-center'>

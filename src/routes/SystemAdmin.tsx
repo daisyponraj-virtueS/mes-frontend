@@ -1,31 +1,31 @@
 import { lazy } from 'react';
-// import { Navigate } from 'react-router-dom';
-// import { crudType, permissionsMapper } from 'utils/constants';
-// import { validatePermissions } from 'utils/utils';
+import { Navigate } from 'react-router-dom';
+import { crudType, permissionsMapper } from 'utils/constants';
+import { validatePermissions } from 'utils/utils';
 import { getRouteElement } from './RouteUtils';
 import { paths } from './paths';
 
-// const hasEditPermission = (path: string) => {
-//   const module = path?.split('/')[1];
-//   const subModule = path?.split('/')[2];
-//   if (module && subModule)
-//     return validatePermissions(
-//       permissionsMapper[module],
-//       permissionsMapper[subModule],
-//       crudType.edit
-//     );
-// };
+const hasEditPermission = (path: string) => {
+  const module = path?.split('/')[1];
+  const subModule = path?.split('/')[2];
+  if (module && subModule)
+    return validatePermissions(
+      permissionsMapper[module],
+      permissionsMapper[subModule],
+      crudType.edit
+    );
+};
 
-// const hasCreatePermission = (path: string) => {
-//   const module = path?.split('/')[1];
-//   const subModule = path?.split('/')[2];
-//   if (module && subModule)
-//     return validatePermissions(
-//       permissionsMapper[module],
-//       permissionsMapper[subModule],
-//       crudType.create
-//     );
-// };
+const hasCreatePermission = (path: string) => {
+  const module = path?.split('/')[1];
+  const subModule = path?.split('/')[2];
+  if (module && subModule)
+    return validatePermissions(
+      permissionsMapper[module],
+      permissionsMapper[subModule],
+      crudType.create
+    );
+};
 const FurnaceListScreen = lazy(() => import('pages/SuperAdmin/FurnaceConfiguration/listingScreen'));
 const AddFurnace = lazy(() => import('pages/Furnace/furnace'));
 const EditFurnace = lazy(() => import('pages/Furnace/furnace'));
@@ -35,7 +35,7 @@ const PlantEditScreen = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigura
 const AddPlant = lazy(() => import('pages/SuperAdmin/Plant/PlantConfigurationAddScreen/plant'));
 const ViewPlant= lazy(() => import('pages/SuperAdmin/Plant/PlantConfiguration/PlantView'));
 
-// const renderDashboard = <Navigate to={paths.dashboard} />;
+const renderDashboard = <Navigate to={paths.dashboard} />;
 export const SystemAdminRoutes = [
   {
     path: paths.plantScreen.view,
@@ -43,11 +43,13 @@ export const SystemAdminRoutes = [
   },
   {
     path: paths.plantScreen.create,
-    element: getRouteElement(AddPlant, true),
+    element: hasCreatePermission(paths.plantScreen.create)?getRouteElement(AddPlant, true)
+    :renderDashboard,
   },
   {
     path: paths.plantScreen.edit,
-    element: getRouteElement(PlantEditScreen, true),
+    element: hasEditPermission(paths.plantScreen.edit)?getRouteElement(PlantEditScreen, true)
+    : renderDashboard,
   },
   {
     path: paths.furnaceConfig.list,
@@ -63,10 +65,12 @@ export const SystemAdminRoutes = [
 //   },
   {
     path: paths.furnaceConfig.create,
-    element: getRouteElement(AddFurnace, true),
+    element: hasCreatePermission(paths.furnaceConfig.create)?getRouteElement(AddFurnace, true)
+    :renderDashboard,
   },
   {
     path: paths.furnaceConfig.edit,
-    element: getRouteElement(EditFurnace, true),
+    element: hasEditPermission(paths.furnaceConfig.edit)?getRouteElement(EditFurnace, true)
+    :renderDashboard,
   },
 ];

@@ -145,7 +145,7 @@ const RefiningSteps = ({setTab, viewId}: any) => {
     {isLoading ? (
           <Loader />
         ) : (
-    <div className='container mt-3 mb-3' >
+    <div className='container mt-3 mb-3' style={{height: '84vh'}}>
       <div className='child-container card' >
       <div style={{ display: 'flex' }}>
             <div
