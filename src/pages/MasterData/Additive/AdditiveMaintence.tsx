@@ -323,6 +323,18 @@ const AdditiveMaintenance: FC = () => {
                                 onSort_Filter(newFilteredData);
                               }
                             }}
+                            onKeyDown={(event)=>{
+                              const newFilteredData = {
+                                ...filteredData,
+                              };
+                              newFilteredData.material_name.splice(index, 1);
+                              setFilteredData(newFilteredData);
+                              if (isEmpty(newFilteredData)) {
+                                setReset(!reset);
+                              } else {
+                                onSort_Filter(newFilteredData);
+                              }
+                          }}
                           />
                         </div>
                       </div>
@@ -352,6 +364,17 @@ const AdditiveMaintenance: FC = () => {
                         onSort_Filter(newFilteredData);
                       }
                     }}
+
+                    onKeyDown={(event)=>{
+                      const newFilteredData = { ...filteredData };
+                      newFilteredData.is_active = '';
+                      if (isEmpty(newFilteredData)) {
+                        setFilteredData(newFilteredData);
+                        setReset(!reset);
+                      } else {
+                        onSort_Filter(newFilteredData);
+                      }
+                  }}
                   />
                 </div>
               )}
@@ -410,6 +433,13 @@ const AdditiveMaintenance: FC = () => {
                           view: true,
                         })
                       }
+                      onKeyDown={()=>{
+                        handleRowClick({
+                          id: e.id,
+                          edit: false,
+                          view: true,
+                        })
+                    }}
                     >
                       <td>{e.material_no}</td>
                       <td>{e.material_name}</td>
@@ -421,6 +451,10 @@ const AdditiveMaintenance: FC = () => {
                             e.stopPropagation();
                             toggleMenu(idx);
                           }}
+                          onKeyDown={(event)=>{
+                            event.key==="Enter" && e.stopPropagation();
+                            toggleMenu(idx);
+                        }}
                         >
                           <div className='switch-container mr-2'>
                             <input
@@ -446,11 +480,19 @@ const AdditiveMaintenance: FC = () => {
                             e.stopPropagation();
                             toggleMenu(idx);
                           }}
+                          onKeyDown={(event)=>{
+                            event.key==="Enter" && e.stopPropagation();
+                            toggleMenu(idx);
+                        }}
                         >
                           <div
                             className='relative flex items-center justify-center cursor-pointer'
                             style={{ width: 16, height: 16 }}
                             onClick={(e) => {
+                              e.stopPropagation();
+                              toggleMenu(idx);
+                            }}
+                            onKeyDown={(e) => {
                               e.stopPropagation();
                               toggleMenu(idx);
                             }}
@@ -481,6 +523,15 @@ const AdditiveMaintenance: FC = () => {
                                         isActive: e.is_active,
                                       });
                                   }}
+                                  onKeyDown={(event)=>{
+                                    hasEditPermission &&
+                                    handleRowClick({
+                                      id: e.id,
+                                      edit: true,
+                                      view: false,
+                                      isActive: e.is_active,
+                                    });
+                                }}
                                 >
                                   <img
                                     src={editIcon}
@@ -494,6 +545,9 @@ const AdditiveMaintenance: FC = () => {
                                     hasDeletePermission ? '' : 'disabled'
                                   }`}
                                   onClick={() => hasDeletePermission && deleteAlert(e.id)}
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" &&  hasDeletePermission && deleteAlert(e.id)
+                                }}
                                 >
                                   <img
                                     src={trashIcon}

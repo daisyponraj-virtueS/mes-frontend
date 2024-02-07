@@ -108,9 +108,10 @@ const PlantView = () => {
 //     { 'Workshop ID': 2, 'Workshop Name': 'Workshop 2' },
 //     { 'Workshop ID': 3, 'Workshop Name': 'Workshop 3' },
 //   ];
+  const validFunctionData = functionData || [];
+  // const maxItems = Math.max(...functionData?.map((val) => dataMapping[val].length));
 
-  const maxItems = Math.max(...functionData?.map((val) => dataMapping[val].length));
-
+  const maxItems = Math.max(...validFunctionData.map((val) => (dataMapping[val] || []).length));
   useEffect(() => {
     const fetchData = async () => {
       try {

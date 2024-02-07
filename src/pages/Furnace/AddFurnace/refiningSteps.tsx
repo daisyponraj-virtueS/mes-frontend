@@ -425,6 +425,9 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                 cursor: 'pointer',
               }}
               onClick={() => isEdit && setTab(1)}
+              onKeyDown={(event)=>{
+                event.key==="Enter" && isEdit && setTab(1)
+            }}
             >
               <p
                 style={{
@@ -566,6 +569,9 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                             <div
                               className='control_parameters__add_container'
                               onClick={handleAddControlParameters}
+                              onKeyDown={(event)=>{
+                                event.key==="Enter" && handleAddControlParameters()
+                            }}
                             >
                               <svg
                                 xmlns='http://www.w3.org/2000/svg'
@@ -622,10 +628,15 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                               <td>
                                 <div
                                   onClick={() => handleRemoveControlParameters(index)}
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" &&  handleRemoveControlParameters(index)
+                                }}
                                   data-toggle='tooltip'
                                   data-placement='bottom'
                                   onMouseOver={() => setShowControlParametersTooltip(index)}
                                   onMouseOut={() => setShowControlParametersTooltip('')}
+                                  onFocus={()=> setShowControlParametersTooltip(index)}
+                                  onBlur={() => setShowControlParametersTooltip('')}
                                 >
                                   <svg
                                     xmlns='http://www.w3.org/2000/svg'
@@ -692,7 +703,9 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                             />
                           )}
                           {val.type === 'add-button' ? (
-                            <div className='additives__add_container' onClick={handleAddAdditive}>
+                            <div className='additives__add_container' onClick={handleAddAdditive} onKeyDown={(event)=>{
+                              event.key==="Enter" && handleAddAdditive();
+                          }}>
                               <svg
                                 xmlns='http://www.w3.org/2000/svg'
                                 width='40'
@@ -740,10 +753,15 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                               <td>
                                 <div
                                   onClick={() => handleRemoveAdditiveList(index)}
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" && handleRemoveAdditiveList(index)
+                                }}
                                   data-toggle='tooltip'
                                   data-placement='bottom'
                                   onMouseOver={() => setShowAdditiveTooltip(index)}
+                                  onFocus={() => setShowAdditiveTooltip(index)}
                                   onMouseOut={() => setShowAdditiveTooltip('')}
+                                  onBlur={() => setShowAdditiveTooltip('')}
                                 >
                                   <svg
                                     xmlns='http://www.w3.org/2000/svg'
@@ -850,6 +868,8 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                         height='21px'
                                         onMouseOver={() => setShowInfoTooltip(index)}
                                         onMouseOut={() => setShowInfoTooltip('')}
+                                        onFocus={() => setShowInfoTooltip(index)}
+                                        onBlur={() => setShowInfoTooltip('')}
                                       />
                                       {showInfoTooltip === index ? (
                                         <div style={{ position: 'relative' }}>
@@ -881,15 +901,23 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                             src={editIcon}
                                             alt='edit'
                                             onClick={() => setCardEdit([...cardEdit, item.step])}
+                                            onKeyDown={(event)=>{
+                                              event.key==="Enter" && setCardEdit([...cardEdit, item.step])
+                                          }}
                                           />
                                         </div>
                                       )}
                                       <div
                                         onClick={() => handleRemoveDataList(index)}
+                                        onKeyDown={(event)=>{
+                                          event.key==="Enter" && handleRemoveDataList(index)
+                                      }}
                                         data-toggle='tooltip'
                                         data-placement='bottom'
                                         onMouseOver={() => setShowDragDeleteTooltip(index)}
                                         onMouseOut={() => setShowDragDeleteTooltip('')}
+                                        onFocus={() => setShowDragDeleteTooltip(index)}
+                                        onBlur={() => setShowDragDeleteTooltip('')}
                                       >
                                         <svg
                                           xmlns='http://www.w3.org/2000/svg'
@@ -1015,6 +1043,9 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                                     onClick={() =>
                                                       handleEditControlParameters(index)
                                                     }
+                                                    onKeyDown={(event)=>{
+                                                      event.key==="Enter" &&  handleEditControlParameters(index)
+                                                  }}
                                                   >
                                                     <svg
                                                       xmlns='http://www.w3.org/2000/svg'
@@ -1094,12 +1125,21 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                                         onClick={() =>
                                                           handleRemoveControlParameters(i, index)
                                                         }
+                                                        onKeyDown={(event)=>{
+                                                          event.key==="Enter" && handleRemoveControlParameters(i, index)
+                                                      }}
                                                         data-toggle='tooltip'
                                                         data-placement='bottom'
                                                         onMouseOver={() =>
                                                           setShowControlParametersTooltip(i)
                                                         }
+                                                        onFocus={() =>
+                                                          setShowControlParametersTooltip(i)
+                                                        }
                                                         onMouseOut={() =>
+                                                          setShowControlParametersTooltip('')
+                                                        }
+                                                        onBlur={() =>
                                                           setShowControlParametersTooltip('')
                                                         }
                                                       >
@@ -1195,6 +1235,9 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                                   <div
                                                     className='additives__add_container'
                                                     onClick={() => handleEditAdditive(index)}
+                                                    onKeyDown={(event)=>{
+                                                      event.key==="Enter" && handleEditAdditive(index)
+                                                  }}
                                                   >
                                                     <svg
                                                       xmlns='http://www.w3.org/2000/svg'
@@ -1259,12 +1302,21 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                                                           onClick={() =>
                                                             handleRemoveAdditiveList(i, index)
                                                           }
+                                                          onKeyDown={(event)=>{
+                                                            event.key==="Enter" &&  handleRemoveAdditiveList(i, index)
+                                                        }}
                                                           data-toggle='tooltip'
                                                           data-placement='bottom'
                                                           onMouseOver={() =>
                                                             setShowAdditiveTooltip(i)
                                                           }
                                                           onMouseOut={() =>
+                                                            setShowAdditiveTooltip('')
+                                                          }
+                                                          onFocus={() =>
+                                                            setShowAdditiveTooltip(i)
+                                                          }
+                                                          onBlur={() =>
                                                             setShowAdditiveTooltip('')
                                                           }
                                                         >

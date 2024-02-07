@@ -132,9 +132,9 @@ const Header: React.FC<HeaderProps> = ({
 
   useEffect(() => {
     let data: any = {};
-    filteredData?.material_name ? (data['material_name'] = filteredData.material_name) : null;
-    filteredData?.is_active ? (data['is_active'] = filteredData.is_active) : null;
-    filteredData?.is_active === false ? (data['is_active'] = filteredData.is_active) : null;
+    data['material_name'] = filteredData?.material_name ? filteredData.material_name : null;
+    data['is_active'] = filteredData?.is_active ? filteredData.is_active : null;
+  
     if (isEmpty(data)) {
       setActiveStatus({ label: '', value: '' });
       setSelectedCheckboxes([]);
@@ -225,7 +225,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const onSort_filterClick = ({ fromFilterSearch = true } = {}, searchText?: string) => {
     let selectedSearchedList: any = [];
-    selectedCheckboxes.map((item: any) => {
+    selectedCheckboxes.forEach((item: any) => {
       if (!isEmpty(searchedResponse)) selectedSearchedList.push(searchedResponse?.[item]);
     });
     if (selectedCheckboxes.length === 0 && filtersearchValue) {
@@ -284,6 +284,9 @@ const Header: React.FC<HeaderProps> = ({
                 <div
                   className='flex items-center justify-between'
                   onClick={() => setMaterailDropdown(!materialDropdown)}
+                  onKeyDown={(event)=>{
+                    event.key==="Enter" && setMaterailDropdown(!materialDropdown)
+                }}
                 >
                   <span className='filters-sort-dropdown-menu__list__title'>Material Name</span>
                   <img src={caretDownIcon} alt='arrow-down' className='arrow-down' />
@@ -355,6 +358,9 @@ const Header: React.FC<HeaderProps> = ({
                   <div
                     className='flex items-center justify-between'
                     onClick={() => setStatusDropdown(!statusDropdown)}
+                    onKeyDown={(event)=>{
+                      event.key==="Enter" && setStatusDropdown(!statusDropdown)
+                  }}
                   >
                     <span className='filters-sort-dropdown-menu__list__title'>Status</span>
                     <img src={caretDownIcon} alt='arrow-down' className='arrow-down' />
@@ -367,6 +373,9 @@ const Header: React.FC<HeaderProps> = ({
                           onClick={() => {
                             setOpenStatusList(!openStatusList);
                           }}
+                          onKeyDown={(event)=>{
+                            event.key==="Enter" && setOpenStatusList(!openStatusList);
+                        }}
                         >
                           <span className='filters-sort-dropdown-menu__list__title'>
                             {isEmpty(activeStatus.label)
@@ -385,6 +394,11 @@ const Header: React.FC<HeaderProps> = ({
                                   setActiveStatus(item);
                                   setDisableFilter(false);
                                 }}
+                                onKeyDown={(event)=>{
+                                  event.key==="Enter" &&  setOpenStatusList(false);
+                                  setActiveStatus(item);
+                                  setDisableFilter(false);
+                              }}
                               >
                                 {item.label}
                               </div>
@@ -491,7 +505,7 @@ const Header: React.FC<HeaderProps> = ({
                     onChange={() => {
                       setRadioBtn(1);
                       !isSortApplied && setDummyRadioBtn(1);
-                      !isEmpty(selectedSortType) ? setSelectedSortType('') : null;
+                      !isEmpty(selectedSortType) && setSelectedSortType('');
                     }}
                   />
                   Date Created
@@ -507,7 +521,7 @@ const Header: React.FC<HeaderProps> = ({
                     onChange={() => {
                       setRadioBtn(2);
                       !isSortApplied && setDummyRadioBtn(2);
-                      !isEmpty(selectedSortType) ? setSelectedSortType('') : null;
+                      !isEmpty(selectedSortType) && setSelectedSortType('');
                     }}
                   />
                   Material No
@@ -525,6 +539,9 @@ const Header: React.FC<HeaderProps> = ({
                   onClick={() => {
                     radioBtn !== 0 && setOpenSortList(!openSortList);
                   }}
+                  onKeyDown={(event)=>{
+                    event.key==="Enter" && radioBtn !== 0 && setOpenSortList(!openSortList);
+                }}
                 >
                   <span className='filters-sort-dropdown-menu__list__title'>
                     {isEmpty(selectedSortType) ? 'Select sort type ' : selectedSortType}
@@ -541,6 +558,11 @@ const Header: React.FC<HeaderProps> = ({
                           setSelectedSortType(item?.label);
                           !isSortApplied && setSelectedDummySortType(item?.label);
                         }}
+                        onKeyDown={(event)=>{
+                          event.key==="Enter" && setOpenSortList(false);
+                          setSelectedSortType(item?.label);
+                          !isSortApplied && setSelectedDummySortType(item?.label);
+                      }}
                       >
                         {item.label}
                       </div>

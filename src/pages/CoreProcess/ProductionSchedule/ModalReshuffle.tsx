@@ -118,7 +118,9 @@ const ModalReshuffle: React.FC<ModalReshuffleProps> = ({
         <div className='modal-reshuffle__header'>
           <p className='modal-reshuffle__heading'>Reshuffle Sequence</p>
           <div className='modal-reshuffle__left-part'>
-            <div className='modal__close' onClick={() => setOpenReshuffleModal(false)}>
+            <div className='modal__close' onClick={() => setOpenReshuffleModal(false)} onKeyDown={(event)=>{
+                event.key==="Enter" &&  setOpenReshuffleModal(false)
+            }}>
               <img src={closeIcon} alt='close-icon' />
             </div>
           </div>

@@ -546,7 +546,7 @@ if(isEdit){
         setProductList(newArr);
         setFieldValue('products', newArr);
       } else {
-        arrayToRemove.map((value) => {
+        arrayToRemove.forEach((value) => {
           if (value.productState?.option == state) {
             const removedArr = value.products?.splice(index, 1);
             return removedArr;
@@ -557,7 +557,7 @@ if(isEdit){
         setProductList(arrayToRemove);
       }
     } else {
-      arrayToRemove.map((value) => {
+      arrayToRemove.forEach((value) => {
         if (value.productState?.option == state) {
           const removedArr = (value.products[index].record_status = status);
           return removedArr;
@@ -701,6 +701,10 @@ if(isEdit){
                 cursor: 'pointer',
               }}
               onClick={() => isEdit && setTab(2)}
+              onKeyDown={(event)=>{
+                event.key==="Enter" && isEdit && setTab(2)
+            }}
+
             >
               <p
                 style={{
@@ -942,7 +946,11 @@ if(isEdit){
                     />
                   </div>
                 ))}
-                <div className='products__add_container' onClick={handleAddProduct}>
+                <div className='products__add_container' onClick={handleAddProduct} 
+                onKeyDown={(event)=>{
+                  event.key==="Enter" && handleAddProduct()
+              }}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='40'
@@ -990,6 +998,9 @@ if(isEdit){
                                       onClick={() =>
                                         handleRemoveProduct(index, value?.productState?.option)
                                       }
+                                      onKeyDown={(event)=>{
+                                        event.key==="Enter" && handleRemoveProduct(index, value?.productState?.option)
+                                    }}
                                       data-toggle='tooltip'
                                       data-placement='bottom'
                                       // onMouseOver={() => setShowTooltip(index)}

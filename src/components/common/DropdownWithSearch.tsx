@@ -54,6 +54,10 @@ const DropdownWithSearch: React.FC<IDropdownWithSearchProps> = ({
               setIsOpen(!isOpen);
               setSearchValue('');
             }}
+            onKeyDown={(event) => {
+              event.key === 'Enter' && setIsOpen(!isOpen);
+              setSearchValue('');
+            }}
           >
             {getMaterialName()}
             <img src={arrowDown} alt='arrow-down' className='custom-select__arrow-down' />
@@ -79,6 +83,10 @@ const DropdownWithSearch: React.FC<IDropdownWithSearchProps> = ({
                     key={e.id}
                     onClick={() => {
                       onChangeHandler(e.value);
+                      setIsOpen(false);
+                    }}
+                    onKeyDown={(event) => {
+                      event.key === 'Enter' && onChangeHandler(e.value);
                       setIsOpen(false);
                     }}
                   >

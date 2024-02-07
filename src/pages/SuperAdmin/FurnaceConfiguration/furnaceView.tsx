@@ -15,7 +15,7 @@ const commonLabelStyle = {
   // marginBottom: '3px', // Adjusted margin bottom for reduced space
 };
 
-const furnaceView = ({ setTab, viewId }: any) => {
+const FurnaceView = ({ setTab, viewId }: any) => {
   const navigate = useNavigate();
   const ProductData = ['E1', 'E2', 'E3'];
   const data = ['Molten', 'WIP'];
@@ -289,6 +289,7 @@ const furnaceView = ({ setTab, viewId }: any) => {
                     cursor: 'pointer',
                   }}
                   onClick={() => setTab(2)}
+                  onKeyDown={() => setTab(2)}
                 >
                   <p
                     style={{
@@ -809,4 +810,4 @@ const furnaceView = ({ setTab, viewId }: any) => {
   );
 };
 
-export default furnaceView;
+export default FurnaceView;

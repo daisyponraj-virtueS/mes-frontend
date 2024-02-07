@@ -20,7 +20,10 @@ const ViewTabs: React.FC<ViewTabsProps> = (props: ViewTabsProps): React.ReactEle
             key={index}
             className={`tab__header__item ${activeTab === tab.value ? 'active' : ''}`}
             onClick={() => {
-              tab.value === tabs[1].value && disabled ? {} : onTabChange(tab.value);
+              tab.value === tabs[1].value && disabled && onTabChange(tab.value);
+            }}
+            onKeyDown={() => {
+              tab.value === tabs[1].value && disabled && onTabChange(tab.value);
             }}
           >
             <div className='tab__header__status-count'>

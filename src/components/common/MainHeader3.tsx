@@ -16,10 +16,8 @@ interface HeaderProps {
   onSearchChange?: (value: string) => void;
   onButtonClick?: () => void;
   sort_filter_click?: (e: object) => void; // Add sort_filter_click and onFilterClick props
-  onFilterClick?: () => void;
   onReset?: () => void;
   filteredData?: any;
-  hasPermission?: any;
   fetchSearchList?: (inputData: any) => Promise<any>;
   removeStatus?: boolean;
 }
@@ -47,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const { pathname } = useLocation();
   const [searchValue, setSearchValue] = useState('');
-  const [filtersearchValue, setFilterSearchValue]: any = useState('');
+  const [filtersearchValue, setFilterSearchValue] = useState<any>('');
   const [isSortApplied, setIsSortApplied] = useState(false);
   const [searchedResponse, setSearchedResponse] = useState<any>();
   const [openSortList, setOpenSortList] = useState(false);
@@ -56,10 +54,7 @@ const Header: React.FC<HeaderProps> = ({
   const [openFilter, setOpenFilter] = useState(false);
   const [activeStatus, setActiveStatus] = useState({ label: '', value: '' });
   const [selectedSortType, setSelectedSortType] = useState<string>('');
-  const [materialDropdown, setMaterailDropdown] = useState(false);
-  const [customerNameDropdown, setCustomerNameDropdown] = useState(false);
-  const [manterialNoDropdown, setManterialNoDropdown] = useState(false);
-  const [shipToDropdown, setShipToDropdown] = useState(false);
+  const [materialDropdown, setMaterialDropdown] = useState(false);
   const [statusDropdown, setStatusDropdown] = useState(false);
   const [radioBtn, setRadioBtn] = useState(0);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
@@ -69,11 +64,8 @@ const Header: React.FC<HeaderProps> = ({
     customerNameList: [],
     shipToList: [],
   };
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState<any>(defaultCheckbox);
   const [selectedDummySortType, setSelectedDummySortType] = useState<string>('');
   const [dummyRadioBtn, setDummyRadioBtn] = useState(0);
-  const [selectedDummyCheckboxes, setSelectedDummyCheckboxes] = useState<any>([]);
-  const [disableFilter, setDisableFilter] = useState<boolean>(true);
 
   const module = pathname?.split('/')[1];
   const subModule = pathname?.split('/')[2];
@@ -103,38 +95,28 @@ const Header: React.FC<HeaderProps> = ({
     debounce(setSearchValue(value), 500);
     const emptyCheck = checkAllStates();
     emptyCheck
-      ? onSearchChange && onSearchChange(value?.replace(/^\s+/g, ''))
+      ? onSearchChange?.(value?.replace(/^\s+/g, ''))
       : onSort_filterClick({ fromFilterSearch: false }, value);
   };
 
   const handleFilterSearchChange = (value: string) => {
     setFilterSearchValue(value);
-    setDisableFilter(false);
   };
-
-
-
 
   const checkAllStates = () => {
     let allStatesEmpty = false;
-    if (
-      isEmpty(selectedSortType) &&
-      isEmpty(filtersearchValue) &&
-      isEmpty(activeStatus.label) 
-    ) {
-      return (allStatesEmpty = true);
+    if (isEmpty(selectedSortType) && isEmpty(filtersearchValue) && isEmpty(activeStatus.label)) {
+      return true;
     }
     return allStatesEmpty;
   };
 
   const onResetFilter = () => {
     setSearchValue('');
-    onSearchChange && onSearchChange('');
+    onSearchChange?.('');
     setOpenFilter(false);
     setFilterSearchValue('');
     setActiveStatus({ label: '', value: '' });
-    setSelectedCheckboxes(defaultCheckbox);
-    setSelectedDummyCheckboxes(defaultCheckbox);
     setIsFilterApplied(false);
     onReset();
     setSelectedSortType('');
@@ -145,20 +127,14 @@ const Header: React.FC<HeaderProps> = ({
     setIsSortApplied(false);
     setOpenSortList(false);
     closeDropDown();
-    setMaterailDropdown(false);
+    setMaterialDropdown(false);
     setStatusDropdown(false);
-    setCustomerNameDropdown(false);
-    setShipToDropdown(false);
-    setDisableFilter(true);
-    sort_filter_click && sort_filter_click('');
+    sort_filter_click?.('');
     setFilterSearchValue('');
   };
 
   const closeDropDown = () => {
-    setMaterailDropdown(false);
-    setCustomerNameDropdown(false);
-    setManterialNoDropdown(false);
-    setShipToDropdown(false);
+    setMaterialDropdown(false);
     setStatusDropdown(false);
   };
   const onSearchAPI = async (input: any) => {
@@ -168,7 +144,7 @@ const Header: React.FC<HeaderProps> = ({
       customer_name: input.customerNameList,
       ship_to: input.shipToList,
     };
-    const response = await fetchSearchList(inputData);
+    const response = fetchSearchList(inputData);
     setSearchedResponse(response);
   };
 
@@ -176,14 +152,13 @@ const Header: React.FC<HeaderProps> = ({
     onSearchAPI('');
   }, []);
 
-  const onSort_filterClick = ( fromFilterSearch?:string, searchText?: string) => {
-
+  const onSort_filterClick = (fromFilterSearch?: string, searchText?: string) => {
     const inputData = {
       search: searchText?.replace(/^\s+/g, ''),
       is_active: activeStatus?.value,
       ordering: sortStore,
     };
-    sort_filter_click && sort_filter_click(inputData);
+    sort_filter_click?.(inputData);
     setOpenFilter(false);
     setOpenSort(false);
     closeDropDown();
@@ -192,24 +167,15 @@ const Header: React.FC<HeaderProps> = ({
   const closeDropdown = (dropDownName: any) => {
     switch (dropDownName) {
       case 'Material Name':
-        setManterialNoDropdown(false);
-        setShipToDropdown(false);
-        setCustomerNameDropdown(false);
         break;
       case 'Material No':
-        setMaterailDropdown(false);
-        setShipToDropdown(false);
-        setCustomerNameDropdown(false);
+        setMaterialDropdown(false);
         break;
       case 'Ship To':
-        setCustomerNameDropdown(false);
-        setManterialNoDropdown(false);
-        setMaterailDropdown(false);
+        setMaterialDropdown(false);
         break;
       case 'Customer Name':
-        setShipToDropdown(false);
-        setManterialNoDropdown(false);
-        setMaterailDropdown(false);
+        setMaterialDropdown(false);
         break;
     }
   };
@@ -230,6 +196,10 @@ const Header: React.FC<HeaderProps> = ({
               setItem(!item);
               closeDropdown(dropDownName);
             }}
+            onKeyDown={(event) => {
+              event.key === 'Enter' && setItem(!item);
+              closeDropdown(dropDownName);
+            }}
           >
             <span className='filters-sort-dropdown-menu__list__title'>{dropDownName}</span>
             <img src={caretDownIcon} alt='arrow-down' className='arrow-down' />
@@ -237,22 +207,16 @@ const Header: React.FC<HeaderProps> = ({
           <div className='filters-sort-dropdown-menu__list__content'>
             <div className='pt-3'>
               <input
-                type={ 'text'}
+                type={'text'}
                 className='input-field input-field--search input-field--md input-field--h32 w-full'
                 placeholder='Search'
                 value={filtersearchValue}
                 onChange={(e: any) => handleFilterSearchChange(e.target.value)}
                 onPaste={(event) => event.preventDefault()}
                 onKeyDown={(event) => {
-              
-                    if (
-                      event.key === '.' ||
-                      event.key === '+' ||
-                      event.key === '-' 
-                    ) {
-                      event.preventDefault();
-                    }
-                  
+                  if (event.key === '.' || event.key === '+' || event.key === '-') {
+                    event.preventDefault();
+                  }
                 }}
               />
             </div>
@@ -288,37 +252,26 @@ const Header: React.FC<HeaderProps> = ({
         <div className={`filters-sort-dropdown-menu ${openFilter ? 'open' : ''}`}>
           <div className='filters-sort-dropdown-menu__header'>
             <span className='color-secondary-text text-13 font-semibold'>Filters</span>
-            <span onClick={onResetFilter} className='text-13 font-semibold'>Reset</span>
+            <span
+              onClick={onResetFilter}
+              className='text-13 font-semibold'
+              onKeyDown={(event) => {
+                event.key === 'Enter' && onResetFilter();
+              }}
+            >
+              Reset
+            </span>
           </div>
           <div className='filters-sort-dropdown-menu__body'>
-           
-            {/* {dropDownList(
-              'Material No',
-              manterialNoDropdown,
-              setManterialNoDropdown,
-              searchedResponse?.materialNoList,
-              'materialNoList'
-            )}
-            {dropDownList(
-              'Customer Name',
-              customerNameDropdown,
-              setCustomerNameDropdown,
-              searchedResponse?.customerNameList,
-              'customerNameList'
-            )}
-            {dropDownList(
-              'Ship To',
-              shipToDropdown,
-              setShipToDropdown,
-              searchedResponse?.shipToList,
-              'shipToList'
-            )} */}
             {!removeStatus && (
               <div className={`filters-sort-dropdown-menu__list ${statusDropdown ? 'active' : ''}`}>
                 <div className='filters-sort-dropdown-menu__list__container'>
                   <div
                     className='flex items-center justify-between'
                     onClick={() => setStatusDropdown(!statusDropdown)}
+                    onKeyDown={(event) => {
+                      event.key === 'Enter' && setStatusDropdown(!statusDropdown);
+                    }}
                   >
                     <span className='filters-sort-dropdown-menu__list__title'>Status</span>
                     <img src={caretDownIcon} alt='arrow-down' className='arrow-down' />
@@ -331,6 +284,9 @@ const Header: React.FC<HeaderProps> = ({
                           onClick={() => {
                             setOpenStatusList(!openStatusList);
                           }}
+                          onKeyDown={(event) => {
+                            event.key === 'Enter' && setOpenStatusList(!openStatusList);
+                          }}
                         >
                           <span className='filters-sort-dropdown-menu__list__title'>
                             {isEmpty(activeStatus.label)
@@ -340,12 +296,17 @@ const Header: React.FC<HeaderProps> = ({
                           <img src={caretDownIcon} alt='arrow-down' className='arrow-down' />
                         </div>
                         <ul className={`select-dropdown-menu ${openStatusList ? 'open' : ''}`}>
-                          {statusTypeList.map((item: any) => {
+                          {statusTypeList.map((item: any, index: any) => {
                             return (
                               <div
+                                key={index + 'indx'}
                                 className='select-dropdown-menu__list text-left'
                                 onClick={() => {
                                   setOpenStatusList(false);
+                                  setActiveStatus(item);
+                                }}
+                                onKeyDown={(event) => {
+                                  event.key === 'Enter' && setOpenStatusList(false);
                                   setActiveStatus(item);
                                 }}
                               >
@@ -360,10 +321,10 @@ const Header: React.FC<HeaderProps> = ({
                 </div>
               </div>
             )}
-             {dropDownList(
+            {dropDownList(
               'Role',
               materialDropdown,
-              setMaterailDropdown,
+              setMaterialDropdown,
               searchedResponse?.materialNameList,
               'materialNameList'
             )}
@@ -372,44 +333,17 @@ const Header: React.FC<HeaderProps> = ({
             <button
               className={`btn btn--primary btn--h36 w-full ${
                 openStatusList === true ? 'mt-18' : ''
-              }  ${
-                
-                  (filtersearchValue === '' || activeStatus?.label == '') 
-                  ? 'disabled'
-                  : ''
-              }`}
+              }  ${filtersearchValue === '' || activeStatus?.label == '' ? 'disabled' : ''}`}
               onClick={(event) => {
                 setOpenFilter(false);
-                setMaterailDropdown(false);
+                setMaterialDropdown(false);
                 setStatusDropdown(false);
-                setCustomerNameDropdown(false);
-                setShipToDropdown(false);
                 onSort_filterClick('', filtersearchValue);
                 event.stopPropagation();
               }}
             >
               Apply Filter
             </button>
-            {/* <div className='mt-3'>
-              <button
-                className='btn btn--h36 w-full btn btn--h36 px-4 py-2'
-                onClick={(event) => {
-                  setOpenFilter(false);
-                  setMaterailDropdown(false);
-                  setManterialNoDropdown(false);
-                  setStatusDropdown(false);
-                  setCustomerNameDropdown(false);
-                  setShipToDropdown(false);
-                  !isFilterApplied && setSelectedCheckboxes(defaultCheckbox);
-                  isFilterApplied && setSelectedCheckboxes(selectedDummyCheckboxes);
-                  resetSearchValue();
-                  setDisableFilter(isFilterApplied ? false : true);
-                  event.stopPropagation();
-                }}
-              >
-                Cancel
-              </button>
-            </div> */}
           </div>
         </div>
       </button>
@@ -455,7 +389,7 @@ const Header: React.FC<HeaderProps> = ({
                     onChange={() => {
                       setRadioBtn(1);
                       !isSortApplied && setDummyRadioBtn(1);
-                      !isEmpty(selectedSortType) ? setSelectedSortType('') : null;
+                      !isEmpty(selectedSortType) && setSelectedSortType('');
                     }}
                   />
                   Date Created
@@ -471,7 +405,7 @@ const Header: React.FC<HeaderProps> = ({
                     onChange={() => {
                       setRadioBtn(2);
                       !isSortApplied && setDummyRadioBtn(2);
-                      !isEmpty(selectedSortType) ? setSelectedSortType('') : null;
+                      !isEmpty(selectedSortType) && setSelectedSortType('');
                     }}
                   />
                   Material No
@@ -489,6 +423,9 @@ const Header: React.FC<HeaderProps> = ({
                   onClick={() => {
                     radioBtn !== 0 && setOpenSortList(!openSortList);
                   }}
+                  onKeyDown={(event)=>{
+                    event.key==="Enter" && radioBtn !== 0 && setOpenSortList(!openSortList);
+                }}
                 >
                   <span className='filters-sort-dropdown-menu__list__title'>
                     {isEmpty(selectedSortType) ? 'Select sort type ' : selectedSortType}
@@ -505,6 +442,11 @@ const Header: React.FC<HeaderProps> = ({
                           setSelectedSortType(item?.label);
                           !isSortApplied && setSelectedDummySortType(item?.label);
                         }}
+                        onKeyDown={(event)=>{
+                          event.key==="Enter" &&    setOpenSortList(false);
+                          setSelectedSortType(item?.label);
+                          !isSortApplied && setSelectedDummySortType(item?.label);
+                      }}
                       >
                         {item.label}
                       </div>
@@ -565,8 +507,6 @@ const Header: React.FC<HeaderProps> = ({
   const isFilterSortAllowed = !noFilterNeededPathNames.includes(pathname);
   const isSearchFieldAllowed = !noSearchNeededPathName.includes(pathname);
 
-
-
   return (
     <div className='dashboard__main__header'>
       <div className='flex items-center justify-between'>
@@ -575,7 +515,7 @@ const Header: React.FC<HeaderProps> = ({
           {isSearchFieldAllowed && (
             <div className='search-bar-contaienr label'>
               <input
-                style={{width: "300px"}}
+                style={{ width: '300px' }}
                 type='text'
                 className='input-field input-field--search input-field--md input-field--h36'
                 placeholder={placeholder || 'Search by Material No'}
@@ -583,20 +523,33 @@ const Header: React.FC<HeaderProps> = ({
                 value={searchValue}
                 onChange={handleSearchChange}
                 onKeyDown={(event) => {
-                  if (
-                    event.key === '.' ||
-                    event.key === '+' ||
-                    event.key === '-' 
-                  ) {
+                  if (event.key === '.' || event.key === '+' || event.key === '-') {
                     event.preventDefault();
                   }
                 }}
                 onPaste={(event) => event.preventDefault()}
               />
-              <svg className='icon' width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M8.33333 14.6667C11.2789 14.6667 13.6667 12.2789 13.6667 9.33333C13.6667 6.38781 11.2789 4 8.33333 4C5.38781 4 3 6.38781 3 9.33333C3 12.2789 5.38781 14.6667 8.33333 14.6667Z" stroke="#041724" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14.9996 16.0001L12.0996 13.1001" stroke="#041724" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+              <svg
+                className='icon'
+                width='20'
+                height='20'
+                viewBox='0 0 20 20'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M8.33333 14.6667C11.2789 14.6667 13.6667 12.2789 13.6667 9.33333C13.6667 6.38781 11.2789 4 8.33333 4C5.38781 4 3 6.38781 3 9.33333C3 12.2789 5.38781 14.6667 8.33333 14.6667Z'
+                  stroke='#041724'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                />
+                <path
+                  d='M14.9996 16.0001L12.0996 13.1001'
+                  stroke='#041724'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                />
+              </svg>
 
               {/* <img src={sortIcon} alt='plus-icon' className='mr-2' /> */}
             </div>
