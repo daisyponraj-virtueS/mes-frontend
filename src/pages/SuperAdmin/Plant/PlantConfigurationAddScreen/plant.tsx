@@ -13,7 +13,6 @@ import { clearLocalStorage } from 'utils/utils';
 import { paths } from 'routes/paths';
 import Loading from 'components/common/Loading';
 import httpClient from 'http/httpClient';
-import { getPlantData } from 'hooks/useGetPlantData';
 
 const formValidationSchema = yup.object({
   timezone_id: yup.string().required('Select the Time zone'),
@@ -521,7 +520,7 @@ const AddPlant = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Header title='Plant Configuration' />
-      <div className='container mt-3 mb-3'>
+      <div className='container mt-3 mb-3' >
         <div className='child-container card'>
           <div className='card-body card_body_container'>
             <div className='plant'>
@@ -1032,7 +1031,7 @@ const AddPlant = () => {
             <AlertModal
               showModal={openAlertModal}
               title={"LogOut"}
-              content={"Plant COnfiguration Changed. You Need to Login again"}
+              content={"Plant Configuration Changed. You Need to Login again"}
               confirmButtonText='Proceed'
               onConfirmClick={()=>{
                 clearLocalStorage(['authToken', 'userData', 'plantId', 'plantName']);
