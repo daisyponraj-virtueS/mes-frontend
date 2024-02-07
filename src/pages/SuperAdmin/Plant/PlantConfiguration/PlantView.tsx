@@ -2,14 +2,10 @@ import Accordion from 'components/common/Accordion';
 import React, { useEffect, useState } from 'react';
 import Header from './plantHeader';
 import editIcon from 'assets/icons/edit-thick.svg';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Loading from 'components/common/Loading';
+import httpClient from 'http/httpClient';
 
-// interface Workshop {
-//   'Workshop ID': number;
-//   'Workshop Name': string;
-// }
 
 interface InfoBlockProps {
   label: any;
@@ -51,21 +47,13 @@ const PlantView = () => {
   const [masterData, setMasterData] = useState<any>([]);
   const [loading, setLoading] = useState(true)
 
+
+
   const plant: any = JSON.parse(localStorage.getItem('plantData'));
 
   const plant_id : any = plant.plant_id
 
   const navigate = useNavigate()
-
-
-//   const productsData = [
-//     { name: 'Silica Fume', enabled: true },
-//     { name: 'Metallurgical Si', enabled: false },
-//     { name: 'Si Fines/Hyperfines', enabled: true },
-//     { name: 'Si Dross', enabled: false },
-//     { name: 'FeSi', enabled: true },
-//     // Add more products as needed
-//   ];
 
   // State to store the fetched data
   const [plantData, setPlantData] = useState<any>({});
@@ -116,19 +104,17 @@ const PlantView = () => {
     const fetchData = async () => {
       try {
 
-        const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
+        const masterResponse = await httpClient.get('/api/master/master/');
 
         setMasterData(masterResponse.data)
-        console.log("master",masterResponse.data)
 
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/plant-config/${plant_id}/`);
+        const response = await httpClient.get(`/api/plant/plant-config/${plant_id}/`);
 
-        console.log("response",response)
         setLoading(false)
 
         setPlantData(response.data);
 
-        const functionResponse = await axios.get('http://127.0.0.1:8000/api/plant/function/');
+        const functionResponse = await httpClient.get('/api/plant/function/');
 
         const functionResponseData = functionResponse.data
 
@@ -141,7 +127,6 @@ const PlantView = () => {
   
         filteredModelList.push(removedElement)
         setModelList(filteredModelList);
-        console.log("functionResponseData",functionResponseData)
         
         const functions = functionResponseData.flatMap(item => item.module_functions);
       setFunctionList(functions);

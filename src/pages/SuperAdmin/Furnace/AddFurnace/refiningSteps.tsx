@@ -3,26 +3,25 @@ import InputField from 'components/common/InputWithIcon';
 import CustomSelect from 'components/common/SelectField';
 import ToggleButton from 'components/common/ToggleButton';
 import { useEffect, useState } from 'react';
-import deactivateIcon from '../../../assets/icons/deactivate.svg';
 import PlantFooter from 'components/common/PlantFooter';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import gridDots from '../../../assets/icons/gridDots.svg';
-import info from '../../../assets/icons/info.svg';
+import gridDots from '../../../../assets/icons/gridDots.svg';
+import info from '../../../../assets/icons/info.svg';
 
-import editIcon from '../../../assets/icons/edit1.svg';
-import axios from 'axios';
+import editIcon from '../../../../assets/icons/edit1.svg';
 import { useNavigate } from 'react-router-dom';
 import { notify } from 'utils/utils';
 import Loading from 'components/common/Loading';
+import httpClient from 'http/httpClient';
 
 const formValidationSchema = yup.object({});
 
 const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
   const [enabled, setEnabled] = useState(false);
   const [isEdit, setIsEdit] = useState(edit_Id?true:false);
-  console.log("praveen666",isEdit)
+
   const [controlParameters, setControlParameters] = useState({
     control_parameters: '',
     value: '',
@@ -69,9 +68,9 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
         } else {
           if (isSaved) {
             setLoading(true)
-            const response = await axios.post(
-              `http://127.0.0.1:8000/api/plant/furnace-config-steps/${addId}`,
-              { step_data: dataList }
+            const response = await httpClient.post(
+              `/api/plant/furnace-config-steps/${addId}`,
+              {data:{ step_data: dataList }}
             );
             console.log(response);
             setLoading(false)
@@ -92,8 +91,8 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
 
   useEffect(() => {
     const getEditData = async () => {
-      const refiningStepsResponse = await axios.get(
-        `http://127.0.0.1:8000/api/plant/furnace-config-steps/${editId}/`
+      const refiningStepsResponse = await httpClient.get(
+        `/api/plant/furnace-config-steps/${editId}/`
       );
       setLoading(false)
       const convertedData = refiningStepsResponse.data.data.reverse().map((item) => ({
@@ -117,19 +116,17 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
         })),
       }));
 
-      console.log('refiningStepsResponse.data.data', refiningStepsResponse.data.data);
       setDataList(convertedData);
     };
 
     if (isEdit) {
       getEditData();
-      console.log("praveen1113")
     }
   }, []);
 
   const fetchData = async () => {
     try {
-      const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
+      const masterResponse = await httpClient.get('/api/master/master/');
 
       const masterResponseList = masterResponse?.data?.map((val: any) => {
         const list = {
@@ -328,16 +325,14 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
   };
 
   const handleEditSubmit = async (values: any) => {
-    console.log('values-values', values);
     setLoading(true)
-    const response = await axios.put(`http://127.0.0.1:8000/api/plant/furnace-config-steps/${editId}`, {
+    const response = await httpClient.put(`/api/plant/furnace-config-steps/${editId}`, {data:{
       step_data: values,
-    });
+    }});
     console.log(response);
     setLoading(false)
     navigate(`/system-admin/furnace-configuration/list`)
     notify('success', 'Furnace Updated successfully');
-    console.log("praveen4444")
     setCardEdit([]);
   };
 

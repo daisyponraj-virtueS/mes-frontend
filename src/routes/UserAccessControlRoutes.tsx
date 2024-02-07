@@ -27,6 +27,17 @@ const hasCreatePermission = (path: string) => {
       crudType.create
     );
 };
+
+const hasPermission = (path: string) => {
+  const module = path?.split('/')[1];
+  const subModule = path?.split('/')[2];
+  if (module && subModule)
+    return validatePermissions(
+      permissionsMapper[module],
+      permissionsMapper[subModule],
+      crudType.create
+    );
+};
 const rolesList = lazy(() => import('pages/UserAccessControl/Roles/RolesList'));
 const roleDetailView = lazy(() => import('pages/UserAccessControl/Roles/RolesDetailView'));
 const addNewRole = lazy(() => import('pages/UserAccessControl/Roles/AddNewRole'));
@@ -42,11 +53,13 @@ const renderDashboard = <Navigate to={paths.dashboard} />;
 export const UserAccessControlRoutes = [
   {
     path: paths.rolesList,
-    element: getRouteElement(rolesList, true),
+    element: hasPermission(paths.rolesList)? getRouteElement(rolesList, true)
+    : renderDashboard,
   },
   {
     path: `${paths.rolesListView}/:id`,
-    element: getRouteElement(roleDetailView, true),
+    element: hasPermission(paths.rolesListView)? getRouteElement(roleDetailView, true)
+    :renderDashboard,
   },
   {
     path: paths.addNewRole,
@@ -60,11 +73,13 @@ export const UserAccessControlRoutes = [
   },
   {
     path: paths.usersList,
-    element: getRouteElement(usersList, true),
+    element: hasPermission(paths.usersList)? getRouteElement(usersList, true)
+    :renderDashboard,
   },
   {
     path: `${paths.userListView}/:userId`,
-    element: getRouteElement(userDetailView, true),
+    element: hasPermission(paths.userListView)? getRouteElement(userDetailView, true)
+    :renderDashboard,
   },
   {
     path: paths.addNewUser,
