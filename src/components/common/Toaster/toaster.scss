@@ -78,21 +78,4 @@
       }
     }
   }
-  &__close {
-    width: 30px;
-    height: 30px;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-bottom: auto;
-    cursor: pointer;
-    > img {
-      height: 12px;
-      transition: all 300ms;
-      transform: scale(1);
-    }
-    &:hover > img {
-      transform: scale(1.2);
-    }
-  }
 }

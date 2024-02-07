@@ -25,7 +25,6 @@
 	background-color: #fff;
 	display: inline-block;
 	margin: 20px 20px 0 0;
-	// cursor: pointer;
 	&__clickable_item {
 		cursor: pointer;
 	}
@@ -50,7 +49,6 @@
 				gap: 5px;
 				flex-direction: row;
 				flex-wrap: wrap;
-				// overflow-x: hidden;
 				.numbers {
 					height: 50px;
 					width: 50px;
@@ -99,7 +97,6 @@
 
 .bincontentboxcard {
 	width: 270px;
-	// height: 222px;
 	padding: 15px;
 	border: 1px solid #ccc;
 	border-radius: 16px;
@@ -120,7 +117,6 @@
 	}
 	&.no-opacity {
 		opacity: 1 !important;
-		// background: rgba(255, 255, 255, 1);
 	}
 	&_header {
 		display: flex;

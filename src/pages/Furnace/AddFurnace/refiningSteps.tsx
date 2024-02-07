@@ -512,12 +512,11 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
               {values.step ? (
                 <>
                   <div className='control_parameters'>
-                    <p className='control_parameters__title mb-4'>Control Parameters</p>
-
-                    <div className='control_parameters__parameter_container'>
+                    <p>Control Parameters</p>
+                    <div>
                       {control_parameters.map((val, index) => (
                         <div
-                          className='control_parameters__container'
+                          key={index}
                           style={{
                             width:
                               val.type !== 'select' && val.type !== 'input' ? '170px' : '255px',
@@ -564,7 +563,6 @@ const RefiningSteps = ({ setTab,addId,edit_Id, viewId }: any) => {
                           )}
                           {val.type === 'add-button' ? (
                             <div
-                              className='control_parameters__add_container'
                               onClick={handleAddControlParameters}
                             >
                               <svg
