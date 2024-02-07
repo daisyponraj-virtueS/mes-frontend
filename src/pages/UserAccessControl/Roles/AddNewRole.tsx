@@ -10,6 +10,7 @@ import CloneModalRole from 'components/Modal/CloneModalRole';
 import { paths } from 'routes/paths';
 import { isEmpty, notify, validatePermissionList, validatePermissions } from 'utils/utils';
 import { crudType, permissionsMapper } from 'utils/constants';
+import Loading from 'components/common/Loading';
 
 interface AddNewRoleProps {
   setAddNewRole: (value: boolean) => void;
@@ -23,6 +24,7 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
   const [confirmClone, setConfirmClone] = useState<boolean>(false);
   const [errors, setErrors] = useState<any>({});
   const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [loading, setLoading] = useState(true)
 
   const { pathname } = useLocation();
   const module = pathname?.split('/')[1];
@@ -60,6 +62,7 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
   const getInitialRoleData = async () => {
     const requestData = { role_id: null, is_clone: confirmClone };
     const response = await RoleService.getRoleDetails(requestData);
+    setLoading(false)
     setInitialData(response.data.permission_list);
   };
 
@@ -68,8 +71,10 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
       role_id: selectedRole,
       is_clone: confirmClone,
     };
+    setLoading(true)
     const response = await RoleService.getRoleDetails(requestData);
     const clonedPermissions: any = response.data.permission_list;
+    setLoading(false)
     setInitialData(response.data.permission_list);
 
     //update select all based on cloned permissions
@@ -211,6 +216,8 @@ const AddNewRole: React.FC<AddNewRoleProps> = () => {
       return newSelectAllChecked;
     });
   };
+
+  if (loading) return <Loading />;
 
   return (
     <main className='dashboard'>

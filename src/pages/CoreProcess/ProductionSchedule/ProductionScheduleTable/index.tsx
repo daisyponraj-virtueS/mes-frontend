@@ -132,6 +132,9 @@ const ProductionScheduleTable: React.FC<ProductionScheduleTableProps> = (
                             height: 16,
                           }}
                           onClick={() => setOpenActions(openActions === -1 ? index : -1)}
+                          onKeyDown={(event)=>{
+                            event.key==="Enter" && setOpenActions(openActions === -1 ? index : -1)
+                        }}
                         >
                           <DotsSvg color={'#041724'} />
                           {actionList(index, list)}

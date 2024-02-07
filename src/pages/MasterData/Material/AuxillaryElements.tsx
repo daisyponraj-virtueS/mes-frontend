@@ -244,11 +244,14 @@ const AuxillaryElements: FC<AuxProps> = ({ updateAuxData, setErrorInAux, auxilla
                             <div
                               className='btn-actions btn-actions--remove'
                               onClick={() => removeRow(index)}
+                              onKeyDown={(event)=>{
+                                event.key==="Enter" && removeRow(index)
+                            }}
                             >
                               <img src={trashIcon} alt='close-icon' />
                             </div>
                             {index === rows.length - 1 && (
-                              <div className='btn-actions btn-actions--add' onClick={onAddClick}>
+                              <div className='btn-actions btn-actions--add' onClick={onAddClick} onKeyDown={onAddClick}>
                                 <img src={plusIcon} alt='plus-icon' />
                               </div>
                             )}

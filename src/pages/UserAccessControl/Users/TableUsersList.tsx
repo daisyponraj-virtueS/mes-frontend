@@ -15,7 +15,6 @@ import AlertModal from 'components/Modal/AlertModal';
 import httpClient from 'http/httpClient';
 import GeneratePasswordModal from 'components/Modal/GeneratePasswordModel';
 import copy from '../../../assets/icons/copy.svg'
-import axios from 'axios';
 import Loading from 'components/common/Loading';
 const TableUsersList = (props: any) => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -166,9 +165,9 @@ const TableUsersList = (props: any) => {
       setLoading(true)
       if(password){
         const data = {password:password}
-        const response = await axios.post(
-          `http://127.0.0.1:8000/api/account/reset-password/${singleUser.id}/`,
-          data
+        const response = await httpClient.post(
+          `/api/account/reset-password/${singleUser.id}/`,
+          {data:data}
         );
         if(response.status == 200){
          
@@ -317,6 +316,7 @@ const TableUsersList = (props: any) => {
 
                               {/* </Link> */}
                               {/* <Link to={`/deactivate/${user.id}`} data-tip='Deactivate'> */}
+                              {user.login_type == "simple"?
                               <img
                                 onClick={() => {
                                   setSingleUser(user)
@@ -335,6 +335,7 @@ const TableUsersList = (props: any) => {
                                 className='icon mr-10'
                                 style={{ fill: '#04436B', width: '15px', height: '15px' }}
                               />
+                              : null}
                               {/* </Link> */}
                             </div>
                           )}

@@ -3,8 +3,8 @@ import Header from 'components/common/PlantHeader';
 import BasicInformation from './FurnaceConfiguration/furnaceView';
 import RefiningSteps from './FurnaceConfiguration/refiningStepsView';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import httpClient from 'http/httpClient';
 
 const AddFurnace = () => {
   const [tab,setTab] = useState(1)
@@ -14,9 +14,8 @@ const AddFurnace = () => {
 useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get( `http://127.0.0.1:8000/api/plant/furnace-config/${id}/`);
+        const response = await httpClient.get( `/api/plant/furnace-config/${id}/`);
         const data = response.data;
-        console.log('praveen1', response);
         setFurnaceData({ furnace: [data] });
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -70,7 +70,9 @@ const ModalResetPassword = (props: any) => {
               <h3 className='modal__title'>Reset Password</h3>
             </div>
             <div className='modal__close'>
-              <img src={closeIcon} onClick={handleCloseModal} alt='close-icon' />
+              <img src={closeIcon} onClick={handleCloseModal} alt='close-icon' onKeyDown={(event)=>{
+                event.key==="Enter" && handleCloseModal()
+            }}/>
             </div>
           </div>
         </div>

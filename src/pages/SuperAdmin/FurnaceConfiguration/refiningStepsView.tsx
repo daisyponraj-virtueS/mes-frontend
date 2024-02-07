@@ -3,14 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import editIcon from 'assets/icons/edit-thick.svg';
 import InfoBlock from './infoBlock';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Loader from 'components/Loader';
+import httpClient from 'http/httpClient';
 
-
-// import { useState } from 'react';
-
-// import { useState } from 'react';
-// import deactivateIcon from '../../../assets/icons/deactivate.svg';
 interface InfoBlockProps {
   label: any;
   value: string | number;
@@ -34,79 +29,46 @@ const AdditiveBlock: React.FC<InfoBlockProps> = ({ label, value, flexBasis, marg
     <span style={{ marginLeft: '2px', fontSize: '14px', fontWeight: 600 }}>{value}</span>
   </div>
 );
-// const StepData = ['Wait', 'Fill'];
-// const stepDataMapping = {
-//   Wait: [
-//     { label: 'Temp', value: '20C', type: 'toggle' },
-//     { label: 'Time', value: '120 Min' },
-//     { label: 'O2', value: '26.54 Bar' },
-//     { label: 'Air Flow', value: '32.54 Bar' },
-//   ],
-//   Fill: [
-//     { label: 'Temp', value: '20C', type: 'toggle' },
-//     { label: 'Time', value: '120 Min' },
-//     { label: 'O2', value: '26.54 Bar' },
-//   ],
-  // Add mappings for other steps
-// };
-// const data = [
-//     { label: '3AA9 - Silica Sand', value: '5' },
-//     { label: 'RM39 - SIME DUST (FINES)', value: '5' },
-//   ];
 
-// const additiveData = {
-//     Wait: [
-//       { label: '3AA9 - Silica Sand', value: '5' },
-//       { label: 'RM39 - SIME DUST (FINES)', value: '5' },
-//       // Add additive data for Wait step
-//     ],
-//     Fill: [
-//       { label: 'Another Additive', value: '10' },
-//       // Add additive data for Fill step
-//     ],
-//     // Add mappings for other steps
-//   };
-const RefiningSteps = ({setTab, viewId}: any) => {
+const RefiningSteps = ({ setTab, viewId }: any) => {
   const navigate = useNavigate();
   const [StepData, setStepData] = useState([]);
   const [stepDataMapping, setStepDataMapping] = useState({});
   const [additiveData, setAdditiveData] = useState({});
-//   const [furnaceData, setFurnaceData] = useState<any>(null);
   const [masterData, setMasterData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config-steps/${viewId}/`);
-        const responseData = response.data
-        setIsLoading(false)
-  
+        const response = await httpClient.get(`/api/plant/furnace-config-steps/${viewId}/`);
+        const responseData = response.data;
+        setIsLoading(false);
+
         if (Array.isArray(responseData.data)) {
           const data = responseData.data.reverse();
           const stepDataMapping = {};
           const additiveData = {};
-  
+
           const StepData = data.map((step) => {
             const parameters = step.control_parameters.map((param) => ({
               label: param.param,
               value: param.value,
               type: param.is_mandatory ? 'mandatory' : 'optional',
             }));
-  
+
             stepDataMapping[step.step] = parameters;
-  
+
             const additives = step.additives.map((additive) => ({
               label: additive.material,
               value: additive.quantity,
             }));
-  
+
             additiveData[step.step] = additives;
-  
+
             return step.step; // Extract the 'step' value
           });
-  
+
           setStepData(StepData);
           setStepDataMapping(stepDataMapping);
           setAdditiveData(additiveData);
@@ -119,13 +81,13 @@ const RefiningSteps = ({setTab, viewId}: any) => {
         // Handle the error, e.g., set an error state or show a message to the user
       }
     };
-  
+
     fetchData();
   }, []);
 
   const appmasterData = async () => {
     try {
-      const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
+      const masterResponse = await httpClient.get('/api/master/master/');
 
       const masterResponseList = masterResponse?.data;
       setMasterData(masterResponseList);
@@ -138,179 +100,178 @@ const RefiningSteps = ({setTab, viewId}: any) => {
     appmasterData();
   }, []);
 
-//   let titleId: any 
-//   furnaceData?.furnace.map((furnace: any)=> titleId = furnace.furnace_no)
   return (
     <>
-    {isLoading ? (
-          <Loader />
-        ) : (
-    <div className='container mt-3 mb-3' style={{height: '84vh'}}>
-      <div className='child-container card' >
-      <div style={{ display: 'flex' }}>
-            <div
-              style={{
-                display: 'flex',
-                width: '50%',
-                alignItems: 'center',
-                gap: '15px',
-                padding: '14px 31px 14px 31px',
-                backgroundColor: '#C1D3DF40',
-                cursor: 'pointer',
-              }}
-              onClick={() => setTab(1)}
-            >
-              <p
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className='container mt-3 mb-3' style={{ height: '84vh' }}>
+          <div className='child-container card'>
+            <div style={{ display: 'flex' }}>
+              <div
                 style={{
-                  width: '32px',
-                  height: '32px',
-                  border: '1px solid #CDD0D1',
-                  borderRadius: '50%',
                   display: 'flex',
-                  justifyContent: 'center',
+                  width: '50%',
                   alignItems: 'center',
-                  backgroundColor: '#fff',
+                  gap: '15px',
+                  padding: '14px 31px 14px 31px',
+                  backgroundColor: '#C1D3DF40',
+                  cursor: 'pointer',
                 }}
+                onClick={() => setTab(1)}
               >
-                1
-              </p>
-              <p
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  color: '#757E85',
-                }}
-              >
-                BASIC INFORMATION
-              </p>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                width: '50%',
-                alignItems: 'center',
-                padding: '14px 31px 14px 31px',
-                gap: '15px',
-                borderTop: '2px solid #0D659E',
-                borderTopRightRadius: '4px',
-              }}
-            >
-              <p
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#0D659E',
-                  color: '#fff',
-                }}
-              >
-                2
-              </p>
-              <p
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  color: '#0D659E',
-                }}
-              >
-                REFINING STEPS
-              </p>
-            </div>
-          </div>
-        <div className='card-body card_body_container'>
-
-           <div className='btn-edit-absolute d-flex justify-content-end'>
-              <button
-                className={`btn btn--h30 py-1 px-2 font-bold mt-4 `}
-
-                onClick={()=>navigate(`/system-admin/furnace-configuration/edit/${viewId}/2`)}
-              >
-                <img src={editIcon} alt='edit' className='mr-2' />
-                Edit
-              </button>
-            </div>
-          <div
-            className='box-container'
-            style={{
-              width: '100%',
-              borderRadius: '5px',
-             
-              marginTop: '10px',
-              marginBottom: '20px',
-              margin: '10px 0',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '20px'
-            }}
-          >
-            {StepData.map((step, index) => (
-              <div key={index} style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)',}}>
-                <div
-                  className='box-header'
+                <p
                   style={{
-                    width: '100%',
-                    backgroundColor: '#F5F8FA',
-                    padding: '10px',
-                    textAlign: 'left',
-                    borderRadius: index === 0 ? '5px 5px 0 0' : '0',
-                    fontWeight: 600
-                  }}
-                >
-                   {masterData.filter((val) => val.id == step)?.[0]?.value}
-                </div>
-                <p style={{ padding: '10px', color: '#04436B', fontWeight: 600 }}>{stepDataMapping[step]?.length > 0 ? "Parameters" :""}</p>
-                <div
-                  className='flex-row-container'
-                  style={{
+                    width: '32px',
+                    height: '32px',
+                    border: '1px solid #CDD0D1',
+                    borderRadius: '50%',
                     display: 'flex',
-                    gap: '20px',
-                    padding: '0px 10px 0px 10px',
-                    textAlign: 'left',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#fff',
                   }}
                 >
-                  {(stepDataMapping[step] || [])?.map((item: any, itemIndex: any) => (
-                    <InfoBlock
-                      key={itemIndex}
-                      label={masterData.filter((val) => val.id == item.label)?.[0]?.value}
-                      value={item.value}
-                      flexBasis='25%'
-                      marginBottom='5'
-                      type={item.type}
-                      viewOnly
-                    />
-                  ))}
-                </div>
-
-                <p style={{ padding: '0px 10px 0px 10px', color: '#04436B', fontWeight: 600 }}>{additiveData[step]?.length > 0 ? "Additives" :""}</p>
-                <div
-                  className='flex-row-container'
+                  1
+                </p>
+                <p
                   style={{
-                    display: 'flex',
-                    gap: '35px',
-                    padding: '0px 10px 0px 10px',
-                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#757E85',
                   }}
                 >
-                  {additiveData[step]?.map((item, itemIndex) => (
-                    <AdditiveBlock
-                      key={itemIndex}
-                      label={masterData.filter((val) => val.id == item.label)?.[0]?.value}
-                      value={`Qty: ${item.value} lbs/tn`}
-                      
-                      marginBottom='10px'
-                    />
-                  ))}
-                </div>
+                  BASIC INFORMATION
+                </p>
               </div>
-            ))}
+              <div
+                style={{
+                  display: 'flex',
+                  width: '50%',
+                  alignItems: 'center',
+                  padding: '14px 31px 14px 31px',
+                  gap: '15px',
+                  borderTop: '2px solid #0D659E',
+                  borderTopRightRadius: '4px',
+                }}
+              >
+                <p
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#0D659E',
+                    color: '#fff',
+                  }}
+                >
+                  2
+                </p>
+                <p
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#0D659E',
+                  }}
+                >
+                  REFINING STEPS
+                </p>
+              </div>
+            </div>
+            <div className='card-body card_body_container'>
+              <div className='btn-edit-absolute d-flex justify-content-end'>
+                <button
+                  className={`btn btn--h30 py-1 px-2 font-bold mt-4 `}
+                  onClick={() => navigate(`/system-admin/furnace-configuration/edit/${viewId}/2`)}
+                >
+                  <img src={editIcon} alt='edit' className='mr-2' />
+                  Edit
+                </button>
+              </div>
+              <div
+                className='box-container'
+                style={{
+                  width: '100%',
+                  borderRadius: '5px',
+
+                  marginTop: '10px',
+                  marginBottom: '20px',
+                  margin: '10px 0',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                }}
+              >
+                {StepData.map((step, index) => (
+                  <div key={index} style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)' }}>
+                    <div
+                      className='box-header'
+                      style={{
+                        width: '100%',
+                        backgroundColor: '#F5F8FA',
+                        padding: '10px',
+                        textAlign: 'left',
+                        borderRadius: index === 0 ? '5px 5px 0 0' : '0',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {masterData.filter((val) => val.id == step)?.[0]?.value}
+                    </div>
+                    <p style={{ padding: '10px', color: '#04436B', fontWeight: 600 }}>
+                      {stepDataMapping[step]?.length > 0 ? 'Parameters' : ''}
+                    </p>
+                    <div
+                      className='flex-row-container'
+                      style={{
+                        display: 'flex',
+                        gap: '20px',
+                        padding: '0px 10px 0px 10px',
+                        textAlign: 'left',
+                      }}
+                    >
+                      {(stepDataMapping[step] || [])?.map((item: any, itemIndex: any) => (
+                        <InfoBlock
+                          key={itemIndex}
+                          label={masterData.filter((val) => val.id == item.label)?.[0]?.value}
+                          value={item.value}
+                          flexBasis='25%'
+                          marginBottom='5'
+                          type={item.type}
+                          viewOnly
+                        />
+                      ))}
+                    </div>
+
+                    <p style={{ padding: '0px 10px 0px 10px', color: '#04436B', fontWeight: 600 }}>
+                      {additiveData[step]?.length > 0 ? 'Additives' : ''}
+                    </p>
+                    <div
+                      className='flex-row-container'
+                      style={{
+                        display: 'flex',
+                        gap: '35px',
+                        padding: '0px 10px 0px 10px',
+                        textAlign: 'left',
+                      }}
+                    >
+                      {additiveData[step]?.map((item, itemIndex) => (
+                        <AdditiveBlock
+                          key={itemIndex}
+                          label={masterData.filter((val) => val.id == item.label)?.[0]?.value}
+                          value={`Qty: ${item.value} lbs/tn`}
+                          marginBottom='10px'
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-        )}
+      )}
     </>
   );
 };

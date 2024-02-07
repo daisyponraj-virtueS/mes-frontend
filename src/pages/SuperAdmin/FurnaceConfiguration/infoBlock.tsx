@@ -57,6 +57,7 @@ const InfoBlock: React.FC<InfoBlockProps> = ({
           text={enabled ? 'Mandatory' : 'Not Mandatory'}
           isChecked={type === 'mandatory' ? true : false}
           disabled={viewOnly}
+          switchTwo={true}
         />
       }
     </div>

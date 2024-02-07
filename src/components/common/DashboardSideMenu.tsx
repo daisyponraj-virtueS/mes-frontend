@@ -20,6 +20,7 @@ import { isEmpty } from 'utils/utils';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { useAppDispatch } from 'store';
 import { chnagePassword } from 'store/slices/authSlice';
+import { useGetPlantData } from 'hooks/useGetPlantData';
 
 const DashboardSideMenu: FC = () => {
   const location = useLocation();
@@ -35,6 +36,8 @@ const DashboardSideMenu: FC = () => {
   const [isSuperUser, setIsSuperUser] = useState(false);
   const [plantName, setPlantName] = useState('');
 
+  const plant =useGetPlantData()
+
   useEffect(() => {
     const UserInfo: any = getLocalStorage('userData');
     if (!isEmpty(UserInfo)) {
@@ -43,6 +46,7 @@ const DashboardSideMenu: FC = () => {
       setRoles(getCommaSeparatedRoles(UserInfo?.roles));
     }
   }, []);
+  
 
   const NavItem = ({ path, label, index, onClick }: any) => {
     const handleClick = (e: any, label: any) => {
@@ -123,7 +127,7 @@ const DashboardSideMenu: FC = () => {
                 return (
                   <NavItem
                     index={index}
-                    path={getPath(sItem)}
+                    path={sItem == "Plant Configuration"?plant?.results?.id?paths.plantScreen.view:getPath(sItem):getPath(sItem)}
                     label={sItem}
                     onClick={handleNavLinkClick}
                   />

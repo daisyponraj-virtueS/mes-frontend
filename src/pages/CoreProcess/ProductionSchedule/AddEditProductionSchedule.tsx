@@ -187,7 +187,7 @@ const AddEditProductionSchedule = () => {
   useEffect(() => {
     if (!isEmpty(productionData) && !isEmpty(listFurnaces)) {
       const remaining = [...listFurnaces].filter(
-        (obj1) => ![...productionData?.furnaces].some((obj2) => obj1.id === obj2)
+        (obj1) => ![...productionData.furnaces].some((obj2) => obj1.id === obj2)
       );
       setListFurnaces(remaining);
     }
@@ -665,6 +665,9 @@ const AddEditProductionSchedule = () => {
                                         : ''
                                     }`}
                                     onClick={handleFurnaceDropDown}
+                                    onKeyDown={(event) => {
+                                      event.key === 'Enter' && handleFurnaceDropDown();
+                                    }}
                                   >
                                     Select
                                     <img
@@ -688,6 +691,10 @@ const AddEditProductionSchedule = () => {
                                           key={furnace.id}
                                           className='select-dropdown-menu__list sm'
                                           onClick={() => handleFurnaceSelection(furnace.id)}
+                                          onKeyDown={(event) => {
+                                            event.key === 'Enter' &&
+                                              handleFurnaceSelection(furnace.id);
+                                          }}
                                         >
                                           {furnace.furnace_code}
                                         </li>
@@ -726,6 +733,15 @@ const AddEditProductionSchedule = () => {
                                         alt='close-icon'
                                         className='pills-box__close-btn'
                                         onClick={() => {
+                                          if (isEdit) {
+                                            (productionData?.status === 1 ||
+                                              productionData?.status === 3) &&
+                                              deleteFurnace(furnaceId);
+                                          } else {
+                                            deleteFurnace(furnaceId);
+                                          }
+                                        }}
+                                        onKeyDown={(event) => {
                                           if (isEdit) {
                                             (productionData?.status === 1 ||
                                               productionData?.status === 3) &&
@@ -815,6 +831,15 @@ const AddEditProductionSchedule = () => {
                                       setOpenCustSpecDropdown(!openCustSpecDropdown);
                                     }
                                   }}
+                                  onKeyDown={(event) => {
+                                    if (isEdit) {
+                                      (productionData?.status === 1 ||
+                                        productionData?.status === 3) &&
+                                        setOpenCustSpecDropdown(!openCustSpecDropdown);
+                                    } else {
+                                      setOpenCustSpecDropdown(!openCustSpecDropdown);
+                                    }
+                                  }}
                                 >
                                   <p
                                     className='truncate'
@@ -873,6 +898,10 @@ const AddEditProductionSchedule = () => {
                                               setOpenCustSpecDropdown(false);
                                               handleCustomerSpecSelection(customer);
                                             }}
+                                            onKeyDown={(event)=>{
+                                              event.key==="Enter" && setOpenCustSpecDropdown(false);
+                                              handleCustomerSpecSelection(customer);
+                                          }}
                                           >
                                             {`${customer.material_no} - ${customer.material_name} - ${customer.sold_to} - ${customer.customer_name}`}
                                           </li>
@@ -1259,6 +1288,9 @@ const AddEditProductionSchedule = () => {
                                 <div
                                   className='custom-select-container custom-select-container--md custom-select-container--h36 satoshi-bold text-sm'
                                   onClick={() => setOpenScheduleBulkpile(!openScheduleBulkpile)}
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" && setOpenScheduleBulkpile(!openScheduleBulkpile)
+                                }}
                                 >
                                   {selectedScheduleBulkpile?.bulk_pile_id
                                     ? selectedScheduleBulkpile?.bulk_pile_id
@@ -1312,6 +1344,11 @@ const AddEditProductionSchedule = () => {
                                                 handleSchedulesBulkpileSelection(bulkpile);
                                                 setBulkPileSearchValue('');
                                               }}
+                                              onKeyDown={(event)=>{
+                                                event.key==="Enter" && setOpenScheduleBulkpile(false);
+                                                handleSchedulesBulkpileSelection(bulkpile);
+                                                setBulkPileSearchValue('');
+                                            }}
                                             >
                                               {bulkpile.bulk_pile_id}
                                             </li>
@@ -1359,6 +1396,9 @@ const AddEditProductionSchedule = () => {
                                 <div
                                   className='custom-select-container custom-select-container--sm custom-select-container--h36 satoshi-bold text-sm'
                                   onClick={() => setOpenActualBulkpile(!openActualBulkpile)}
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" && setOpenActualBulkpile(!openActualBulkpile)
+                                }}
                                 >
                                   {selectedActualBulkpile?.bulk_pile_id
                                     ? selectedActualBulkpile?.bulk_pile_id
@@ -1413,6 +1453,11 @@ const AddEditProductionSchedule = () => {
                                                 handleActualBulkpileSelection(bulkpile);
                                                 setBulkPileSearchValue('');
                                               }}
+                                              onKeyDown={(event)=>{
+                                                event.key==="Enter" && setOpenActualBulkpile(false);
+                                                handleActualBulkpileSelection(bulkpile);
+                                                setBulkPileSearchValue('');
+                                            }}
                                             >
                                               {bulkpile.bulk_pile_id}
                                             </li>
@@ -1478,6 +1523,9 @@ const AddEditProductionSchedule = () => {
                                 <div
                                   className='custom-select-container custom-select-container--md custom-select-container--h36 satoshi-bold text-sm'
                                   onClick={() => setOpenScheduleStartShift(!openScheduleStartShift)}
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" && setOpenScheduleStartShift(!openScheduleStartShift)
+                                }}
                                 >
                                   {formData.schedule_start_shift
                                     ? getShiftById(formData.schedule_start_shift)
@@ -1505,6 +1553,10 @@ const AddEditProductionSchedule = () => {
                                           setOpenScheduleStartShift(false);
                                           handleScheduleStartShiftSelection(shift);
                                         }}
+                                        onKeyDown={(event)=>{
+                                          event.key==="Enter" && setOpenScheduleStartShift(false);
+                                          handleScheduleStartShiftSelection(shift);
+                                      }}
                                       >
                                         {shift.key}
                                       </li>
@@ -1552,6 +1604,11 @@ const AddEditProductionSchedule = () => {
                                       productionData?.status === 3) &&
                                     setOpenActualStartShift(!openActualStartShift)
                                   }
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" && (productionData?.status === 1 ||
+                                      productionData?.status === 3) &&
+                                    setOpenActualStartShift(!openActualStartShift)
+                                }}
                                 >
                                   {formData.actual_start_shift
                                     ? getShiftById(formData.actual_start_shift)
@@ -1579,6 +1636,10 @@ const AddEditProductionSchedule = () => {
                                           setOpenActualStartShift(false);
                                           handleActualStartShiftSelection(shift);
                                         }}
+                                        onKeyDown={(event)=>{
+                                          event.key==="Enter" && setOpenActualStartShift(false);
+                                          handleActualStartShiftSelection(shift);
+                                      }}
                                       >
                                         {shift.key}
                                       </li>
@@ -1632,6 +1693,9 @@ const AddEditProductionSchedule = () => {
                                 <div
                                   className='custom-select-container custom-select-container--md custom-select-container--h36 satoshi-bold text-sm'
                                   onClick={() => setOpenScheduleEndShift(!openScheduleEndShift)}
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" && setOpenScheduleEndShift(!openScheduleEndShift)
+                                }}
                                 >
                                   {formData.schedule_end_shift
                                     ? getShiftById(formData.schedule_end_shift)
@@ -1659,6 +1723,10 @@ const AddEditProductionSchedule = () => {
                                           setOpenScheduleEndShift(false);
                                           handleScheduleEndShiftSelection(shift);
                                         }}
+                                        onKeyDown={(event)=>{
+                                          event.key==="Enter" &&  setOpenScheduleEndShift(false);
+                                          handleScheduleEndShiftSelection(shift);
+                                      }}
                                       >
                                         {shift.key}
                                       </li>
@@ -1701,6 +1769,11 @@ const AddEditProductionSchedule = () => {
                                       productionData?.status === 3) &&
                                     setOpenActualEndShift(!openActualEndShift)
                                   }
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" && (productionData?.status === 1 ||
+                                      productionData?.status === 3) &&
+                                    setOpenActualEndShift(!openActualEndShift)
+                                }}
                                 >
                                   {formData.actual_end_shift
                                     ? getShiftById(formData.actual_end_shift)
@@ -1728,6 +1801,10 @@ const AddEditProductionSchedule = () => {
                                           setOpenActualEndShift(false);
                                           handleActualEndShiftSelection(shift);
                                         }}
+                                        onKeyDown={(event)=>{
+                                          event.key==="Enter" &&  setOpenActualEndShift(false);
+                                          handleActualEndShiftSelection(shift);
+                                      }}
                                       >
                                         {shift.key}
                                       </li>
@@ -1763,7 +1840,9 @@ const AddEditProductionSchedule = () => {
       {!(id && !isEdit) && (
         <div className='dashboard__main__footer'>
           <div className='dashboard__main__footer__container'>
-            <button className='btn btn--h36 px-4 py-2' onClick={handleBackClick}>
+            <button className='btn btn--h36 px-4 py-2' onClick={handleBackClick} onKeyDown={(event)=>{
+                event.key==="Enter" && handleBackClick()
+            }}>
               Cancel
             </button>
             <button

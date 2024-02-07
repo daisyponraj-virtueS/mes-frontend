@@ -1,5 +1,4 @@
 import 'assets/styles/scss/pages/furnace.scss';
-import axios from 'axios';
 import Accordion from 'components/common/Accordion';
 import CustomSelect from 'components/common/SelectField';
 import { useEffect, useState } from 'react';
@@ -10,6 +9,7 @@ import ToggleButton from 'components/common/ToggleButton';
 import InputField from 'components/common/InputWithIcon';
 import { useNavigate } from 'react-router-dom';
 import Loading from 'components/common/Loading';
+import httpClient from 'http/httpClient';
 
 const formValidationSchema = yup.object({
   furnace_no: yup.string().required('Furnace No is required'),
@@ -72,7 +72,7 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
       casingMassLength: '',
     },
   ]);
-  const [loading, setLoading] = useState(edit_Id ?true: false)
+  const [loading, setLoading] = useState(edit_Id ? true : false);
   const plantData: any = JSON.parse(localStorage.getItem('plantData'));
 
   const local_plant_id: any = plantData.plant_id;
@@ -104,8 +104,6 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
     skull_id: '',
   };
 
-
-
   const { handleSubmit, values, handleBlur, handleChange, setFieldValue, touched, errors } =
     useFormik({
       initialValues: editData || initialValues,
@@ -123,29 +121,29 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
             filteredObject[key] = value;
           }
         });
-        setLoading(true)
+        setLoading(true);
 
         if (!isEdit) {
-          const response = await axios.post('http://127.0.0.1:8000/api/plant/furnace-config/', {
-            ...filteredObject,
-            plant_id: local_plant_id,
-            created_by: '10',
+          const response = await httpClient.post('/api/plant/furnace-config/', {
+            data: {
+              ...filteredObject,
+              plant_id: local_plant_id,
+              created_by: '10',
+            },
           });
 
-          console.log(response);
           setAddId(response.data.id);
           setTab(2);
         } else {
-          const response = await axios.put(
-            `http://127.0.0.1:8000/api/plant/furnace-config/${editId}/`,
-            {
+          const response = await httpClient.put(`/api/plant/furnace-config/${editId}/`, {
+            data: {
               ...filteredObject,
-            }
-          );
+            },
+          });
           console.log(response);
           setTab(2);
         }
-        setLoading(false)
+        setLoading(false);
         setElectrode([]);
         setProductList([]);
         setEnabled(false);
@@ -155,10 +153,8 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
 
   useEffect(() => {
     const getEditData = async () => {
-      const furnaceConfigResponse = await axios.get(
-        `http://127.0.0.1:8000/api/plant/furnace-config/${editId}/`
-      );
-      setLoading(false)
+      const furnaceConfigResponse = await httpClient.get(`/api/plant/furnace-config/${editId}/`);
+      setLoading(false);
       const transformData = (inputData) => {
         const result = inputData.reduce((acc, item) => {
           const productState = {
@@ -423,24 +419,21 @@ const BasicInformation = ({ setTab, setAddId, edit_Id }: any) => {
     }
 
     setFieldValue('electrode_type_id', value);
-if(isEdit){
-
-    const result = electrodesList?.map(item => {
-      const newItem = { id: item.id,type:item.type }; // Start with id
-      // Set all other keys to null
-      Object.keys(item).forEach(key => {
+    if (isEdit) {
+      const result = electrodesList?.map((item) => {
+        const newItem = { id: item.id, type: item.type }; // Start with id
+        // Set all other keys to null
+        Object.keys(item).forEach((key) => {
           if (key !== 'id' && key !== 'type') {
-              newItem[key] = null;
+            newItem[key] = null;
           }
+        });
+        return newItem;
       });
-      return newItem;
-  });
 
-    setElectrodesList(result as any[])
-    setFieldValue('electrodes', []);
-
-}
-
+      setElectrodesList(result as any[]);
+      setFieldValue('electrodes', []);
+    }
   };
 
   const handleProductChange = (value: any, index: any, option: any) => {
@@ -546,7 +539,7 @@ if(isEdit){
         setProductList(newArr);
         setFieldValue('products', newArr);
       } else {
-        arrayToRemove.map((value) => {
+        arrayToRemove.forEach((value) => {
           if (value.productState?.option == state) {
             const removedArr = value.products?.splice(index, 1);
             return removedArr;
@@ -557,7 +550,7 @@ if(isEdit){
         setProductList(arrayToRemove);
       }
     } else {
-      arrayToRemove.map((value) => {
+      arrayToRemove.forEach((value) => {
         if (value.productState?.option == state) {
           const removedArr = (value.products[index].record_status = status);
           return removedArr;
@@ -571,11 +564,9 @@ if(isEdit){
 
   const fetchData = async () => {
     try {
-      const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
+      const masterResponse = await httpClient.get('/api/master/master/');
 
-      const workshopResponse = await axios.get(
-        `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}/`
-      );
+      const workshopResponse = await httpClient.get(`/api/plant/plant-config/${local_plant_id}/`);
 
       const masterResponseList = masterResponse?.data?.map((val: any) => {
         const list = {
@@ -606,7 +597,6 @@ if(isEdit){
   }, []);
 
   const handleElectrodesFieldChange = (label: any, fieldName: any, value: any) => {
-
     const updatedElectrodes = electrodesList.map((electrode) => {
       if (electrode.type === label) {
         return { ...electrode, type: label, [fieldName]: value || null };
@@ -616,7 +606,6 @@ if(isEdit){
 
     setElectrodesList(updatedElectrodes);
     setFieldValue('electrodes', updatedElectrodes);
-  
   };
 
   useEffect(() => {
@@ -701,6 +690,10 @@ if(isEdit){
                 cursor: 'pointer',
               }}
               onClick={() => isEdit && setTab(2)}
+              onKeyDown={(event)=>{
+                event.key==="Enter" && isEdit && setTab(2)
+            }}
+
             >
               <p
                 style={{
@@ -942,7 +935,11 @@ if(isEdit){
                     />
                   </div>
                 ))}
-                <div className='products__add_container' onClick={handleAddProduct}>
+                <div className='products__add_container' onClick={handleAddProduct} 
+                onKeyDown={(event)=>{
+                  event.key==="Enter" && handleAddProduct()
+              }}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='40'
@@ -990,6 +987,9 @@ if(isEdit){
                                       onClick={() =>
                                         handleRemoveProduct(index, value?.productState?.option)
                                       }
+                                      onKeyDown={(event)=>{
+                                        event.key==="Enter" && handleRemoveProduct(index, value?.productState?.option)
+                                    }}
                                       data-toggle='tooltip'
                                       data-placement='bottom'
                                       // onMouseOver={() => setShowTooltip(index)}
@@ -1056,12 +1056,11 @@ if(isEdit){
                       <InputField
                         icon={val.icon}
                         value={values[val.name]}
-                        onChange={(value: any) =>{
+                        onChange={(value: any) => {
                           const regex = /^\d*\.?\d{0,3}$/;
-                                    if (regex.test(value) || value === '') {
-                         setFieldValue(val.name, value)
-                                    }
-                         
+                          if (regex.test(value) || value === '') {
+                            setFieldValue(val.name, value);
+                          }
                         }}
                         name={val.name}
                         handleBlur={handleBlur}

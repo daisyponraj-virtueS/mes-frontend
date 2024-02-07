@@ -317,6 +317,19 @@ const DashboardMaterialMaintenanceList: FC = () => {
                                 onSort_Filter(newFilteredData);
                               }
                             }}
+
+                            onKeyDown={(event)=>{
+                              const newFilteredData = {
+                                ...filteredData,
+                              };
+                              newFilteredData.material_name.splice(index, 1);
+                              setFilteredData(newFilteredData);
+                              if (isEmpty(newFilteredData)) {
+                                setReset(!reset);
+                              } else {
+                                onSort_Filter(newFilteredData);
+                              }
+                          }}
                           />
                         </div>
                       </div>
@@ -346,6 +359,17 @@ const DashboardMaterialMaintenanceList: FC = () => {
                         onSort_Filter(newFilteredData);
                       }
                     }}
+
+                    onKeyDown={()=>{
+                      const newFilteredData = { ...filteredData };
+                      delete newFilteredData.is_active;
+                      if (isEmpty(newFilteredData)) {
+                        setFilteredData(newFilteredData);
+                        setReset(!reset);
+                      } else {
+                        onSort_Filter(newFilteredData);
+                      }
+                  }}
                   />
                 </div>
               )}
@@ -402,6 +426,13 @@ const DashboardMaterialMaintenanceList: FC = () => {
                           view: true,
                         })
                       }
+                      onKeyDown={()=>{
+                        handleRowClick({
+                          id: e.id,
+                          edit: false,
+                          view: true,
+                        })
+                    }}
                     >
                       <td>{e.material_no}</td>
                       <td>{e.material_name}</td>
@@ -413,6 +444,10 @@ const DashboardMaterialMaintenanceList: FC = () => {
                             e.stopPropagation();
                             toggleMenu(idx);
                           }}
+                          onKeyDown={()=>{
+                            e.stopPropagation();
+                            toggleMenu(idx);
+                        }}
                         >
                           {
                             <div className='switch-container mr-2'>
@@ -440,11 +475,19 @@ const DashboardMaterialMaintenanceList: FC = () => {
                             e.stopPropagation();
                             toggleMenu(idx);
                           }}
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            toggleMenu(idx);
+                          }}
                         >
                           <div
                             className='relative dots-icon-wrapper flex items-center justify-center cursor-pointer'
                             style={{ width: 16, height: 16 }}
                             onClick={(e) => {
+                              e.preventDefault();
+                              toggleMenu(idx);
+                            }}
+                            onKeyDown={(e) => {
                               e.preventDefault();
                               toggleMenu(idx);
                             }}
@@ -471,6 +514,13 @@ const DashboardMaterialMaintenanceList: FC = () => {
                                       isActive: e.is_active,
                                     });
                                   }}
+                                  onKeyDown={() => {
+                                    handleRowClick({
+                                      id: e.id,
+                                      edit: true,
+                                      isActive: e.is_active,
+                                    });
+                                  }}
                                 >
                                   <img
                                     src={editIcon}
@@ -484,6 +534,9 @@ const DashboardMaterialMaintenanceList: FC = () => {
                                     hasDeletePermission ? '' : 'disabled'
                                   }`}
                                   onClick={() => deleteAlert(e)}
+                                  onKeyDown={(event)=>{
+                                    event.key==="Enter" && deleteAlert(e)
+                                }}
                                 >
                                   <img
                                     src={trashIcon}

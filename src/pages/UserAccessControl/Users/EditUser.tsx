@@ -14,7 +14,6 @@ import Loading from 'components/common/Loading';
 import CustomSelect from 'components/common/SelectField';
 import OutsideClickHandler from 'react-outside-click-handler';
 import copy from 'assets/icons/copy.svg';
-import axios from 'axios';
 const EditUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
@@ -330,9 +329,9 @@ const EditUser = () => {
     if (generatedPassword) {
       const data = { password: generatedPassword };
       setLoading(true)
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/account/reset-password/${userId}/`,
-        data
+      const response = await httpClient.post(
+        `/api/account/reset-password/${userId}/`,
+        {data:data}
       );
       if (response.status == 200) {
         setLoading(false)

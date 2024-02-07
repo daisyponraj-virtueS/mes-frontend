@@ -22,7 +22,9 @@ const GeneratePasswordModal: FC<ModalAlertProps> = ({
             <div className='flex-1 pr-8'>
               <h3 className='modal__title'>{title}</h3>
             </div>
-            <div className='modal__close' onClick={closeModal}>
+            <div className='modal__close' onClick={closeModal} onKeyDown={(event)=>{
+                event.key==="Enter" && closeModal()
+            }}>
               <img src={closeIcon} alt='close-icon' />
             </div>
           </div>

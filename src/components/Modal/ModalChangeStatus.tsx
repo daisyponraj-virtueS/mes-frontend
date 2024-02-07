@@ -60,7 +60,9 @@ const ModalChangeStatus = (props: any) => {
             <div className='flex-1 pr-8'>
               <h3 className='modal__title'>Change Status</h3>
             </div>
-            <div className='modal__close' onClick={closeModal}>
+            <div className='modal__close' onClick={closeModal} onKeyDown={(event)=>{
+                event.key==="Enter" && closeModal()
+            }}>
               <img src={closeIcon} alt='close-icon' />
             </div>
           </div>
@@ -73,6 +75,9 @@ const ModalChangeStatus = (props: any) => {
                 <div
                   className='custom-select-container custom-select-container--md custom-select-container--h40 satoshi-bold text-sm'
                   onClick={() => setOpenDropdown(!openDropdown)}
+                  onKeyDown={(event)=>{
+                    event.key==="Enter" && setOpenDropdown(!openDropdown)
+                }}
                 >
                   {!isEmpty(selectedStatus) ? selectedStatus.key : 'Select'}
                   <img src={arrowDown} alt='arrow-down' className='custom-select__arrow-down' />
@@ -89,6 +94,9 @@ const ModalChangeStatus = (props: any) => {
                         setSelectedStatus(status);
                         setOpenDropdown(false);
                       }}
+                      onKeyDown={(event)=>{
+                        event.key==="Enter" &&  setSelectedStatus(status); setOpenDropdown(false);
+                    }}
                     >
                       {status.key}
                     </li>

@@ -131,7 +131,7 @@ const SGMaterialMaintenanceTable: React.FC<SGMaterialMaintenanceTableProps> = (
                     ? bulkPileList.filter((bpItem) => bpItem.id === item.bulk_pile)[0]?.bulk_pile_id
                     : '';
                 return (
-                  <tr key={`SGMM-${index}`} onClick={() => handleRowClick(item.material_no)}>
+                  <tr key={`SGMM-${index}`} onClick={() => handleRowClick(item.material_no)} onKeyDown={() => handleRowClick(item.material_no)}>
                     <td>{item.material_no}</td>
                     <td>{item.priority}</td>
                     <td>{item.grade}</td>
@@ -145,7 +145,7 @@ const SGMaterialMaintenanceTable: React.FC<SGMaterialMaintenanceTableProps> = (
                     <td className='text-center'>
                       {alLow} - {alHigh}
                     </td>
-                    <td onClick={(e) => e.stopPropagation()} className={`cursor-pointer`}>
+                    <td onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()} className={`cursor-pointer`}>
                       <div className='flex items-center justify-end'>
                         <div
                           className='relative dots-icon-wrapper flex items-center justify-center
@@ -155,6 +155,7 @@ const SGMaterialMaintenanceTable: React.FC<SGMaterialMaintenanceTableProps> = (
                             height: 16,
                           }}
                           onClick={() => handleOpenActionList(index)}
+                          onKeyDown={() => handleOpenActionList(index)}
                         >
                           <DotsSvg color={'#041724'} />
                           {actionListState.isOpen && actionListState.selectedIndex === index && (

@@ -47,48 +47,58 @@ const DropdownWithSearch: React.FC<IDropdownWithSearchProps> = ({
   return (
     <OutsideClickHandler onOutsideClick={() => setIsOpen(false)}>
       <div className='custom-select-wrapper'>
-        <div
-          className='custom-select-container custom-select-container--md custom-select-container--h36 satoshi-bold text-sm'
-          onClick={() => {
-            setIsOpen(!isOpen);
-            setSearchValue('');
-          }}
-        >
-          {getMaterialName()}
-          <img src={arrowDown} alt='arrow-down' className='custom-select__arrow-down' />
-        </div>
-        <ul
-          className={`select-dropdown-menu ${isOpen ? 'open' : ''}`}
-          style={{ maxHeight: 140, overflow: 'auto' }}
-        >
-          <input
-            type='number'
-            className='input-field input-field--search input-field--md input-field--h32 w-full'
-            placeholder='Search by Material No'
-            value={searchValue}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => searchHandler(e.target.value)}
-            onKeyDown={(e) => preventArrowBehavior(e, 'number')}
-            onWheel={(event) => event.currentTarget.blur()}
-          />
-          {!isEmpty(filteredDropdownList) ? (
-            filteredDropdownList?.map((e: any) => {
-              return (
-                <li
-                  className='select-dropdown-menu__list'
-                  key={e.id}
-                  onClick={() => {
-                    onChangeHandler(e.value);
-                    setIsOpen(false);
-                  }}
-                >
-                  {e.no} - {e.key}
-                </li>
-              );
-            })
-          ) : (
-            <li className='select-dropdown-menu__list'>No records found</li>
-          )}
-        </ul>
+        <>
+          <div
+            className='custom-select-container custom-select-container--md custom-select-container--h36 satoshi-bold text-sm'
+            onClick={() => {
+              setIsOpen(!isOpen);
+              setSearchValue('');
+            }}
+            onKeyDown={(event) => {
+              event.key === 'Enter' && setIsOpen(!isOpen);
+              setSearchValue('');
+            }}
+          >
+            {getMaterialName()}
+            <img src={arrowDown} alt='arrow-down' className='custom-select__arrow-down' />
+          </div>
+          <ul
+            className={`select-dropdown-menu ${isOpen ? 'open' : ''}`}
+            style={{ maxHeight: 140, overflow: 'auto' }}
+          >
+            <input
+              type='number'
+              className='input-field input-field--search input-field--md input-field--h32 w-full'
+              placeholder='Search by Material No'
+              value={searchValue}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => searchHandler(e.target.value)}
+              onKeyDown={(e) => preventArrowBehavior(e, 'number')}
+              onWheel={(event) => event.currentTarget.blur()}
+            />
+            {!isEmpty(filteredDropdownList) ? (
+              filteredDropdownList?.map((e: any) => {
+                return (
+                  <li
+                    className='select-dropdown-menu__list'
+                    key={e.id}
+                    onClick={() => {
+                      onChangeHandler(e.value);
+                      setIsOpen(false);
+                    }}
+                    onKeyDown={(event) => {
+                      event.key === 'Enter' && onChangeHandler(e.value);
+                      setIsOpen(false);
+                    }}
+                  >
+                    {e.no} - {e.key}
+                  </li>
+                );
+              })
+            ) : (
+              <li className='select-dropdown-menu__list'>No records found</li>
+            )}
+          </ul>
+        </>
       </div>
     </OutsideClickHandler>
   );
