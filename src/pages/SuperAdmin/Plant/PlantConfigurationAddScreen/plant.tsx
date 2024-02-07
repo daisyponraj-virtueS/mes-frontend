@@ -7,12 +7,13 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import CustomSelect from 'components/common/SelectField';
 import deactiveIcon from '../../../../assets/icons/deactivate.svg';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import AlertModal from 'components/Modal/AlertModal';
 import { clearLocalStorage } from 'utils/utils';
 import { paths } from 'routes/paths';
 import Loading from 'components/common/Loading';
+import httpClient from 'http/httpClient';
+import { getPlantData } from 'hooks/useGetPlantData';
 
 const formValidationSchema = yup.object({
   timezone_id: yup.string().required('Select the Time zone'),
@@ -85,9 +86,6 @@ const AddPlant = () => {
   const plantData: any = JSON.parse(localStorage.getItem('plantData'));
 
   const local_plant_id : any = plantData.plant_id;
-  // const local_plant_name : any = localStorage.getItem('plantName');
-
-
 
   const initialValuesObj = {
     plant_id: plantData?.plant_id,
@@ -122,7 +120,6 @@ const AddPlant = () => {
       enableReinitialize: true,
       onSubmit: async (values: any, { resetForm }: any) => {
 
-        console.log('submit', values);
         
         const data = {
           ...values,
@@ -160,18 +157,17 @@ const AddPlant = () => {
         };
         if (isEdit) {
           setLoading(true)
-          const response = await axios.put(
-            `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}/`,
-            data
+          const response = await httpClient.put(
+            `/api/plant/plant-config/${local_plant_id}/`,{
+            data:data}
           );
           if(response){
             setLoading(false)
           }
-          console.log(response);
         } else {
-          const response = await axios.post(
-            'http://127.0.0.1:8000/api/plant/plant-config-post/',
-            data
+          const response = await httpClient.post(
+            '/api/plant/plant-config-post/',
+            {data:data}
           );
           console.log(response);
         }
@@ -184,8 +180,8 @@ const AddPlant = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const plantConfigResponse = await axios.get(
-          `http://127.0.0.1:8000/api/plant/plant-config/${local_plant_id}/`
+        const plantConfigResponse = await httpClient.get(
+          `/api/plant/plant-config/${local_plant_id}/`
         );
 
         const editData :any = plantConfigResponse.data
@@ -407,7 +403,7 @@ const AddPlant = () => {
   const fetchData = async () => {
     try {
       
-      const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
+      const masterResponse = await httpClient.get('/api/master/master/');
       const masterResponseList = masterResponse?.data?.map((val: any) => {
         const list = {
           option: val.value,
@@ -437,7 +433,7 @@ const AddPlant = () => {
 
       const productResponseList = createProductOptions(masterResponseList, 'PRODUCT')
 
-      const functionResponse = await axios.get('http://127.0.0.1:8000/api/plant/function/');
+      const functionResponse = await httpClient.get('/api/plant/function/');
 
       const functionResponseData = functionResponse.data
 

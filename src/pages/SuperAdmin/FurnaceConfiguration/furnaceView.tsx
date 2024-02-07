@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import editIcon from 'assets/icons/edit-thick.svg';
 import Accordion from 'components/common/Accordion';
 import ParameterComponent from './parameterComponent';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Loader from 'components/Loader';
+import httpClient from 'http/httpClient';
 
 const commonLabelStyle = {
   fontWeight: 600,
@@ -79,13 +79,8 @@ const furnaceView = ({ setTab, viewId }: any) => {
       pasteMassLengthValue3 = e1Electrode.paste_mass_length;
       casingValue3 = e1Electrode.casing_value;
       casingMassLenthValue3 = e1Electrode.casing_mass_length;
-      // return e1Electrode; // You can return or use the core_value as needed
     });
 
-  // const Molten = {masterData.filter((val)=>val.id == furnace.power_delivery_id)?.[0]?.value
-  // console.log("praveenram3", E1);
-  // console.log("praveenram55", E2);
-  // console.log("praveenram55", E3);
 
   let productTypeValues1: any[] = [];
   let productCodeValues1: any[] = [];
@@ -152,11 +147,10 @@ const furnaceView = ({ setTab, viewId }: any) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/plant/furnace-config/${viewId}/`
+        const response = await httpClient.get(
+          `/api/plant/furnace-config/${viewId}/`
         );
         const data = response?.data;
-        console.log('praveen1', response);
         setIsLoading(false)
         setFurnaceData({ furnace: [data] });
       } catch (error) {
@@ -170,10 +164,9 @@ const furnaceView = ({ setTab, viewId }: any) => {
 
   const appmasterData = async () => {
     try {
-      const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
+      const masterResponse = await httpClient.get('/api/master/master/');
 
       const masterResponseList = masterResponse?.data;
-      console.log('praveen4', masterResponseList);
       setMasterData(masterResponseList);
     } catch (error) {
       // Handle errors here

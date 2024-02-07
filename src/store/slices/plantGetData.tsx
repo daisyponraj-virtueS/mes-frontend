@@ -15,24 +15,24 @@ const initState: PlantSlice = {
   count: 0,
 };
 
-console.log("GetPlantConfigData.getPlantConfig",GetPlantConfigData.getPlantConfig)
 
-export const getAllPlants = createAsyncThunk('plant/getAllPlant', GetPlantConfigData.getPlantConfig);
+export const getPlant = createAsyncThunk('plant/getAllPlant', GetPlantConfigData.getPlantConfig);
+
 const plantConfigSlice = createSlice({
   name: 'plant',
   initialState: initState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getAllPlants.pending, (state) => {
+      .addCase(getPlant.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getAllPlants.fulfilled, (state, action) => {
+      .addCase(getPlant.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
         state.results = action.payload.data;
       })
-      .addCase(getAllPlants.rejected, (state, action) => {
+      .addCase(getPlant.rejected, (state, action) => {
         state.loading = false;
         state.results = [];
         state.error = action.payload;

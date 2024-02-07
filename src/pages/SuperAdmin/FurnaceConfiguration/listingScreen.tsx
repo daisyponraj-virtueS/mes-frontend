@@ -1,36 +1,27 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useState } from 'react';
 import Header from 'components/common/EmptyHeader';
-// import { filterSearch } from 'store/slices/additiveSlice';
-// import { useAppDispatch } from 'store';
+
 import { useNavigate } from 'react-router-dom';
 import editIcon from 'assets/icons/edit1.svg';
 import viewIcon from 'assets/icons/eye1.svg';
 import deactivateIcon from 'assets/icons/deactivate.svg';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import axios from 'axios';
 import { paths } from 'routes/paths';
 import Loader from 'components/Loader';
 import AlertModal from 'components/Modal/AlertModal';
-// const tableData = [
-//     { code: 'FCE02', quantity: 1, type: 'Arc', size: 10, price: 1000.0, material: 'Carbon (pre baked)' },
-//     { code: 'FCE01', quantity: 3, type: 'Arc', size: 14, price: 1500.0, material: 'Composite' },
-//     { code: 'FCE05', quantity: 1, type: 'Arc', size: 9, price: 1000.0, material: 'Soderberg' },
-//   ];
+import httpClient from 'http/httpClient';
+
 
 const listingScreen = (props: any) => {
   const { handleOnchangeStatus } = props;
   const navigate = useNavigate();
-  //   const dispatch = useAppDispatch();
   const itemsPerPage = 10;
-  // const [currentPage, setCurrentPage] = useState(1);
-  //   const [filteredData, setFilteredData] = useState<any>();
   const [searchValue, setSearchValue] = useState<string | number>('');
   const [inputData, setInputData] = useState<any>({
     page_size: itemsPerPage,
     material_no: searchValue,
-    // page: currentPage,
   });
 
   const plantData: any = JSON.parse(localStorage.getItem('plantData'));
@@ -65,38 +56,15 @@ const listingScreen = (props: any) => {
     event.stopPropagation();
     navigate(`/system-admin/furnace-configuration/view/${furnaceId}`);
   };
-  // const handleTableRowClick = (furnaceId: number) => {
-  //   navigate(`${paths.furnaceConfig.view}/${furnaceId}`);
-  // };
 
   const handleTableRowClick = (furnaceId: number) => {
-    // console.log('Clicked furnace ID:', furnaceId);
     setSelectedFurnaceId(furnaceId);
   };
 
-  //   const fetchSearchList = async (inputData: any) => {
-  //     const response = await dispatch(filterSearch(inputData));
-  //     return response;
-  //   };
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`http://127.0.0.1:8000/api/plant/furnace-config/?plant_id=${local_plant_id}`);
-  //       const data = response.data;
-  //       setFurnaceData({ furnace: data });
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //       // Handle the error, e.g., set an error state or show a message to the user
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/plant/furnace-config/?plant_id=${local_plant_id}`
+      const response = await httpClient.get(
+        `api/plant/furnace-config/?plant_id=${local_plant_id}`
       );
       const data = response.data;
       setIsLoading(false);
@@ -113,7 +81,7 @@ const listingScreen = (props: any) => {
 
   const appmasterData = async () => {
     try {
-      const masterResponse = await axios.get('http://127.0.0.1:8000/api/master/master/');
+      const masterResponse = await httpClient.get('/api/master/master/');
 
       const masterResponseList = masterResponse?.data;
       setMasterData(masterResponseList);

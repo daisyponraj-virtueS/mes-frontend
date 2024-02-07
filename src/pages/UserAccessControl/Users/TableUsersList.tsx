@@ -317,6 +317,7 @@ const TableUsersList = (props: any) => {
 
                               {/* </Link> */}
                               {/* <Link to={`/deactivate/${user.id}`} data-tip='Deactivate'> */}
+                              {user.login_type == "simple"?
                               <img
                                 onClick={() => {
                                   setSingleUser(user)
@@ -335,6 +336,7 @@ const TableUsersList = (props: any) => {
                                 className='icon mr-10'
                                 style={{ fill: '#04436B', width: '15px', height: '15px' }}
                               />
+                              : null}
                               {/* </Link> */}
                             </div>
                           )}
