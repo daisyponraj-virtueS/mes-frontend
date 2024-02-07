@@ -14,6 +14,7 @@ import ModalCloneUser from 'components/Modal/ModalCloneUser';
 import { notify, validatePermissions } from 'utils/utils';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { crudType, permissionsMapper } from 'utils/constants';
+import Loading from 'components/common/Loading';
 
 interface AddNewRoleProps {
   setAddNewRole: (value: boolean) => void;
@@ -51,6 +52,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   const [existingRoles, setExistingRoles] = useState<any>([]);
   const [allRoles, setAllRoles] = useState<any>([]);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getRolesAPI = async () => {
@@ -59,6 +61,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
         .get('/api/account/roles/?is_delete=false')
         .then((response: any) => {
           if (response.data) {
+            setLoading(false)
             setExistingRoles(response.data.results);
             setAllRoles(response.data.results);
           }
@@ -342,16 +345,19 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
   };
 
   const addUserAPI = async (request: any) => {
+    setLoading(true)
     httpClient
       // .post('/api/users/', { data: request })
       .post('/api/account/users/', { data: request })
       .then((response: any) => {
         if (response.status === 200 || response.status === 201) {
           if (response.data) {
+            setLoading(false)
             notify('success', 'User created succesfully');
             navigate(`${paths.usersList}`);
           }
         } else if (response.data) {
+          setLoading(false)
           const errorField = Object.keys(response?.data)[0];
           notify('error', response.data[errorField][0]);
         } else {
@@ -454,6 +460,7 @@ const AddNewUser: React.FC<AddNewRoleProps> = () => {
     return true;
   };
 
+  if (loading) return <Loading />;
   return (
     <main className='dashboard'>
       <section className='dashboard__main'>
